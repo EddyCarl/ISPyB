@@ -158,7 +158,7 @@
                 </handlers>
             </root-logger>
             <formatter name="PATTERN">
-                <pattern-formatter pattern="%d{yyyy-MM-dd HH:mm:ss,SSS} %-5p [%c] (%t) (userId %X{userId}) %s%e%n"/>
+                <pattern-formatter pattern="%d{yyyy-MM-dd HH:mm:ss,SSS} %-5p [%c] (%t) %s%e%n"/>
             </formatter>
             <formatter name="COLOR-PATTERN">
                 <pattern-formatter pattern="%K{level}%d{HH:mm:ss,SSS} %-5p [%c] (%t) %s%e%n"/>
@@ -178,20 +178,28 @@
         <subsystem xmlns="urn:jboss:domain:bean-validation:1.0"/>
         <subsystem xmlns="urn:jboss:domain:datasources:4.0">
             <datasources>
+                 <datasource jndi-name="java:jboss/ispybconfigDS" pool-name="ispybconfigDS" enabled="true" use-java-context="true">
+                    <connection-url>jdbc:mysql://pydevserv.esrf.fr:3308/pyconfig</connection-url>
+                    <driver>mysql-connector-java-5.1.21.jar</driver>
+                    <security>
+                        <user-name>****</user-name>
+                        <password>****</password>
+                    </security>
+                </datasource>
                 <datasource jndi-name="java:jboss/ispybDS" pool-name="ispybDS" enabled="true" use-java-context="true">
                     <connection-url>jdbc:mysql://pydevserv.esrf.fr:3308/pydb</connection-url>
                     <driver>mysql-connector-java-5.1.21.jar</driver>
                     <security>
-                        <user-name>UUUUUUU</user-name>
-                        <password>PPPPPP</password>
+                        <user-name>****</user-name>
+                        <password>****</password>
                     </security>
                 </datasource>
                 <datasource jndi-name="java:jboss/ispyb_db_direct" pool-name="ispyb_db_direct" enabled="true" use-java-context="true">
                     <connection-url>jdbc:mysql://pydevserv.esrf.fr:3308/pydb</connection-url>
                     <driver>mysql-connector-java-5.1.21.jar</driver>
                     <security>
-                        <user-name>UUUUUUU</user-name>
-                        <password>PPPPPP</password>
+                        <user-name>****</user-name>
+                        <password>****</password>
                     </security>
                 </datasource>
                 <datasource jndi-name="java:jboss/datasources/ExampleDS" pool-name="ExampleDS" enabled="true" use-java-context="true">
@@ -211,7 +219,7 @@
             </datasources>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:deployment-scanner:2.0">
-            <deployment-scanner path="deployments" relative-to="jboss.server.base.dir" scan-interval="5000" runtime-failure-causes-rollback="${jboss.deployment.scanner.rollback.on.failure:false}"/>
+            <deployment-scanner path="deployments" relative-to="jboss.server.base.dir" scan-interval="1000"/>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:ee:4.0">
             <spec-descriptor-property-replacement>false</spec-descriptor-property-replacement>
@@ -223,13 +231,13 @@
                     <managed-thread-factory name="default" jndi-name="java:jboss/ee/concurrency/factory/default" context-service="default"/>
                 </managed-thread-factories>
                 <managed-executor-services>
-                    <managed-executor-service name="default" jndi-name="java:jboss/ee/concurrency/executor/default" context-service="default" hung-task-threshold="60000" keepalive-time="5000"/>
+                    <managed-executor-service name="default" jndi-name="java:jboss/ee/concurrency/executor/default" context-service="default" hung-task-threshold="60000" core-threads="5" max-threads="25" keepalive-time="5000"/>
                 </managed-executor-services>
                 <managed-scheduled-executor-services>
-                    <managed-scheduled-executor-service name="default" jndi-name="java:jboss/ee/concurrency/scheduler/default" context-service="default" hung-task-threshold="60000" keepalive-time="3000"/>
+                    <managed-scheduled-executor-service name="default" jndi-name="java:jboss/ee/concurrency/scheduler/default" context-service="default" hung-task-threshold="60000" core-threads="2" keepalive-time="3000"/>
                 </managed-scheduled-executor-services>
             </concurrent>
-            <default-bindings context-service="java:jboss/ee/concurrency/context/default" datasource="java:jboss/datasources/ExampleDS" managed-executor-service="java:jboss/ee/concurrency/executor/default" managed-scheduled-executor-service="java:jboss/ee/concurrency/scheduler/default" managed-thread-factory="java:jboss/ee/concurrency/factory/default"/>
+            <default-bindings context-service="java:jboss/ee/concurrency/context/default" datasource="java:jboss/datasources/ExampleDS" jms-connection-factory="java:jboss/DefaultJMSConnectionFactory" managed-executor-service="java:jboss/ee/concurrency/executor/default" managed-scheduled-executor-service="java:jboss/ee/concurrency/scheduler/default" managed-thread-factory="java:jboss/ee/concurrency/factory/default"/>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:ejb3:4.0">
             <session-bean>
@@ -239,10 +247,14 @@
                 <stateful default-access-timeout="5000" cache-ref="simple" passivation-disabled-cache-ref="simple"/>
                 <singleton default-access-timeout="5000"/>
             </session-bean>
+            <mdb>
+                <resource-adapter-ref resource-adapter-name="${ejb.resource-adapter-name:hornetq-ra.rar}"/>
+                <bean-instance-pool-ref pool-name="mdb-strict-max-pool"/>
+            </mdb>
             <pools>
                 <bean-instance-pools>
-                    <strict-max-pool name="slsb-strict-max-pool" derive-size="from-worker-pools" instance-acquisition-timeout="5" instance-acquisition-timeout-unit="MINUTES"/>
-                    <strict-max-pool name="mdb-strict-max-pool" derive-size="from-cpu-count" instance-acquisition-timeout="5" instance-acquisition-timeout-unit="MINUTES"/>
+                    <strict-max-pool name="slsb-strict-max-pool" max-pool-size="20" instance-acquisition-timeout="5" instance-acquisition-timeout-unit="MINUTES"/>
+                    <strict-max-pool name="mdb-strict-max-pool" max-pool-size="20" instance-acquisition-timeout="5" instance-acquisition-timeout-unit="MINUTES"/>
                 </bean-instance-pools>
             </pools>
             <caches>
@@ -265,9 +277,9 @@
                     <keepalive-time time="100" unit="milliseconds"/>
                 </thread-pool>
             </thread-pools>
+            <iiop enable-by-default="false" use-qualified-name="false"/>
             <default-security-domain value="other"/>
             <default-missing-method-permissions-deny-access value="true"/>
-            <log-system-exceptions value="true"/>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:io:1.1">
             <worker name="default"/>
@@ -419,38 +431,6 @@
                         </login-module>
                     </authentication>
                 </security-domain>
-                <security-domain name="SMISServer" cache-type="default">
-                    <authentication>
-                        <login-module code="fr.esrf.utils.jaas.JBossLdapIdLoginModule" flag="optional" module="fr.esrf.utils.jaas">
-                            <module-option name="java.naming.factory.initial" value="com.sun.jndi.ldap.LdapCtxFactory"/>
-                            <module-option name="java.naming.provider.url" value="ldap://ldap-m.esrf.fr:389/"/>
-                            <module-option name="java.naming.security.authentication" value="simple"/>
-                            <module-option name="allowEmptyPasswords" value="false"/>
-                            <module-option name="principalDNPrefix" value="uid="/>
-                            <module-option name="principalDNSuffix" value=",ou=People,dc=esrf,dc=fr"/>
-                            <module-option name="sharedAttributeID" value="employeeNumber"/>
-                        </login-module>
-                        <login-module code="fr.esrf.utils.jaas.JbossUserPwdIdDBLoginModule" flag="required" module="fr.esrf.utils.jaas">
-                            <module-option name="dsJndiName" value="java:/jdbc/SMIS-DS"/>
-                            <module-option name="principalsQuery" value="select USER_NO from usofman.VSMIS_USERS where upper(USERNAME)=upper(?) and upper(PASSWORD)=upper(?)"/>
-                            <module-option name="rolesQuery" value="select distinct USERGROUP, 'Roles' from usofman.VSMIS_USERS_GROUPS where USER_NO=?"/>
-                            <module-option name="standardAuthRole" value="$loginThroughStdAuth$"/>
-                            <module-option name="sessionIdLoginKeyword" value="/$sessionID$/"/>
-                            <module-option name="connectAsLoginKeyword" value="/$connectAs$/"/>
-                            <module-option name="connectBackLoginKeyword" value="/$connectBack$/"/>
-                            <module-option name="reloginLoginKeyword" value="/$relogin$/"/>
-                            <module-option name="sharedUidAttr" value="employeeNumber"/>
-                            <module-option name="sharedUidPrincipalsQuery" value="select USER_NO from usofman.VSMIS_USERS where SHARED_UID=?"/>
-                            <module-option name="sharedUidAuthRole" value="$loginThroughSharedUidAuth$"/>
-                            <module-option name="authTokenCacheName" value="SMISServer"/>
-                            <module-option name="centralAuthLoginPrefix" value="$EAAid$/"/>
-                            <module-option name="centralAuthPrincipalsQuery" value="select USER_NO from usofman.VSMIS_USERS where EAA_HASH=?"/>
-                            <module-option name="centralAuthRole" value="$loginThroughCentralAuth$"/>
-                            <module-option name="ignorePasswordCase" value="true"/>
-                            <module-option name="unauthenticatedIdentity" value="unknown"/>
-                        </login-module>
-                    </authentication>
-                </security-domain>
                 <security-domain name="other" cache-type="default">
                     <authentication>
                         <login-module code="Remoting" flag="optional">
@@ -471,14 +451,6 @@
                         <policy-module code="Delegating" flag="required"/>
                     </authorization>
                 </security-domain>
-                <security-domain name="jaspitest" cache-type="default">
-                    <authentication-jaspi>
-                        <login-module-stack name="dummy">
-                            <login-module code="Dummy" flag="optional"/>
-                        </login-module-stack>
-                        <auth-module code="Dummy"/>
-                    </authentication-jaspi>
-                </security-domain>
             </security-domains>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:transactions:3.0">
@@ -494,7 +466,6 @@
             <server name="default-server">
                 <ajp-listener name="ajp" socket-binding="ajp" max-parameters="20000"/>
                 <http-listener name="default" socket-binding="http" max-parameters="20000"/>
-                <https-listener name="https" socket-binding="https" security-realm="ApplicationRealm" enable-http2="true"/>
                 <host name="default-host" alias="localhost">
                     <location name="/" handler="welcome-content"/>
                     <filter-ref name="server-header"/>
