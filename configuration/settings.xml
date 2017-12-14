@@ -223,12 +223,12 @@ under the License.
       <id>NEWSITE</id>
 		<properties>
 			<ispyb.site>NEWSITE</ispyb.site>
-			<smis.ws.usr>xxx</smis.ws.usr>
-			<smis.ws.pwd>******</smis.ws.pwd>
-			<ispyb.ws.usr>xxxxxx</ispyb.ws.usr>
-			<ispyb.ws.pwd>******</ispyb.ws.pwd>
+			<smis.ws.usr>guest</smis.ws.usr>
+			<smis.ws.pwd>guest</smis.ws.pwd>
+			<ispyb.ws.usr>guest</ispyb.ws.usr>
+			<ispyb.ws.pwd>guest</ispyb.ws.pwd>
 
-			<jboss.home>C:/java/appServers/wildfly-8.2.0.Final</jboss.home>
+			<jboss.home>D:/Applications/wildfly-11.0.0.CR1</jboss.home>
 
 		</properties>
 	</profile>
