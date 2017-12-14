@@ -291,7 +291,7 @@ under the License.
    | List of profiles that are active for all builds.
    |   -->
   <activeProfiles>
-    <activeProfile>ESRF</activeProfile>
+    <activeProfile>NEWSITE</activeProfile>
   </activeProfiles>
 
 </settings>

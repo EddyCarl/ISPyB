@@ -30,7 +30,7 @@ Contributors : S. Delageniere, R. Leal, L. Launer, K. Levik, S. Veyrier, P. Bren
 
 <jsp:useBean id="adminVar" class="ispyb.server.common.util.AdminUtils" scope="page" />
 
-<c:if test="${SITE_ATTRIBUTE eq 'ESRF'}">
+<c:if test="${SITE_ATTRIBUTE eq 'ESRF' or SITE_ATTRIBUTE eq 'NEWSITE'}">
 
 <!--  Christmas animation !  -->
 	<script type="text/javascript">		

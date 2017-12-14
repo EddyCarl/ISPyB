@@ -47,7 +47,6 @@
                     <ssl>
                         <keystore path="application.keystore" relative-to="jboss.server.config.dir" keystore-password="password" alias="server" key-password="password" generate-self-signed-certificate-host="localhost"/>
                     </ssl>
-					<secret value="cGFzc3dvcmQ5OTk=" />
                 </server-identities>
                 <authentication>
                     <local default-user="$local" allowed-users="*" skip-group-loading="true"/>
@@ -103,7 +102,7 @@
                 <suffix value=".yyyy-MM-dd"/>
                 <append value="true"/>
             </periodic-rotating-file-handler>
-	    <periodic-rotating-file-handler name="ISPYB" autoflush="true">
+            <periodic-rotating-file-handler name="ISPYB" autoflush="true">
                 <formatter>
                     <named-formatter name="PATTERN"/>
                 </formatter>
@@ -134,19 +133,13 @@
             <logger category="com.arjuna">
                 <level name="WARN"/>
             </logger>
-            <logger category="org.jboss.as.config">
+            <logger category="org.apache.tomcat.util.modeler">
                 <level name="WARN"/>
+            </logger>
+            <logger category="org.jboss.as.config">
+                <level name="DEBUG"/>
             </logger>
             <logger category="sun.rmi">
-                <level name="WARN"/>
-            </logger>
-            <logger category="jacorb">
-                <level name="WARN"/>
-            </logger>
-            <logger category="jacorb.config">
-                <level name="ERROR"/>
-            </logger>
-            <logger category="org.hibernate" use-parent-handlers="true">
                 <level name="WARN"/>
             </logger>
             <root-logger>
@@ -179,12 +172,12 @@
         <subsystem xmlns="urn:jboss:domain:core-management:1.0"/>
         <subsystem xmlns="urn:jboss:domain:datasources:5.0">
             <datasources>
-                <datasource jndi-name="java:jboss/ispybconfigDS" pool-name="ispybconfigDS" enabled="true" use-java-context="true">
+                 <datasource jndi-name="java:jboss/ispybconfigDS" pool-name="ispybconfigDS" enabled="true" use-java-context="true">
                     <connection-url>jdbc:mysql://localhost:3306/pyconfig</connection-url>
                     <driver>mysql-connector-java-5.1.21.jar</driver>
                     <security>
                         <user-name>pxadmin</user-name>
-                        <password>pxadmin</password>
+                        <password>pa55word</password>
                     </security>
                 </datasource>
                 <datasource jndi-name="java:jboss/ispybDS" pool-name="ispybDS" enabled="true" use-java-context="true">
@@ -192,7 +185,7 @@
                     <driver>mysql-connector-java-5.1.21.jar</driver>
                     <security>
                         <user-name>pxadmin</user-name>
-                        <password>pxadmin</password>
+                        <password>pa55word</password>
                     </security>
                 </datasource>
                 <datasource jndi-name="java:jboss/ispyb_db_direct" pool-name="ispyb_db_direct" enabled="true" use-java-context="true">
@@ -200,7 +193,7 @@
                     <driver>mysql-connector-java-5.1.21.jar</driver>
                     <security>
                         <user-name>pxadmin</user-name>
-                        <password>pxadmin</password>
+                        <password>pa55word</password>
                     </security>
                 </datasource>
                 <datasource jndi-name="java:jboss/datasources/ExampleDS" pool-name="ExampleDS" enabled="true" use-java-context="true">
@@ -283,7 +276,7 @@
             <default-missing-method-permissions-deny-access value="true"/>
             <log-system-exceptions value="true"/>
         </subsystem>
-        <subsystem xmlns="urn:wildfly:elytron:1.0" final-providers="combined-providers" disallowed-providers="OracleUcrypto">
+        <subsystem xmlns="urn:wildfly:elytron:1.2" final-providers="combined-providers" disallowed-providers="OracleUcrypto">
             <providers>
                 <aggregate-providers name="combined-providers">
                     <providers name="elytron"/>
@@ -317,18 +310,20 @@
                 </properties-realm>
             </security-realms>
             <mappers>
-                <logical-permission-mapper name="default-permission-mapper" logical-operation="unless" left="constant-permission-mapper" right="anonymous-permission-mapper"/>
-                <simple-permission-mapper name="anonymous-permission-mapper">
-                    <permission-mapping principals="anonymous">
+                <simple-permission-mapper name="default-permission-mapper" mapping-mode="first">
+                    <permission-mapping>
+                        <principal name="anonymous"/>
+                        <permission class-name="org.wildfly.extension.batch.jberet.deployment.BatchPermission" module="org.wildfly.extension.batch.jberet" target-name="*"/>
+                        <permission class-name="org.wildfly.transaction.client.RemoteTransactionPermission" module="org.wildfly.transaction.client"/>
+                        <permission class-name="org.jboss.ejb.client.RemoteEJBPermission" module="org.jboss.ejb-client"/>
+                    </permission-mapping>
+                    <permission-mapping match-all="true">
                         <permission class-name="org.wildfly.security.auth.permission.LoginPermission"/>
+                        <permission class-name="org.wildfly.extension.batch.jberet.deployment.BatchPermission" module="org.wildfly.extension.batch.jberet" target-name="*"/>
+                        <permission class-name="org.wildfly.transaction.client.RemoteTransactionPermission" module="org.wildfly.transaction.client"/>
+                        <permission class-name="org.jboss.ejb.client.RemoteEJBPermission" module="org.jboss.ejb-client"/>
                     </permission-mapping>
                 </simple-permission-mapper>
-                <constant-permission-mapper name="constant-permission-mapper">
-                    <permission class-name="org.wildfly.security.auth.permission.LoginPermission"/>
-                    <permission class-name="org.wildfly.extension.batch.jberet.deployment.BatchPermission" module="org.wildfly.extension.batch.jberet" target-name="*"/>
-                    <permission class-name="org.wildfly.transaction.client.RemoteTransactionPermission" module="org.wildfly.transaction.client"/>
-                    <permission class-name="org.jboss.ejb.client.RemoteEJBPermission" module="org.jboss.ejb-client"/>
-                </constant-permission-mapper>
                 <constant-realm-mapper name="local" realm-name="local"/>
                 <simple-role-decoder name="groups-to-roles" attribute="groups"/>
                 <constant-role-mapper name="super-user-mapper">
@@ -456,6 +451,19 @@
             </mail-session>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:naming:2.0">
+<!--
+            <bindings>
+                <external-context name="java:global/external/ldap/esrf" module="sun.jdk" class="javax.naming.ldap.InitialLdapContext" cache="true">
+                    <environment>
+                        <property name="java.naming.factory.initial" value="com.sun.jndi.ldap.LdapCtxFactory"/>
+                        <property name="java.naming.provider.url" value="ldap://ldap.esrf.fr:389/"/>
+                        <property name="java.naming.security.authentication" value="simple"/>
+                        <property name="java.naming.security.principal" value="cn=anonymous"/>
+                        <property name="java.naming.security.credentials" value=""/>
+                    </environment>
+                </external-context>
+            </bindings>
+-->
             <remote-naming/>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:pojo:1.0"/>
@@ -475,6 +483,22 @@
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:security:2.0">
             <security-domains>
+                <security-domain name="ispyb" cache-type="default">
+                    <authentication>
+                        <login-module code="org.jboss.security.auth.spi.UsersRolesLoginModule" flag="required">
+                            <module-option name="usersProperties" value="file://${jboss.server.config.dir}/users.properties"/>
+                            <module-option name="rolesProperties" value="file://${jboss.server.config.dir}/roles.properties"/>
+                        </login-module>
+                    </authentication>
+                </security-domain>
+                <security-domain name="bcr" cache-type="default">
+                    <authentication>
+                        <login-module code="org.jboss.security.auth.spi.UsersRolesLoginModule" flag="required">
+                            <module-option name="usersProperties" value="file://${jboss.server.config.dir}/users.properties"/>
+                            <module-option name="rolesProperties" value="file://${jboss.server.config.dir}/roles.properties"/>
+                        </login-module>
+                    </authentication>
+                </security-domain>
 <!--
                 <security-domain name="other" cache-type="default">
                     <authentication>
@@ -487,23 +511,14 @@
                     </authentication>
                 </security-domain>
 -->
-                <security-domain name="ispyb" cache-type="default">
-                    <authentication>
-                        <login-module code="org.jboss.security.auth.spi.UsersRolesLoginModule" flag="required">
-                            <module-option name="usersProperties" value="file://${jboss.server.config.dir}/users.properties"/>
-                            <module-option name="rolesProperties" value="file://${jboss.server.config.dir}/roles.properties"/>
-                        </login-module>
-                    </authentication>
-                </security-domain>
-
                 <security-domain name="jboss-web-policy" cache-type="default">
                     <authorization>
-                        <policy-module code="Delegating" flag="optional"/>
+                        <policy-module code="Delegating" flag="required"/>
                     </authorization>
                 </security-domain>
                 <security-domain name="jboss-ejb-policy" cache-type="default">
                     <authorization>
-                        <policy-module code="Delegating" flag="optional"/>
+                        <policy-module code="Delegating" flag="required"/>
                     </authorization>
                 </security-domain>
                 <security-domain name="jaspitest" cache-type="default">
@@ -528,6 +543,7 @@
         <subsystem xmlns="urn:jboss:domain:undertow:4.0">
             <buffer-cache name="default"/>
             <server name="default-server">
+                <ajp-listener name="ajp" socket-binding="ajp" max-parameters="20000"/>
                 <http-listener name="default" socket-binding="http" redirect-socket="https" enable-http2="true"/>
                 <https-listener name="https" socket-binding="https" security-realm="ApplicationRealm" enable-http2="true"/>
                 <host name="default-host" alias="localhost">
@@ -538,7 +554,7 @@
                 </host>
             </server>
             <servlet-container name="default">
-                <jsp-config/>
+                <jsp-config development="true"/>
                 <websockets/>
             </servlet-container>
             <handlers>
@@ -567,9 +583,6 @@
         </interface>
         <interface name="public">
             <inet-address value="${jboss.bind.address:127.0.0.1}"/>
-        </interface>
-        <interface name="unsecure">
-            <inet-address value="${jboss.bind.address.unsecure:127.0.0.1}"/>
         </interface>
     </interfaces>
     <socket-binding-group name="standard-sockets" default-interface="public" port-offset="${jboss.socket.binding.port-offset:0}">

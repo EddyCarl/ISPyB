@@ -225,7 +225,7 @@
   		<properties>
   			<js.minimized>false</js.minimized>
   			<ispyb.deployment.mode>DEV</ispyb.deployment.mode>
-  			<js.alternative.path>http://172.26.4.24:8082</js.alternative.path>
+  			<js.alternative.path>localhost:8082</js.alternative.path>
   			<js.alternative.path.enabled>true</js.alternative.path.enabled>
   			<data.path>/work/ademaria/data/pyarch/</data.path>
   		</properties>
@@ -459,35 +459,36 @@
   			<ispyb.site>NEWSITE</ispyb.site>
   			
   			<ispyb.dbDialect>MYSQL</ispyb.dbDialect>
+  			<ispyb.dbJndiName>java:/mysql/ispyb_db</ispyb.dbJndiName>
   			<ispyb.dbJndiName.direct>java:jboss/ispyb_db_direct</ispyb.dbJndiName.direct>
-  			<ispyb.authentication.method>SIMPLE</ispyb.authentication.method>
+  			<ispyb.authentication.method>DIRECT</ispyb.authentication.method>
+  			<ispyb.deployment.mode>DEV</ispyb.deployment.mode>
   			<ispyb.authorisation.proposals.source>database</ispyb.authorisation.proposals.source>
-  			  			
   			<ispyb.root.folder>/data/pyarch/</ispyb.root.folder>
   			<ispyb.uploaded.root.folder>/data/pyarch/pdb/</ispyb.uploaded.root.folder>
   			
-  			<ispyb.server.name.prod>wwws.esrf.fr</ispyb.server.name.prod>
-  			<ispyb.server.name.prod.alias>ispyb.esrf.fr</ispyb.server.name.prod.alias>
-  			<ispyb.server.name.prod.ext>160.103.210.124</ispyb.server.name.prod.ext>
-  			<ispyb.server.name.test>ispyvalid.esrf.fr</ispyb.server.name.test>
+  			<ispyb.server.name.prod>localhost</ispyb.server.name.prod>
+  			<ispyb.server.name.prod.alias>localhost</ispyb.server.name.prod.alias>
+  			<ispyb.server.name.prod.ext>localhost</ispyb.server.name.prod.ext>
+  			<ispyb.server.name.test>localhost</ispyb.server.name.test>
   			
   			<shipping.container.capacity>16</shipping.container.capacity>
 			<samplechanger.container.capacity>16</samplechanger.container.capacity>
 				
   			<ispyb.dataprocessing.denzo>true</ispyb.dataprocessing.denzo>
-  			<ispyb.path.mappingstyle>ESRF</ispyb.path.mappingstyle>
+  			<ispyb.path.mappingstyle>NEWSITE</ispyb.path.mappingstyle>
   			<ispyb.bcm>mxcube</ispyb.bcm>
   			
-  			<mail.smtp.host>smtp.esrf.fr</mail.smtp.host>
-  			<mail.admin>solange.delageniere@esrf.fr</mail.admin>
-  			<mail.dev>solange.delageniere@esrf.fr</mail.dev>
-  			<mail.ispyb>ispyb@esrf.fr</mail.ispyb>
-  			<mail.stores>dewar-stores@esrf.fr</mail.stores>
+  			<mail.smtp.host>localhost</mail.smtp.host>
+  			<mail.admin>baha.elkassaby@gmail.com</mail.admin>
+  			<mail.dev>baha.elkassaby@gmail.com</mail.dev>
+  			<mail.ispyb>baha.elkassaby@gmail.com</mail.ispyb>
+  			<mail.stores>baha.elkassaby@gmail.com</mail.stores>
   			
-  			<mail.report.industry.from>mxind@esrf.fr</mail.report.industry.from>
-			<mail.report.industry.cc>ix@esrf.fr</mail.report.industry.cc>					
+  			<mail.report.industry.from>baha.elkassaby@gmail.com</mail.report.industry.from>
+			<mail.report.industry.cc>baha.elkassaby@gmail.com</mail.report.industry.cc>					
 			
-			<dictionary.site>The ESRF</dictionary.site> 
+			<dictionary.site>NEWSITE</dictionary.site> 
 			<dictionary.bcm>mxCuBE</dictionary.bcm>
 			
 			<ispyb.authorisation.active>false</ispyb.authorisation.active>

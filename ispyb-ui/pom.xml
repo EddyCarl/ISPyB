@@ -402,7 +402,7 @@
 			<properties>
 				<js.minimized>false</js.minimized>
 				<ispyb.deployment.mode>DEV</ispyb.deployment.mode>
-				<js.alternative.path>http://172.26.4.24:8082</js.alternative.path>
+				<js.alternative.path>localhost:8082</js.alternative.path>
 				<js.alternative.path.enabled>true</js.alternative.path.enabled>
 				<data.path>/work/ademaria/data/pyarch/</data.path>
 			</properties>

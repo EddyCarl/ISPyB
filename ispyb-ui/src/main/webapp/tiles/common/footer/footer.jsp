@@ -32,7 +32,7 @@ Contributors : S. Delageniere, R. Leal, L. Launer, K. Levik, S. Veyrier, P. Bren
           </c:if>
           <a href="http://www.synchrotron-soleil.fr" target="_blank">SOLEIL</a>
       </P>
-   	<c:if test="${SITE_ATTRIBUTE eq 'ESRF'}">
+   	<c:if test="${SITE_ATTRIBUTE eq 'ESRF' or SITE_ATTRIBUTE eq 'NEWSITE'}">
       <P class=small>
       		Copyright © 2004 ISPyB All rights reserved. <br/>
       </P>
