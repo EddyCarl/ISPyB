@@ -38,7 +38,7 @@
 
 	<!-- Configuration to ESRF: LDAP Module 	-->
 
-	<security-domain>ispyb</security-domain>
+	<security-domain>java:/jaas/ispyb</security-domain>
 	<context-root>ispyb</context-root>
 
 		<!-- Configuration to ESRF: simple Module 

@@ -38,7 +38,7 @@
 
 		<!-- Configuration to ESRF security-domain 	-->
 
-	<security-domain>ispyb</security-domain>
+	<security-domain>java:/jaas/ispyb</security-domain>
 	<context-root>ispyb</context-root>
 
    <!-- Resource references -->
