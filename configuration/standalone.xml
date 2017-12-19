@@ -89,7 +89,7 @@
     <profile>
         <subsystem xmlns="urn:jboss:domain:logging:3.0">
             <console-handler name="CONSOLE">
-                <level name="INFO"/>
+                <level name="DEBUG"/>
                 <formatter>
                     <named-formatter name="COLOR-PATTERN"/>
                 </formatter>
@@ -119,7 +119,7 @@
                 <append value="true"/>
             </periodic-rotating-file-handler>
             <logger category="ispyb">
-                <level name="WARN"/>
+                <level name="DEBUG"/>
                 <handlers>
                     <handler name="ISPYB"/>
                 </handlers>
@@ -143,7 +143,7 @@
                 <level name="WARN"/>
             </logger>
             <root-logger>
-                <level name="WARN"/>
+                <level name="DEBUG"/>
                 <handlers>
                     <handler name="CONSOLE"/>
                     <handler name="FILE"/>
@@ -172,7 +172,7 @@
         <subsystem xmlns="urn:jboss:domain:core-management:1.0"/>
         <subsystem xmlns="urn:jboss:domain:datasources:5.0">
             <datasources>
-                 <datasource jndi-name="java:jboss/ispybconfigDS" pool-name="ispybconfigDS" enabled="true" use-java-context="true">
+                <datasource jndi-name="java:jboss/ispybconfigDS" pool-name="ispybconfigDS" enabled="true" use-java-context="true">
                     <connection-url>jdbc:mysql://localhost:3306/pyconfig</connection-url>
                     <driver>mysql-connector-java-5.1.21.jar</driver>
                     <security>
@@ -486,20 +486,19 @@
                 <security-domain name="ispyb" cache-type="default">
                     <authentication>
                         <login-module code="org.jboss.security.auth.spi.UsersRolesLoginModule" flag="required">
-                            <module-option name="usersProperties" value="file://${jboss.server.config.dir}/users.properties"/>
-                            <module-option name="rolesProperties" value="file://${jboss.server.config.dir}/roles.properties"/>
+                            <module-option name="usersProperties" value="${jboss.server.config.dir}/users.properties"/>
+                            <module-option name="rolesProperties" value="${jboss.server.config.dir}/roles.properties"/>
                         </login-module>
                     </authentication>
                 </security-domain>
                 <security-domain name="bcr" cache-type="default">
                     <authentication>
                         <login-module code="org.jboss.security.auth.spi.UsersRolesLoginModule" flag="required">
-                            <module-option name="usersProperties" value="file://${jboss.server.config.dir}/users.properties"/>
-                            <module-option name="rolesProperties" value="file://${jboss.server.config.dir}/roles.properties"/>
+                            <module-option name="usersProperties" value="${jboss.server.config.dir}/users.properties"/>
+                            <module-option name="rolesProperties" value="${jboss.server.config.dir}/roles.properties"/>
                         </login-module>
                     </authentication>
                 </security-domain>
-<!--
                 <security-domain name="other" cache-type="default">
                     <authentication>
                         <login-module code="Remoting" flag="optional">
@@ -510,7 +509,6 @@
                         </login-module>
                     </authentication>
                 </security-domain>
--->
                 <security-domain name="jboss-web-policy" cache-type="default">
                     <authorization>
                         <policy-module code="Delegating" flag="required"/>
