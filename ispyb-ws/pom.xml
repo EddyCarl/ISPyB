@@ -42,9 +42,10 @@
 		<!-- Import the CDI API, we use provided scope as the API is included in 
 			JBoss WildFly -->
 		<dependency>
-			<groupId>javax.enterprise</groupId>
+			<groupId>org.wildfly.swarm</groupId>
 			<artifactId>cdi-api</artifactId>
 			<scope>provided</scope>
+			<version>1.0.0.Final</version>
 		</dependency>
 
 		<!-- Import the Common Annotations API (JSR-250), we use provided scope 
@@ -53,6 +54,7 @@
 			<groupId>org.jboss.spec.javax.annotation</groupId>
 			<artifactId>jboss-annotations-api_1.2_spec</artifactId>
 			<scope>provided</scope>
+			<version>1.0.0.Final</version>
 		</dependency>
 
 		<!-- Import the JSON API to build JSON Objects -->
@@ -60,6 +62,7 @@
 			<groupId>org.jboss.spec.javax.json</groupId>
 			<artifactId>jboss-json-api_1.0_spec</artifactId>
 			<scope>provided</scope>
+			<version>1.0.0.Final</version>
 		</dependency>
 
 		<!-- Import the JAX-RS API, we use provided scope as the API is included 
@@ -81,6 +84,7 @@
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>jaxrs-api</artifactId>
 			<scope>provided</scope>
+			<version>3.0.2.Final</version>
 		</dependency>
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
@@ -127,7 +131,24 @@
 		<finalName>${project.artifactId}</finalName>
 		<plugins>
 
-
+			<plugin>
+				<groupId>org.wildfly.swarm</groupId>
+				<artifactId>wildfly-swarm-plugin</artifactId>
+				<version>${version.wildfly.swarm}</version>
+				<configuration>
+					<properties>
+						<swarm.context.path>${build.finalName}</swarm.context.path>
+						<swarm.port.offset>50</swarm.port.offset>
+					</properties>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>package</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 			<!-- WildFly plugin to deploy war -->
 			<plugin>
 				<groupId>org.wildfly.plugins</groupId>

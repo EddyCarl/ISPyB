@@ -7,14 +7,6 @@
 	<version>5.4.3</version>
 
 	<packaging>pom</packaging>
-	<modules>
-		<module>ispyb-ejb</module>
-		<module>ispyb-ws</module>
-		<module>ispyb-ui</module>
-		<module>ispyb-ear</module>
-		<module>ispyb-bcr</module>
-		<module>ispyb-bcr-ear</module>
-	</modules>
 
 	<properties>
 		<!-- Explicitly declaring the source encoding eliminates the following 
@@ -24,8 +16,9 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<!-- JBoss dependency versions -->
+		<version.wildfly.swarm>2017.12.1</version.wildfly.swarm>
 		<version.wildfly.maven.plugin>1.0.2.Final</version.wildfly.maven.plugin>
-		<version.wildfly>11.0.0</version.wildfly>
+		<version.wildfly>11.0.0.Final</version.wildfly>
 		<version.jboss.spec.javaee.7.0>1.0.0.Final</version.jboss.spec.javaee.7.0>
 
 		<!-- other plugin versions -->
@@ -35,8 +28,10 @@
 		<version.war.plugin>2.5</version.war.plugin>
 
 		<!-- maven-compiler-plugin -->
-		<maven.compiler.target>1.7</maven.compiler.target>
-		<maven.compiler.source>1.7</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<failOnMissingWebXml>false</failOnMissingWebXml>
+		
 	</properties>
 
 	<repositories>
@@ -49,6 +44,50 @@
 			<url>https://maven.java.net/content/repositories/public/</url>
 		</repository>
 	</repositories>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.wildfly.swarm</groupId>
+				<artifactId>bom</artifactId>
+				<version>${version.wildfly.swarm}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<!-- 
+			<dependency>
+				<groupId>org.jboss.spec</groupId>
+				<artifactId>jboss-javaee-7.0</artifactId>
+				<version>${version.jboss.spec.javaee.7.0}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			-->
+			<dependency>
+				<groupId>javax</groupId>
+				<artifactId>javaee-api</artifactId>
+				<version>7.0</version>
+				<scope>provided</scope>
+			</dependency>
+			
+			<dependency>
+				<groupId>ispyb</groupId>
+				<artifactId>ispyb-ejb3</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>ispyb</groupId>
+				<artifactId>ispyb-ws</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>ispyb</groupId>
+				<artifactId>ispyb-ui</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
 	<dependencies>
 		<dependency>
 			<groupId>log4j</groupId>
@@ -77,71 +116,144 @@
 			<artifactId>commons-logging</artifactId>
 			<version>1.1.3</version>
 		</dependency>
-
+		
+		<!-- Java EE 7 dependency -->
+		<dependency>
+			<groupId>javax</groupId>
+			<artifactId>javaee-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
-
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>org.jboss.spec</groupId>
-				<artifactId>jboss-javaee-7.0</artifactId>
-				<version>${version.jboss.spec.javaee.7.0}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
-
-
-	<profiles>
-	    <profile>
-     <!-- When built in OpenShift the 'openshift' profile will be used when invoking mvn. -->
-     <!-- Use this profile for any OpenShift specific customization your app will need. -->
-     <!-- By default that is to put the resulting archive into the 'deployments' folder. -->
-     <!-- http://maven.apache.org/guides/mini/guide-building-for-different-environments.html -->
-     <id>openshift</id>
-     <build>
-        <finalName>SampleApp</finalName>
-        <plugins>
-          <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>2.3</version>
-                <configuration>
-                    <failOnMissingWebXml>false</failOnMissingWebXml>
-                    <outputDirectory>target</outputDirectory>
-              		  <warName>ROOT</warName>
-                </configuration>
-            </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
+	
+	<modules>
+		<module>ispyb-ejb</module>
+		<module>ispyb-ws</module>
+		<module>ispyb-ui</module>
+	</modules>
 
 	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>2.3.2</version>
+					<configuration>
+						<source>1.8</source>
+						<target>1.8</target>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.wildfly.plugins</groupId>
+					<artifactId>wildfly-maven-plugin</artifactId>
+					<version>1.1.0.Alpha8</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-war-plugin</artifactId>
+					<version>2.6</version>
+					<configuration>
+						<failOnMissingWebXml>false</failOnMissingWebXml>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.jolokia</groupId>
+					<artifactId>docker-maven-plugin</artifactId>
+					<version>0.13.3</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>2.18.1</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+
 		<plugins>
-			<!-- Compiler plugin enforces Java 1.6 compatibility and activates annotation processors -->
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>${version.compiler.plugin}</version>
-				<configuration>
-					<source>${maven.compiler.source}</source>
-					<target>${maven.compiler.target}</target>
-				</configuration>
 			</plugin>
-			<!-- The WildFly plugin deploys your ear to a local JBoss AS container -->
-			<!-- Due to Maven's lack of intelligence with EARs we need to configure 
-				the wildfly maven plugin to skip deployment for all modules. We then enable 
-				it specifically in the ear module. -->
 			<plugin>
-				<groupId>org.wildfly.plugins</groupId>
-				<artifactId>wildfly-maven-plugin</artifactId>
-				<version>${version.wildfly.maven.plugin}</version>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
-					<skip>true</skip>
+					<skipTests>true</skipTests>
 				</configuration>
 			</plugin>
 		</plugins>
 	</build>
+
+	<profiles>
+		<profile>
+			<id>docker</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.jolokia</groupId>
+						<artifactId>docker-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>docker:build</id>
+								<phase>package</phase>
+								<goals>
+									<goal>build</goal>
+								</goals>
+								<configuration>
+									<images>
+										<image>
+											<build combine.self="append">
+												<cmd>
+													<exec>
+														<args>/opt/jboss/wildfly/bin/standalone.sh</args>
+														<args>-b</args>
+														<args>127.0.0.1</args>
+													</exec>
+												</cmd>
+											</build>
+										</image>
+									</images>
+								</configuration>
+							</execution>
+							<execution>
+								<id>docker:start</id>
+								<phase>install</phase>
+								<goals>
+									<goal>start</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>wildfly</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.wildfly.plugins</groupId>
+						<artifactId>wildfly-maven-plugin</artifactId>
+						<configuration>
+							<skip>true</skip>
+						</configuration>
+						<executions>
+							<execution>
+								<phase>install</phase>
+								<goals>
+									<goal>deploy</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+	</profiles>
 
 </project>
