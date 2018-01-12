@@ -7,14 +7,7 @@
 		<version>5.4.3</version>
 	</parent>
 	<artifactId>ispyb-ejb3</artifactId>
-	<packaging>war</packaging>
-
-	<properties>
-		<version.h2>1.4.187</version.h2>
-		<version.postgresql>9.4.1207</version.postgresql>
-		<version.mysql>5.1.38</version.mysql>
-	</properties>
-
+	<packaging>jar</packaging>
 	<build>
 		<resources>
 			<resource>
@@ -28,27 +21,7 @@
 				</includes>
 			</resource>
 		</resources>
-
 		<plugins>
-			<plugin>
-				<groupId>org.wildfly.swarm</groupId>
-				<artifactId>wildfly-swarm-plugin</artifactId>
-				<version>${version.wildfly.swarm}</version>
-				<configuration>
-					<properties>
-						<swarm.context.path>${build.finalName}</swarm.context.path>
-						<swarm.port.offset>50</swarm.port.offset>
-					</properties>
-				</configuration>
-				<executions>
-					<execution>
-						<goals>
-							<goal>package</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
 			<!-- WildFly plugin to deploy war -->
 			<plugin>
 				<groupId>org.wildfly.plugins</groupId>
@@ -58,17 +31,17 @@
 					<skip>false</skip>
 				</configuration>
 			</plugin>
+			
+	<plugin>
+		
+		<groupId>org.codehaus.mojo</groupId>
+		<artifactId>jaxws-maven-plugin</artifactId>
+		<version>1.12</version>
+			
+		</plugin>
+		
 
-			<plugin>
-
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>jaxws-maven-plugin</artifactId>
-				<version>1.12</version>
-
-			</plugin>
-
-
-		</plugins>
+	</plugins>
 
 	</build>
 	<dependencies>
@@ -79,27 +52,6 @@
 			<artifactId>cdi-api</artifactId>
 			<scope>provided</scope>
 			<version>1.0.0.Final</version>
-		</dependency>
-
-		<!-- wildfly swarm data source dependency -->
-		<dependency>
-			<groupId>org.wildfly.swarm</groupId>
-			<artifactId>datasources</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-			<version>${version.h2}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.postgresql</groupId>
-			<artifactId>postgresql</artifactId>
-			<version>${version.postgresql}</version>
-		</dependency>
-		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<version>${version.mysql}</version>
 		</dependency>
 
 		<!-- Import the EJB API, we use provided scope as the API is included in 
