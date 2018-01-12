@@ -1,0 +1,54 @@
+C:\Workspace\ispyb\ISPyB\ispyb-ws\target>java -jar ispyb-ws-swarm.jar
+2018-01-12 19:07:45,884 INFO  [org.wildfly.swarm] (main) WFSWARM0013: Installed fraction:                  Logging - STABLE          org.wildfly.swarm:logging:2017.12.1
+2018-01-12 19:07:45,891 INFO  [org.wildfly.swarm] (main) WFSWARM0013: Installed fraction:             Transactions - STABLE          org.wildfly.swarm:transactions:2017.12.1
+2018-01-12 19:07:45,892 INFO  [org.wildfly.swarm] (main) WFSWARM0013: Installed fraction:                      JCA - STABLE          org.wildfly.swarm:jca:2017.12.1
+2018-01-12 19:07:45,893 INFO  [org.wildfly.swarm] (main) WFSWARM0013: Installed fraction:              Datasources - STABLE          org.wildfly.swarm:datasources:2017.12.1
+2018-01-12 19:07:45,899 INFO  [org.wildfly.swarm] (main) WFSWARM0013: Installed fraction:                 Undertow - STABLE          org.wildfly.swarm:undertow:2017.12.1
+2018-01-12 19:07:47,605 INFO  [org.wildfly.swarm.datasources] (main) WFSWARM1003: Auto-detected JDBC driver for postgresql
+2018-01-12 19:07:47,620 INFO  [org.wildfly.swarm.datasources] (main) WFSWARM1003: Auto-detected JDBC driver for mysql
+2018-01-12 19:07:47,652 INFO  [org.wildfly.swarm.datasources] (main) WFSWARM1003: Auto-detected JDBC driver for h2
+2018-01-12 19:07:47,666 WARN  [org.wildfly.swarm.datasources] (main) WFSWARM1007: Not creating a default datasource due to ambigous of JDBC drivers: postgresql,mysql,h2
+2018-01-12 19:07:48,701 INFO  [org.jboss.msc] (main) JBoss MSC version 1.2.7.SP1
+2018-01-12 19:07:48,845 INFO  [org.jboss.as] (MSC service thread 1-8) WFLYSRV0049: WildFly Swarm 2017.12.1 (WildFly Core 3.0.8.Final) starting
+2018-01-12 19:07:48,910 INFO  [org.wildfly.swarm] (MSC service thread 1-8) WFSWARM0019: Install MSC service for command line args: []
+2018-01-12 19:07:51,084 WARN  [org.jboss.as.txn] (ServerService Thread Pool -- 15) WFLYTX0013: The node-identifier attribute on the /subsystem=transactions is set to the default value. This is a danger for environments running multiple servers. Please make sure the attribute value is unique.
+2018-01-12 19:07:51,093 INFO  [org.jboss.as.naming] (ServerService Thread Pool -- 14) WFLYNAM0001: Activating Naming Subsystem
+2018-01-12 19:07:51,111 INFO  [org.xnio] (ServerService Thread Pool -- 13) XNIO version 3.5.4.Final
+2018-01-12 19:07:51,114 INFO  [org.jboss.as.connector.subsystems.datasources] (ServerService Thread Pool -- 17) WFLYJCA0005: Deploying non-JDBC-compliant driver class org.postgresql.Driver (version 9.4)
+2018-01-12 19:07:51,126 INFO  [org.jboss.as.connector] (MSC service thread 1-6) WFLYJCA0009: Starting JCA Subsystem (WildFly/IronJacamar 1.4.6.Final)
+2018-01-12 19:07:51,132 INFO  [org.jboss.as.connector.deployers.jdbc] (MSC service thread 1-7) WFLYJCA0018: Started Driver service with driver-name = postgresql
+2018-01-12 19:07:51,142 INFO  [org.jboss.as.naming] (MSC service thread 1-8) WFLYNAM0003: Starting Naming Service
+2018-01-12 19:07:51,150 INFO  [org.jboss.as.connector.subsystems.datasources] (ServerService Thread Pool -- 17) WFLYJCA0005: Deploying non-JDBC-compliant driver class com.mysql.jdbc.Driver (version 5.1)
+2018-01-12 19:07:51,151 INFO  [org.xnio.nio] (ServerService Thread Pool -- 13) XNIO NIO Implementation Version 3.5.4.Final
+2018-01-12 19:07:51,154 INFO  [org.jboss.as.connector.deployers.jdbc] (MSC service thread 1-1) WFLYJCA0018: Started Driver service with driver-name = mysql
+2018-01-12 19:07:51,161 INFO  [org.jboss.as.connector.subsystems.datasources] (ServerService Thread Pool -- 17) WFLYJCA0004: Deploying JDBC-compliant driver class org.h2.Driver (version 1.4)
+2018-01-12 19:07:51,167 INFO  [org.jboss.as.connector.deployers.jdbc] (MSC service thread 1-1) WFLYJCA0018: Started Driver service with driver-name = h2
+2018-01-12 19:07:51,204 INFO  [org.wildfly.extension.io] (ServerService Thread Pool -- 13) WFLYIO001: Worker 'default' has auto-configured to 16 core threads with 128 task threads based on your 8 available processors
+2018-01-12 19:07:51,430 INFO  [org.wildfly.extension.undertow] (MSC service thread 1-3) WFLYUT0003: Undertow 1.4.18.Final starting
+2018-01-12 19:07:52,459 INFO  [org.wildfly.extension.undertow] (MSC service thread 1-4) WFLYUT0012: Started server default-server.
+2018-01-12 19:07:52,496 INFO  [org.wildfly.extension.undertow] (MSC service thread 1-5) WFLYUT0006: Undertow HTTP listener default listening on [0:0:0:0:0:0:0:0]:8130
+2018-01-12 19:07:52,555 INFO  [org.jboss.as.server] (Controller Boot Thread) WFLYSRV0212: Resuming server
+2018-01-12 19:07:52,558 INFO  [org.jboss.as] (Controller Boot Thread) WFLYSRV0025: WildFly Swarm 2017.12.1 (WildFly Core 3.0.8.Final) started in 4500ms - Started 110 of 128 services (29 services are lazy, passive or on-demand)
+2018-01-12 19:08:01,402 INFO  [org.wildfly.swarm.runtime.deployer] (main) deploying ispyb-ws.war
+2018-01-12 19:08:01,440 INFO  [org.jboss.as.server.deployment] (MSC service thread 1-2) WFLYSRV0027: Starting deployment of "ispyb-ws.war" (runtime-name: "ispyb-ws.war")
+2018-01-12 19:08:17,708 WARN  [org.jboss.as.server.deployment] (MSC service thread 1-8) WFLYSRV0059: Class Path entry toolbox.jar in /C:/Workspace/ispyb/ISPyB/ispyb-ws/target/content/ispyb-ws.war/WEB-INF/lib/itext-2.1.0.jar  does not point to a valid jar for a Class-Path reference.
+2018-01-12 19:08:17,709 WARN  [org.jboss.as.server.deployment] (MSC service thread 1-8) WFLYSRV0059: Class Path entry bcmail-jdk14-138.jar in /C:/Workspace/ispyb/ISPyB/ispyb-ws/target/content/ispyb-ws.war/WEB-INF/lib/itext-2.1.0.jar  does not point to a valid jar for a Class-Path reference.
+2018-01-12 19:08:17,713 WARN  [org.jboss.as.server.deployment] (MSC service thread 1-8) WFLYSRV0059: Class Path entry bcprov-jdk14-138.jar in /C:/Workspace/ispyb/ISPyB/ispyb-ws/target/content/ispyb-ws.war/WEB-INF/lib/itext-2.1.0.jar  does not point to a valid jar for a Class-Path reference.
+2018-01-12 19:08:17,722 WARN  [org.jboss.as.server.deployment] (MSC service thread 1-8) WFLYSRV0059: Class Path entry slf4j-api-1.5.6.jar in /C:/Workspace/ispyb/ISPyB/ispyb-ws/target/content/ispyb-ws.war/WEB-INF/lib/jacorb-2.3.1.jbossorg-1.jar  does not point to a valid jar for a Class-Path reference.
+2018-01-12 19:08:17,723 WARN  [org.jboss.as.server.deployment] (MSC service thread 1-8) WFLYSRV0059: Class Path entry slf4j-jdk14-1.5.6.jar in /C:/Workspace/ispyb/ISPyB/ispyb-ws/target/content/ispyb-ws.war/WEB-INF/lib/jacorb-2.3.1.jbossorg-1.jar  does not point to a valid jar for a Class-Path reference.
+2018-01-12 19:08:17,724 WARN  [org.jboss.as.server.deployment] (MSC service thread 1-8) WFLYSRV0059: Class Path entry concurrent-1.3.2.jar in /C:/Workspace/ispyb/ISPyB/ispyb-ws/target/content/ispyb-ws.war/WEB-INF/lib/jacorb-2.3.1.jbossorg-1.jar  does not point to a valid jar for a Class-Path reference.
+2018-01-12 19:08:17,728 WARN  [org.jboss.as.server.deployment] (MSC service thread 1-8) WFLYSRV0059: Class Path entry antlr-2.7.2.jar in /C:/Workspace/ispyb/ISPyB/ispyb-ws/target/content/ispyb-ws.war/WEB-INF/lib/jacorb-2.3.1.jbossorg-1.jar  does not point to a valid jar for a Class-Path reference.
+2018-01-12 19:08:18,197 WARN  [org.jboss.as.dependency.private] (MSC service thread 1-1) WFLYSRV0018: Deployment "deployment.ispyb-ws.war" is using a private module ("org.jboss.jts") which may be changed or removed in future versions without notice.
+2018-01-12 19:08:18,197 WARN  [org.jboss.as.dependency.private] (MSC service thread 1-1) WFLYSRV0018: Deployment "deployment.ispyb-ws.war" is using a private module ("org.jboss.ironjacamar.jdbcadapters") which may be changed or removed in future versions without notice.
+2018-01-12 19:08:18,695 INFO  [org.jboss.as.connector.deployers.jdbc] (MSC service thread 1-8) WFLYJCA0004: Deploying JDBC-compliant driver class org.h2.Driver (version 1.4)
+2018-01-12 19:08:18,698 INFO  [org.jboss.as.connector.deployers.jdbc] (MSC service thread 1-8) WFLYJCA0005: Deploying non-JDBC-compliant driver class com.mysql.jdbc.Driver (version 5.1)
+2018-01-12 19:08:18,699 INFO  [org.jboss.as.connector.deployers.jdbc] (MSC service thread 1-8) WFLYJCA0005: Deploying non-JDBC-compliant driver class com.mysql.fabric.jdbc.FabricMySQLDriver (version 5.1)
+2018-01-12 19:08:18,704 INFO  [org.jboss.as.connector.deployers.jdbc] (MSC service thread 1-8) WFLYJCA0005: Deploying non-JDBC-compliant driver class org.postgresql.Driver (version 9.4)
+2018-01-12 19:08:18,736 INFO  [org.wildfly.extension.undertow] (MSC service thread 1-4) WFLYUT0018: Host default-host starting
+2018-01-12 19:08:18,740 INFO  [org.jboss.as.connector.deployers.jdbc] (MSC service thread 1-3) WFLYJCA0018: Started Driver service with driver-name = ispyb-ws.war_org.postgresql.Driver_9_4
+2018-01-12 19:08:18,741 INFO  [org.jboss.as.connector.deployers.jdbc] (MSC service thread 1-7) WFLYJCA0018: Started Driver service with driver-name = ispyb-ws.war_com.mysql.jdbc.Driver_5_1
+2018-01-12 19:08:18,741 INFO  [org.jboss.as.connector.deployers.jdbc] (MSC service thread 1-2) WFLYJCA0018: Started Driver service with driver-name = ispyb-ws.war_org.h2.Driver_1_4
+2018-01-12 19:08:18,741 INFO  [org.jboss.as.connector.deployers.jdbc] (MSC service thread 1-4) WFLYJCA0018: Started Driver service with driver-name = ispyb-ws.war_com.mysql.fabric.jdbc.FabricMySQLDriver_5_1
+2018-01-12 19:08:18,846 INFO  [org.wildfly.extension.undertow] (ServerService Thread Pool -- 20) WFLYUT0021: Registered web context: '/ispyb-ws' for server 'default-server'
+2018-01-12 19:08:18,866 INFO  [org.jboss.as.server] (main) WFLYSRV0010: Deployed "ispyb-ws.war" (runtime-name : "ispyb-ws.war")
+2018-01-12 19:08:18,878 INFO  [org.wildfly.swarm] (main) WFSWARM99999: WildFly Swarm is Ready
