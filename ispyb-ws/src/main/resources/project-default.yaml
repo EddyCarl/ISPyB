@@ -1,0 +1,45 @@
+swarm:
+  deployment:
+    example-jaas-basic.war:
+      web:
+        login-config:
+          auth-method: BASIC
+          security-domain: ApplicationRealm
+        security-constraints:
+          - url-pattern: /*
+            methods: [GET]
+            roles: [users]
+  security:
+    security-domains:
+      ApplicationRealm:
+        classic-authentication:
+          login-modules:
+            Database:
+              code: org.jboss.security.auth.spi.UsersRolesLoginModule
+              flag: required
+              module-options:
+                usersProperties: users.properties
+                rolesProperties: roles.properties
+  datasources:
+    jdbc-drivers:
+      com.mysql:
+        driver-class-name: com.mysql.jdbc.Driver
+        xa-datasource-class-name: com.mysql.jdbc.jdbc2.optional.MysqlXADataSource
+        driver-module-name: com.mysql
+    data-sources:
+      ispybconfigDS:
+        driver-name: com.mysql
+        connection-url: jdbc:mysql://localhost:3306/pyconfig
+        user-name: pxadmin
+        password: pa55word
+      ispybDS:
+        driver-name: com.mysql
+        connection-url: jdbc:mysql://localhost:3306/pydb
+        user-name: pxadmin
+        password: pa55word
+      ispyb_db_direct:
+        driver-name: com.mysql
+        connection-url: jdbc:mysql://localhost:3306/pydb
+        user-name: pxadmin
+        password: pa55word
+        
