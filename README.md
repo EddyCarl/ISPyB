@@ -5,7 +5,7 @@
 2. [Versioning](#versioning)
 3. [Database creation and update](#database-creation-and-update)
 4. [Database schema](#database-schema)
-5. [Graylog on Widlfly 8.2](#graylog)
+5. [Swarm](#swarm)
 
 # Installing
 
@@ -155,39 +155,30 @@ Please do not forget to update the database schema :
 This schema can be updated using MySQLWorkbench (free tool from MySQL).
 
 
-### Graylog
+### Swarm
 
-Download [biz.paluch.logging](http://logging.paluch.biz) that provides logging to logstash using the Graylog Extended Logging Format (GELF) 1.0 and 1.1. 
-
-Then create a custom handler on standalone.xml
+On this branch (wildfly-swarm), the ISByB webservices can be deployed in a Wildfly Swarm application by doing the following steps:
+1. Make sure Maven 3.3.X is installed (https://wildfly-swarm.gitbooks.io/wildfly-swarm-users-guide/content/getting-started/system_requirements.html)
+2. Materializing the workspace with the 3 main ISPyB projects, add the above dependencies in the ISPyB /dependencies folder
+3. Run the following commands in ./ISPyB/ispyb-ejb/
 ```
-  <profile>
-        <subsystem xmlns="urn:jboss:domain:logging:2.0">
-	...
-	<custom-handler name="GelfLogger" class="biz.paluch.logging.gelf.wildfly.WildFlyGelfLogHandler" module="biz.paluch.logging">
-		<level name="INFO"/>
-		<properties>
-		    <property name="host" value="udp:graylog-dau.esrf.fr"/>
-		    <property name="port" value="12201"/>
-		    <property name="version" value="1.0"/>
-		    <property name="facility" value="ispyb-test"/>
-		    <property name="timestampPattern" value="yyyy-MM-dd"/>
-		</properties>
-	</custom-handler>
-	...
-	<logger category="ispyb">
-		<level name="INFO"/>
-		<handlers>
-		    <handler name="ISPYB"/>
-		    <handler name="GelfLogger"/>
-		</handlers>
-	</logger>
+mvn clean install
+```
+4. Install the resulting jar into your maven repository if it is not already there. In /ispyb-ejb/target:
+```
+mvn install:install-file -Dfile=ispyb-ejb3-5.4.0.jar -DgroupId=ispyb -DartifactId=ispyb-ejb3 -Dversion=5.4.0 -Dpackaging=jar
+```
+5. Set your datasource and security domain in the https://github.com/belkassaby/ISPyB/blob/wildfly-swarm/ispyb-ws/src/main/resources/project-default.yaml 
+More information on creating a datasource for a Sarm application can be found here: https://howto.wildfly-swarm.io/create-a-datasource/
+The yaml configuration method information can be found here: https://reference.wildfly-swarm.io/configuration.html
+And not implemented yet but here is a link to an article on how to secure a Wildfly Swarm application: https://blog.novatec-gmbh.de/secure-web-application-wildfly-swarm/
+6. run the install command on the ispyb-ws project to build the Swarm application: ```mvn clean install```
+7. You will find in the target folder of ispyb-ws the following resulting file: ispyb-ws.swarm.jar. It can be executed running the following command:
+```
+java -jar ispyb-ws.swarm.jar
 ```
 
-I had some problems with the unvalid messages because of timestapPatter. It was fixed by using:
-```
-<property name="timestampPattern" value="yyyy-MM-dd"/>
-```
+
 
 
 
