@@ -13,7 +13,9 @@
 			<groupId>ispyb</groupId>
 			<artifactId>ispyb-ejb3</artifactId>
 			<version>${project.version}</version>
+			<!-- 
 			<scope>provided</scope>
+			-->
 		</dependency>
 		<dependency>
 			<groupId>io.swagger</groupId>
