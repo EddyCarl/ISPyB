@@ -7,10 +7,64 @@
 
 	<display-name>ISPyB</display-name>
 	<description>ISPyB Web Application</description>
-<!-- 	<context-param> -->
-<!-- 		<param-name>resteasy.scan</param-name> -->
-<!-- 		<param-value>true</param-value> -->
-<!-- 	</context-param> -->
 	
-    
+	<context-param>
+		<param-name>resteasy.scan</param-name>
+		<param-value>true</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>resteasy.providers</param-name>
+		<param-value>
+			io.swagger.jaxrs.listing.ApiListingResource,
+			io.swagger.jaxrs.listing.SwaggerSerializers,
+			ispyb.ws.rest.mx.AutoprocintegrationRestWebService,
+			ispyb.ws.rest.mx.CrystalRestWebService,
+			ispyb.ws.rest.mx.DataCollectionRestWebService,
+			ispyb.ws.rest.mx.EnergyScanRestWebService,
+			ispyb.ws.rest.mx.ImageWebService,
+			ispyb.ws.rest.mx.PhasingRestWebService,
+			ispyb.ws.rest.mx.ProteinRestWebService,
+			ispyb.ws.rest.mx.SampleRestWebService,
+			ispyb.ws.rest.mx.WorkflowRestWebService,
+			ispyb.ws.rest.mx.XFEFluorescenceSpectrumRestWebService,
+			ispyb.ws.rest.saxs.BufferRestWebService,
+			ispyb.ws.rest.saxs.DataCollectionRestWebService,
+			ispyb.ws.rest.saxs.ExperimentRestWebService,
+			ispyb.ws.rest.saxs.FrameRestWebService,
+			ispyb.ws.rest.saxs.MacromoleculeRestWebService,
+			ispyb.ws.rest.saxs.MeasurementRestWebService,
+			ispyb.ws.rest.saxs.ModelingRestWebService,
+			ispyb.ws.rest.saxs.SaxsRestWebService,
+			ispyb.ws.rest.saxs.SpecimenRestWebService,
+			ispyb.ws.rest.saxs.StatsRestWebService,
+			ispyb.ws.rest.saxs.StockSolutionRestWebService,
+			ispyb.ws.rest.saxs.SubtractionRestWebService,
+			ispyb.ws.rest.proposal.DewarRestWebService,
+			ispyb.ws.rest.proposal.ProposalRestWebService,
+			ispyb.ws.rest.proposal.SessionRestWebService,
+			ispyb.ws.rest.proposal.ShippingRestWebService,
+		</param-value>
+	</context-param>
+<!-- 
+	<servlet>
+		<servlet-name>SwaggerBootstrap</servlet-name>
+		<servlet-class>ispyb.ws.Bootstrap</servlet-class>
+		<load-on-startup>2</load-on-startup>
+	</servlet>
+--> 
+	<servlet>
+		<servlet-name>Jersey2Config</servlet-name>
+		<servlet-class>io.swagger.jaxrs.config.DefaultJaxrsConfig</servlet-class>
+		<init-param>
+			<param-name>api.version</param-name>
+			<param-value>5.4.3</param-value>
+		</init-param>
+		<init-param>
+			<param-name>swagger.api.basepath</param-name>
+			<param-value>http://localhost:8080/ispyb-ws/rest</param-value>
+		</init-param>
+		<load-on-startup>2</load-on-startup>
+	</servlet>
+
 </web-app>
