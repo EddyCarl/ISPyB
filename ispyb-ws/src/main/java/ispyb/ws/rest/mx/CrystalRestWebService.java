@@ -15,11 +15,13 @@ import javax.ws.rs.core.Response;
 import org.apache.log4j.Logger;
 import org.apache.poi.util.StringUtil;
 
+import io.swagger.annotations.Api;
 import ispyb.server.mx.vos.autoproc.GeometryClassname3VO;
 import ispyb.server.mx.vos.autoproc.SpaceGroup3VO;
 import ispyb.server.mx.vos.sample.Crystal3VO;
 import ispyb.server.mx.vos.sample.Protein3VO;
 
+@Api
 @Path("/")
 public class CrystalRestWebService extends MXRestWebService {
 

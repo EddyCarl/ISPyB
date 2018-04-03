@@ -11,8 +11,10 @@ import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
 
+import io.swagger.annotations.Api;
 import ispyb.server.mx.vos.sample.Protein3VO;
 
+@Api
 @Path("/")
 public class ProteinRestWebService extends MXRestWebService {
 

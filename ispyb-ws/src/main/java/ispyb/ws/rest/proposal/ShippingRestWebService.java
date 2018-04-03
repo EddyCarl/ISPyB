@@ -17,6 +17,7 @@ import javax.ws.rs.core.Response;
 import org.apache.log4j.Logger;
 
 import generated.ws.smis.ProposalParticipantInfoLightVO;
+import io.swagger.annotations.Api;
 import ispyb.common.util.Constants;
 import ispyb.common.util.StringUtils;
 import ispyb.server.common.vos.proposals.LabContact3VO;
@@ -28,6 +29,7 @@ import ispyb.server.common.vos.shipping.Shipping3VO;
 import ispyb.server.smis.ScientistsFromSMIS;
 import ispyb.ws.rest.mx.MXRestWebService;
 
+@Api
 @Path("/")
 public class ShippingRestWebService extends MXRestWebService {
 

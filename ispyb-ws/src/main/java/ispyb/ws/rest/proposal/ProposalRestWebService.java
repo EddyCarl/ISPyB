@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 
 import com.google.gson.Gson;
 
+import io.swagger.annotations.Api;
 import ispyb.server.biosaxs.vos.assembly.Macromolecule3VO;
 import ispyb.server.biosaxs.vos.dataAcquisition.Buffer3VO;
 import ispyb.server.biosaxs.vos.dataAcquisition.StockSolution3VO;
@@ -30,6 +31,7 @@ import ispyb.server.mx.vos.sample.Protein3VO;
 import ispyb.server.smis.UpdateFromSMIS;
 import ispyb.ws.rest.mx.MXRestWebService;
 
+@Api
 @Path("/")
 public class ProposalRestWebService extends MXRestWebService{
 

@@ -17,6 +17,7 @@ import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
 
+import io.swagger.annotations.Api;
 import ispyb.common.util.export.PdfExporterSample;
 import ispyb.server.common.util.ejb.Ejb3ServiceLocator;
 import ispyb.server.common.vos.proposals.Proposal3VO;
@@ -24,6 +25,7 @@ import ispyb.server.mx.services.ws.rest.sample.SampleRestWsService;
 import ispyb.server.mx.vos.sample.BLSample3VO;
 import ispyb.server.mx.vos.sample.SampleInfo;
 
+@Api
 @Path("/")
 public class SampleRestWebService extends MXRestWebService {
 

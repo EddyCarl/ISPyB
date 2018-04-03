@@ -26,6 +26,9 @@ import javax.ws.rs.core.Response;
 import org.apache.log4j.Logger;
 import org.jboss.resteasy.annotations.GZIP;
 
+import io.swagger.annotations.Api;
+
+@Api
 @Path("/")
 public class SessionRestWebService extends RestWebService {
 	private final static Logger logger = Logger.getLogger(SessionRestWebService.class);

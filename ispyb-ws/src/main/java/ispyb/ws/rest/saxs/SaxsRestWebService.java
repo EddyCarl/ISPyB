@@ -14,6 +14,9 @@ import ispyb.ws.rest.RestWebService;
 
 import javax.naming.NamingException;
 
+import io.swagger.annotations.Api;
+
+@Api
 public class SaxsRestWebService extends RestWebService{
 
 	protected SaxsDataCollectionRestWsService getDataCollectionRestWsService() throws NamingException {

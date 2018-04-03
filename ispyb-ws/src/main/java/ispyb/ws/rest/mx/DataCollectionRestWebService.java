@@ -21,10 +21,12 @@ import javax.ws.rs.core.Response;
 import org.apache.log4j.Logger;
 import org.jboss.resteasy.annotations.GZIP;
 
+import io.swagger.annotations.Api;
 import ispyb.common.util.export.ExiPdfRtfExporter;
 import ispyb.server.mx.vos.collections.DataCollection3VO;
 import ispyb.server.mx.vos.collections.Session3VO;
 
+@Api
 @Path("/")
 public class DataCollectionRestWebService extends MXRestWebService {
 

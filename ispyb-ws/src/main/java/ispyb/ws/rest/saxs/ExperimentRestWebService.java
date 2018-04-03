@@ -30,7 +30,9 @@ import org.apache.log4j.Logger;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import io.swagger.annotations.Api;
 
+@Api
 @Path("/")
 public class ExperimentRestWebService extends SaxsRestWebService {
 	private final static Logger logger = Logger.getLogger(BufferRestWebService.class);

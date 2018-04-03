@@ -1,6 +1,7 @@
 package ispyb.ws.rest.saxs;
 
 import file.FileUploadForm;
+import io.swagger.annotations.Api;
 import ispyb.server.biosaxs.services.core.proposal.SaxsProposal3Service;
 import ispyb.server.biosaxs.vos.assembly.Macromolecule3VO;
 import ispyb.server.biosaxs.vos.assembly.Structure3VO;
@@ -24,6 +25,7 @@ import javax.ws.rs.core.Response;
 import org.apache.log4j.Logger;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 
+@Api
 @Path("/")
 public class MacromoleculeRestWebService extends SaxsRestWebService {
 	private final static Logger logger = Logger.getLogger(MacromoleculeRestWebService.class);

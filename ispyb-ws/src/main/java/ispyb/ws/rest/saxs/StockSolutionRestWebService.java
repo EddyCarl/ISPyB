@@ -14,11 +14,13 @@ import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
 
+import io.swagger.annotations.Api;
 import ispyb.server.biosaxs.services.core.proposal.SaxsProposal3Service;
 import ispyb.server.biosaxs.vos.dataAcquisition.StockSolution3VO;
 import ispyb.server.common.services.proposals.Proposal3Service;
 import ispyb.server.common.vos.proposals.Proposal3VO;
 
+@Api
 @Path("/")
 public class StockSolutionRestWebService extends SaxsRestWebService {
 	

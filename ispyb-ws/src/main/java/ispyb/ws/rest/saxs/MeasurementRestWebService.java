@@ -24,6 +24,9 @@ import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
 
+import io.swagger.annotations.Api;
+
+@Api
 @Path("/")
 public class MeasurementRestWebService extends SaxsRestWebService {
 	private final static Logger logger = Logger.getLogger(MeasurementRestWebService.class);

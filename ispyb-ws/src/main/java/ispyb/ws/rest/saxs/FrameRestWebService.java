@@ -38,6 +38,9 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.apache.log4j.Logger;
 
+import io.swagger.annotations.Api;
+
+@Api
 @Path("/")
 public class FrameRestWebService extends SaxsRestWebService {
 	private final static Logger logger = Logger.getLogger(FrameRestWebService.class);

@@ -16,6 +16,9 @@ import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
 
+import io.swagger.annotations.Api;
+
+@Api
 @Path("/")
 public class DataCollectionRestWebService extends SaxsRestWebService {
 

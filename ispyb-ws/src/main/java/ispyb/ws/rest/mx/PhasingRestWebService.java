@@ -25,6 +25,9 @@ import org.apache.commons.compress.archivers.zip.ZipMethod;
 import org.apache.log4j.Logger;
 import org.jboss.resteasy.annotations.GZIP;
 
+import io.swagger.annotations.Api;
+
+@Api
 @Path("/")
 public class PhasingRestWebService extends MXRestWebService {
 
