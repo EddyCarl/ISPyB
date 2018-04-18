@@ -183,7 +183,7 @@
 		<dependency>
 			<groupId>ispyb</groupId>
 			<artifactId>ispyb-WSclient-userportal-gen</artifactId>
-			<version>1.3</version>
+			<version>1.4</version>
 		</dependency>
 		
 		<dependency>
@@ -242,7 +242,7 @@
   			<ispyb.site>ESRF</ispyb.site>
   			<ispyb.dbDialect>MYSQL</ispyb.dbDialect>
   			<ispyb.dbJndiName.direct>java:jboss/ispyb_db_direct</ispyb.dbJndiName.direct>
-  			<ispyb.authentication.method>LDAP</ispyb.authentication.method>
+  			<ispyb.authentication.method>SIMPLE</ispyb.authentication.method>
   			<ispyb.authorisation.proposals.source>database</ispyb.authorisation.proposals.source>
   			
   			<ldap.employee.resource>ldap://ldap.esrf.fr:389/</ldap.employee.resource>
