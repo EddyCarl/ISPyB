@@ -10,6 +10,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
@@ -32,7 +33,7 @@ public class CrystalRestWebService extends MXRestWebService {
 	@Path("{token}/proposal/{proposal}/mx/crystal/datacollection/{dataCollectionId}/pdb/download")
 	@Produces("text/plain")
 	public Response downloadPdbByDataCollectionId(@PathParam("token") String token,
-			@PathParam("proposal") String proposal, 
+			@PathParam("proposal") String proposal,
 			@PathParam("dataCollectionId") int dataCollectionId) {
 
 		String methodName = "downloadPdbByDataCollectionId";
@@ -50,14 +51,14 @@ public class CrystalRestWebService extends MXRestWebService {
 			return this.logError(methodName, e, start, logger);
 		}
 	}
-	
-	
+
+
 	@RolesAllowed({ "User", "Manager", "Industrial", "Localcontact" })
 	@GET
 	@Path("{token}/proposal/{proposal}/mx/crystal/{crystalId}/get")
 	@Produces({ "application/json" })
 	public Response getCrystalById(@PathParam("token") String token,
-			@PathParam("proposal") String proposal, 
+			@PathParam("proposal") String proposal,
 			@PathParam("crystalId") int crystalId) {
 
 		String methodName = "getCrystalById";
@@ -68,7 +69,7 @@ public class CrystalRestWebService extends MXRestWebService {
 			return this.logError(methodName, e, start, logger);
 		}
 	}
-	
+
 	@RolesAllowed({ "User", "Manager", "Industrial", "Localcontact" })
 	@GET
 	@Path("{token}/proposal/{proposal}/mx/crystal/list")
@@ -84,7 +85,7 @@ public class CrystalRestWebService extends MXRestWebService {
 			return this.logError(methodName, e, start, logger);
 		}
 	}
-	
+
 	@RolesAllowed({ "User", "Manager", "Industrial", "Localcontact" })
 	@GET
 	@Path("{token}/proposal/{proposal}/mx/crystal/geometryclass/{spacegroup}/list")
@@ -97,16 +98,17 @@ public class CrystalRestWebService extends MXRestWebService {
 		try {
 			List<SpaceGroup3VO> res = this.getSpaceGroup3Service().findBySpaceGroupShortName(spaceGroup);
 			this.logFinish(methodName, start, logger);
-			return this.sendResponse(res);			
+			return this.sendResponse(res);
 		} catch (Exception e) {
 			return this.logError(methodName, e, start, logger);
 		}
-	}	
-	
+	}
+
 	@RolesAllowed({ "User", "Manager", "Industrial", "Localcontact" })
 	@POST
 	@Path("{token}/proposal/{proposal}/mx/crystal/proteinid/{proteinId}/save")
 	@Produces({ "application/json" })
+	@Consumes({ "application/x-www-form-urlencoded", "multipart/form-data" })
 	public Response saveCrystalForm(
 			@PathParam("token") String token,
 			@PathParam("proposal") String proposal,
@@ -121,16 +123,16 @@ public class CrystalRestWebService extends MXRestWebService {
 			@FormParam("cellBeta") Double cellBeta,
 			@FormParam("cellGamma") Double cellGamma,
 			@FormParam("comments") String comments
-			
+
 			) {
 
 		String methodName = "saveCrystalForm";
 		long start = this.logInit(methodName, logger, token, spaceGroup);
 		try {
 			List<Crystal3VO> crystalForms = this.getCrystal3Service().findByProposalId(this.getProposalId(proposal));
-			
+
 			Crystal3VO crystal = new Crystal3VO();
-			
+
 			Integer crystalId = null;
 			try{
 				crystalId = Integer.valueOf(stringCrystalId);
@@ -138,7 +140,7 @@ public class CrystalRestWebService extends MXRestWebService {
 			catch(Exception e){
 				crystalId = null;
 			}
-			
+
 			if (crystalId != null){
 				/** Update **/
 				for (Crystal3VO crystal3vo : crystalForms) {
@@ -146,7 +148,7 @@ public class CrystalRestWebService extends MXRestWebService {
 						crystal = crystal3vo;
 					}
 				}
-			}			
+			}
 
 			if (proteinId == null){
 				throw new Exception("ProteinId must not be null");
@@ -161,7 +163,7 @@ public class CrystalRestWebService extends MXRestWebService {
 				crystal.setCellAlpha(cellAlpha);
 				crystal.setCellBeta(cellBeta);
 				crystal.setCellGamma(cellGamma);
-					
+
 				/** We only update if the protein is in the list of the proteins of the proposal **/
 				List<Protein3VO> proteins = this.getProtein3Service().findByProposalId(this.getProposalId(proposal));
 				for (Protein3VO protein3vo : proteins) {
@@ -171,18 +173,18 @@ public class CrystalRestWebService extends MXRestWebService {
 						logger.info("Updating crystal form");
 						crystal = this.getCrystal3Service().update(crystal);
 						this.logFinish(methodName, start, logger);
-						return this.sendResponse(crystal);	
+						return this.sendResponse(crystal);
 					}
 				}
-				
+
 			}
-			
-					
+
+
 		} catch (Exception e) {
 			return this.logError(methodName, e, start, logger);
 		}
 		return null;
-	}			
+	}
 
 
 }
