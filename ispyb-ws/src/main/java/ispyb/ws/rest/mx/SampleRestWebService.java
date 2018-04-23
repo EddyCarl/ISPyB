@@ -76,7 +76,7 @@ public class SampleRestWebService extends MXRestWebService {
 	@Path("{token}/proposal/{proposal}/mx/sampleinfo/list")
 	@Produces({ "application/json" })
 	public Response getSampleInfoByProposalId(@PathParam("token") String token, @PathParam("proposal") String proposal) {
-		
+
 		String methodName = "getSampleInfoByProposalId";
 		long start = this.logInit(methodName, logger, token, proposal);
 		try {
@@ -88,19 +88,19 @@ public class SampleRestWebService extends MXRestWebService {
 			return this.logError(methodName, e, start, logger);
 		}
 	}
-	
-	
+
+
 	protected SampleRestWsService getSampleRestWsService() throws NamingException {
 		return (SampleRestWsService) Ejb3ServiceLocator.getInstance().getLocalService(SampleRestWsService.class);
 	}
-	
-	
+
+
 	@RolesAllowed({ "User", "Manager", "Industrial", "Localcontact" })
 	@GET
 	@Path("{token}/proposal/{proposal}/mx/sample/list")
 	@Produces({ "application/json" })
 	public Response getSampleByProposalId(@PathParam("token") String token, @PathParam("proposal") String proposal) {
-		
+
 		String methodName = "getSampleByProposalId";
 		long start = this.logInit(methodName, logger, token, proposal);
 		try {
@@ -111,8 +111,8 @@ public class SampleRestWebService extends MXRestWebService {
 			return this.logError(methodName, e, start, logger);
 		}
 	}
-	
-	
+
+
 	@RolesAllowed({ "User", "Manager", "Industrial", "Localcontact" })
 	@GET
 	@Path("{token}/proposal/{proposal}/mx/sample/dewarid/{dewarid}/list")
@@ -128,7 +128,7 @@ public class SampleRestWebService extends MXRestWebService {
 			return this.logError(methodName, e, start, logger);
 		}
 	}
-	
+
 	@RolesAllowed({ "User", "Manager", "Industrial", "Localcontact" })
 	@GET
 	@Path("{token}/proposal/{proposal}/mx/sample/containerid/{containerid}/list")
@@ -140,16 +140,16 @@ public class SampleRestWebService extends MXRestWebService {
 			List<Integer> ids = this.parseToInteger(containerid);
 			List<Map<String, Object>> samples = new ArrayList<Map<String,Object>>();
 			for (Integer id : ids) {
-				samples.addAll(this.getSampleRestWsService().getSamplesByContainerId(this.getProposalId(proposal), id));	
+				samples.addAll(this.getSampleRestWsService().getSamplesByContainerId(this.getProposalId(proposal), id));
 			}
-			
+
 			this.logFinish(methodName, start, logger);
 			return this.sendResponse(samples);
 		} catch (Exception e) {
 			return this.logError(methodName, e, start, logger);
 		}
 	}
-	
+
 	@RolesAllowed({ "User", "Manager", "Industrial", "Localcontact" })
 	@GET
 	@Path("{token}/proposal/{proposal}/mx/sample/sessionid/{sessionid}/list")
@@ -165,7 +165,7 @@ public class SampleRestWebService extends MXRestWebService {
 			return this.logError(methodName, e, start, logger);
 		}
 	}
-	
+
 	@RolesAllowed({ "User", "Manager", "Industrial", "Localcontact" })
 	@GET
 	@Path("{token}/proposal/{proposal}/mx/sample/shipmentid/{shipmentid}/list")
@@ -181,9 +181,9 @@ public class SampleRestWebService extends MXRestWebService {
 			return this.logError(methodName, e, start, logger);
 		}
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param token
 	 * @param proposal
 	 * @param acronym
@@ -215,14 +215,14 @@ public class SampleRestWebService extends MXRestWebService {
 
 			byte [] byteToExport = pdf.exportAsPdf().toByteArray();
 			return this.downloadFile(byteToExport, "Sample_list_for_" + acronym +".pdf");
-			
+
 		} catch (Exception e) {
 			return this.logError("getLabels", e, start, logger);
 		}
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param token
 	 * @param proposal
 	 * @param acronym
@@ -242,16 +242,16 @@ public class SampleRestWebService extends MXRestWebService {
 		long start = this.logInit("getSamplesListByDewarIdPDF", logger, token, proposal,
 				dewarIdList);
 		try {
-			List<Integer> ids = this.parseToInteger(dewarIdList);	
-			
+			List<Integer> ids = this.parseToInteger(dewarIdList);
+
 			List<BLSample3VO> sampleList = this.getBLSample3Service().findByDewarId(ids, new Integer(sortView));
-		
+
 			String viewName = "Sample list for dewars "+ dewarIdList;
 			PdfExporterSample pdf = new PdfExporterSample(sampleList, viewName, sortView.toString(), proposal);
 
 			byte [] byteToExport = pdf.exportAsPdf().toByteArray();
 			return this.downloadFile(byteToExport, "Sample_list_for_dewars.pdf");
-			
+
 		} catch (Exception e) {
 			return this.logError("getLabels", e, start, logger);
 		}

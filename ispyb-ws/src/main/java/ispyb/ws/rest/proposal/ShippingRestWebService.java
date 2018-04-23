@@ -12,6 +12,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
@@ -35,8 +36,8 @@ public class ShippingRestWebService extends MXRestWebService {
 
 	private final static Logger logger = Logger.getLogger(ShippingRestWebService.class);
 
-	
-	
+
+
 
 	@RolesAllowed({"User", "Manager", "Industrial", "Localcontact"})
 	@GET
@@ -57,7 +58,7 @@ public class ShippingRestWebService extends MXRestWebService {
 			return this.logError(methodName, e, id, logger);
 		}
 	}
-	
+
 	@RolesAllowed({"User", "Manager", "Industrial", "Localcontact"})
 	@GET
 	@Path("{token}/proposal/{proposal}/shipping/labcontact/list")
@@ -76,7 +77,7 @@ public class ShippingRestWebService extends MXRestWebService {
 			return this.logError(methodName, e, id, logger);
 		}
 	}
-	
+
 	@RolesAllowed({"User", "Manager", "Industrial", "Localcontact"})
 	@GET
 	@Path("{token}/proposal/{proposal}/shipping/labcontact/{labcontactId}/get")
@@ -93,40 +94,41 @@ public class ShippingRestWebService extends MXRestWebService {
 			return this.logError(methodName, e, id, logger);
 		}
 	}
-	
+
 	@RolesAllowed({"User", "Manager", "Industrial", "Localcontact"})
 	@POST
 	@Path("{token}/proposal/{proposal}/shipping/labcontact/save")
 	@Produces({ "application/json" })
+	@Consumes({ "application/x-www-form-urlencoded", "multipart/form-data" })
 	public Response saveLabContact(
-			@PathParam("token") String token, 
-			@PathParam("proposal") String proposal, 
+			@PathParam("token") String token,
+			@PathParam("proposal") String proposal,
 			@FormParam("labcontact") String labContactJson) {
 		String methodName = "saveLabContact";
 		long id = this.logInit(methodName, logger, token, proposal, labContactJson);
 		try {
 			LabContact3VO labContact = this.getGson().fromJson(labContactJson, LabContact3VO.class);
 			/** Update Person **/
-			
+
 			Person3VO person = this.getPerson3Service().findByPk(labContact.getPersonVO().getPersonId());
-			person.setEmailAddress(labContact.getPersonVO().getEmailAddress());			
+			person.setEmailAddress(labContact.getPersonVO().getEmailAddress());
 			person.setFamilyName(labContact.getPersonVO().getFamilyName());
 			person.setFaxNumber(labContact.getPersonVO().getFaxNumber());
 			person.setGivenName(labContact.getPersonVO().getGivenName());
 			person.setPhoneNumber(labContact.getPersonVO().getPhoneNumber());
 			person.setTitle(labContact.getPersonVO().getTitle());
 			person = this.getPerson3Service().merge(person);
-			
+
 			person.getLaboratoryVO().setAddress(labContact.getPersonVO().getLaboratoryVO().getAddress());
 			person.getLaboratoryVO().setName(labContact.getPersonVO().getLaboratoryVO().getName());
 			this.getLaboratory3Service().merge(person.getLaboratoryVO());
-			
+
 			labContact.setPersonVO(person);
 			/** Update LabContact **/
 			labContact.setProposalVO(this.getProposal3Service().findByPk(this.getProposalId(proposal)));
-			
-			
-			
+
+
+
 			labContact = this.getLabContact3Service().update(labContact);
 			this.logFinish(methodName, id, logger);
 			return sendResponse(labContact);
@@ -135,9 +137,9 @@ public class ShippingRestWebService extends MXRestWebService {
 			return this.logError(methodName, e, id, logger);
 		}
 	}
-	
-	
-	
+
+
+
 	@RolesAllowed({"User", "Manager", "Industrial", "Localcontact"})
 	@GET
 	@Path("{token}/proposal/{proposal}/shipping/list")
@@ -172,13 +174,13 @@ public class ShippingRestWebService extends MXRestWebService {
 
 	}
 
-	
+
 	@RolesAllowed({"User", "Manager", "Industrial", "Localcontact"})
 	@GET
 	@Path("{token}/proposal/{proposal}/shipping/{shippingId}/status/{status}/update")
 	@Produces({ "application/json" })
 	public Response setShippingStatus(
-			@PathParam("token") String token, 
+			@PathParam("token") String token,
 			@PathParam("proposal") String proposal,
 			@PathParam("shippingId") Integer shippingId,
 			@PathParam("status") String status) throws Exception {
@@ -196,7 +198,7 @@ public class ShippingRestWebService extends MXRestWebService {
 			for (Dewar3VO dewar : result.getDewars()) {
 				logger.info("\t Updating dewar status " + dewar.getDewarId() + " from " + dewar.getDewarStatus() + " to " + status);
 				dewar.setDewarStatus(status);
-				
+
 				this.getDewar3Service().update(dewar);
 				for (Container3VO container : dewar.getContainerVOs()) {
 					logger.info("\t\tUpdating container status " + container.getContainerId() + " from " + container.getContainerStatus() + " to " + status);
@@ -204,9 +206,9 @@ public class ShippingRestWebService extends MXRestWebService {
 					this.getContainer3Service().update(container);
 				}
 			}
-			
-			
-			
+
+
+
 			this.logFinish("setShippingStatus", id, logger);
 			HashMap<String, String> response = new HashMap<String, String>();
 			response.put("setShippingStatus", "ok");
@@ -216,9 +218,9 @@ public class ShippingRestWebService extends MXRestWebService {
 		}
 
 	}
-	
-	
-	
+
+
+
 	@RolesAllowed({"User", "Manager", "Industrial", "Localcontact"})
 	@GET
 	@Path("{token}/proposal/{proposal}/shipping/{shippingId}/dewar/{dewarId}/puck/add")
@@ -240,8 +242,8 @@ public class ShippingRestWebService extends MXRestWebService {
 			return this.logError("addPuck", e, id, logger);
 		}
 
-	}	
-	
+	}
+
 	@RolesAllowed({"User", "Manager", "Industrial", "Localcontact"})
 	@GET
 	@Path("{token}/proposal/{proposal}/shipping/{shippingId}/dewar/{dewarId}/containerType/{containerType}/capacity/{capacity}/container/add")
@@ -254,8 +256,8 @@ public class ShippingRestWebService extends MXRestWebService {
 			Container3VO container = new Container3VO();
 			container.setDewarVO(this.getDewar3Service().findByPk(dewarId, false, false));
 			container.setContainerType(type);
-			container.setCapacity(capacity);			
-			
+			container.setCapacity(capacity);
+
 			container.setTimeStamp(StringUtils.getCurrentTimeStamp());
 			container = this.getContainer3Service().create(container);
 			this.logFinish("addContainer", id, logger);
@@ -265,7 +267,7 @@ public class ShippingRestWebService extends MXRestWebService {
 		}
 
 	}
-	
+
 	@RolesAllowed({"User", "Manager", "Industrial", "Localcontact"})
 	@GET
 	@Path("{token}/proposal/{proposal}/shipping/{shippingId}/dewar/{dewarId}/puck/{containerId}/get")
@@ -282,8 +284,8 @@ public class ShippingRestWebService extends MXRestWebService {
 			return this.logError("getPuckById", e, id, logger);
 		}
 	}
-	
-	
+
+
 	@RolesAllowed({"User", "Manager", "Industrial", "Localcontact"})
 	@GET
 	@Path("{token}/proposal/{proposal}/shipping/{shippingId}/history")
@@ -292,7 +294,7 @@ public class ShippingRestWebService extends MXRestWebService {
 			@PathParam("shippingId") Integer shippingId) throws Exception {
 		long id = this.logInit("getShipmentHistory", logger, token, proposal, shippingId);
 		try {
-			
+
 			List<Map<String, Object>> result = this.getShipmentWsService().getShipmentHistoryByShipmentId(this.getProposalId(proposal), shippingId);
 			this.logFinish("getShipmentHistory", id, logger);
 			return sendResponse(result);
@@ -300,13 +302,14 @@ public class ShippingRestWebService extends MXRestWebService {
 			return this.logError("getShipmentHistory", e, id, logger);
 		}
 	}
-	
-	
-	
+
+
+
 	@RolesAllowed({"User", "Manager", "Industrial", "Localcontact"})
 	@POST
 	@Path("{token}/proposal/{proposal}/shipping/{shippingId}/dewar/{dewarId}/puck/{containerId}/save")
 	@Produces({ "application/json" })
+	@Consumes({ "application/x-www-form-urlencoded", "multipart/form-data" })
 	public Response savePuck(@PathParam("token") String token, @PathParam("proposal") String proposal,
 			@PathParam("shippingId") Integer shippingId,
 			@PathParam("dewarId") Integer dewarId,
@@ -322,7 +325,7 @@ public class ShippingRestWebService extends MXRestWebService {
 			return this.logError("savePuck", e, id, logger);
 		}
 	}
-	
+
 	@RolesAllowed({"User", "Manager", "Industrial", "Localcontact"})
 	@GET
 	@Path("{token}/proposal/{proposal}/shipping/{shippingId}/dewar/{dewarId}/puck/{containerId}/remove")
@@ -362,10 +365,10 @@ public class ShippingRestWebService extends MXRestWebService {
 
 	}
 
-	
-	
-	/** 
-	 * 
+
+
+	/**
+	 *
 	 * @param token
 	 * @param proposal
 	 * @param shippingId
@@ -385,10 +388,10 @@ public class ShippingRestWebService extends MXRestWebService {
 	@POST
 	@Path("{token}/proposal/{proposal}/shipping/save")
 	@Produces({ "application/json" })
-	
+	@Consumes({ "application/x-www-form-urlencoded", "multipart/form-data" })
 	public Response saveShipping(@PathParam("token") String token, @PathParam("proposal") String proposal,
 			@FormParam("shippingId") String shippingId, @FormParam("name") String name,
-			@FormParam("comments") String comments, 
+			@FormParam("comments") String comments,
 			@FormParam("billingReference") String billingReference,
 			@FormParam("courierAccount") String courierAccount,
 			@FormParam("dewarAvgCustomsValue") String dewarAvgCustomsValue,
@@ -434,12 +437,12 @@ public class ShippingRestWebService extends MXRestWebService {
 				getLabContact3Service().update(returnLabContact);
 				shipping3VO.setReturnLabContactVO(returnLabContact);
 			}
-			
+
 			/** No return requested **/
 			if (returnLabContactId == 0){
 				shipping3VO.setReturnLabContactVO(null);
 			}
-			
+
 			/** Same person **/
 			if (returnLabContactId == -1){
 				sendingLabContact.setBillingReference(billingReference);
@@ -450,18 +453,18 @@ public class ShippingRestWebService extends MXRestWebService {
 				getLabContact3Service().update(sendingLabContact);
 				shipping3VO.setReturnLabContactVO(sendingLabContact);
 			}
-			
+
 			/** Sessions **/
 			System.out.println(shipping3VO.getSessions());
 			if (shipping3VO.getSessions() != null){
 				shipping3VO.getSessions().clear();
 			}
-			
+
 			/** Is session a number **/
 			String regex = "\\d+";
 			if (sessionId.matches(regex)){
 				/** It is a number **/
-				//shipping3VO.getSessions().add(this.getSession3Service().findByPk(Integer.valueOf(sessionId), false, false, false));	
+				//shipping3VO.getSessions().add(this.getSession3Service().findByPk(Integer.valueOf(sessionId), false, false, false));
 				shipping3VO.addSession(this.getSession3Service().findByPk(Integer.valueOf(sessionId), false, false, false));
 			}
 

@@ -34,6 +34,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
@@ -56,8 +57,8 @@ public class DewarRestWebService extends RestWebService {
 			@PathParam("dewarId") int dewarId) throws NamingException {
 		return Response.serverError().build();
 	}
-	
-	
+
+
 	@RolesAllowed({"User", "Manager", "Industrial", "Localcontact"})
 	@GET
 	@Path("{token}/proposal/{proposal}/shipping/{shippingId}/dewar/{dewarId}/labels")
@@ -77,7 +78,7 @@ public class DewarRestWebService extends RestWebService {
 			return this.logError("getLabels", e, start, logger);
 		}
 	}
-	
+
 	@Deprecated
 	@RolesAllowed({"User", "Manager", "Industrial", "Localcontact"})
 	@GET
@@ -96,14 +97,14 @@ public class DewarRestWebService extends RestWebService {
 		}
 
 	}
-	
-	
+
+
 	@RolesAllowed({"User", "Manager", "Industrial", "Localcontact"})
 	@GET
 	@Path("{token}/proposal/{proposal}/dewar/list")
 	@Produces({ "application/json" })
 	public Response getDewars(
-			@PathParam("token") String token, 
+			@PathParam("token") String token,
 			@PathParam("proposal") String proposal
 			) throws Exception {
 
@@ -117,14 +118,14 @@ public class DewarRestWebService extends RestWebService {
 			return this.logError("getContainers", e, id, logger);
 		}
 	}
-	
+
 	@RolesAllowed({"User", "Manager", "Industrial", "Localcontact"})
 	@GET
 	@Path("{token}/proposal/{proposal}/dewar/status/{status}/list")
 	@Produces({ "application/json" })
 	public Response getDewarsByStatus(
-			@PathParam("token") String token, 
-			@PathParam("proposal") String proposal, 
+			@PathParam("token") String token,
+			@PathParam("proposal") String proposal,
 			@PathParam("status") String status) throws Exception {
 
 		long id = this.logInit("getDewarsByStatus", logger, token, proposal);
@@ -144,19 +145,19 @@ public class DewarRestWebService extends RestWebService {
 			return this.logError("getDewarsByStatus", e, id, logger);
 		}
 	}
-	
-	
+
+
 	protected DewarRestWsService getDewarRestWebService() throws NamingException {
 		return (DewarRestWsService) Ejb3ServiceLocator.getInstance().getLocalService(DewarRestWsService.class);
 	}
-	
+
 	@RolesAllowed({"User", "Manager", "Industrial", "Localcontact"})
 	@GET
 	@Path("{token}/proposal/{proposal}/dewar/session/{sessionId}/list")
 	@Produces({ "application/json" })
 	public Response getDewarsBySession(
-			@PathParam("token") String token, 
-			@PathParam("proposal") String proposal, 
+			@PathParam("token") String token,
+			@PathParam("proposal") String proposal,
 			@PathParam("sessionId") int sessionId) throws Exception {
 
 		long id = this.logInit("getDewarsBySession", logger, token, proposal);
@@ -168,9 +169,9 @@ public class DewarRestWebService extends RestWebService {
 			return this.logError("getDewarsBySession", e, id, logger);
 		}
 	}
-	
-	
-	
+
+
+
 	@RolesAllowed({ "User", "Manager", "Industrial", "Localcontact" })
 	@GET
 	@Path("{token}/proposal/{proposal}/shipping/{shippingId}/dewar/{dewarId}/remove")
@@ -215,18 +216,19 @@ public class DewarRestWebService extends RestWebService {
 
 	/**
 	 * getDateTime
-	 * 
+	 *
 	 * @return
 	 */
 	private Timestamp getDateTime() {
 		java.util.Date today = new java.util.Date();
 		return (new java.sql.Timestamp(today.getTime()));
 	}
-	
+
 	@RolesAllowed({ "User", "Manager", "Industrial", "Localcontact" })
 	@POST
 	@Path("{token}/proposal/{proposal}/shipping/{shippingId}/dewar/save")
 	@Produces({ "application/json" })
+	@Consumes({ "application/x-www-form-urlencoded", "multipart/form-data" })
 	public Response saveDewar(
 			@PathParam("token") String token,
 			@PathParam("proposal") String proposal,
@@ -268,7 +270,7 @@ public class DewarRestWebService extends RestWebService {
 								break;
 							}
 						}
-						
+
 					}
 				}
 				dewar3vo = getDewar3Service().create(dewar3vo);
@@ -301,15 +303,15 @@ public class DewarRestWebService extends RestWebService {
 			dewar3vo.setSessionVO(getSession3Service().findByPk(sessionId, false, false, false));
 			getDewar3Service().update(dewar3vo);
 			this.logFinish("saveDewar", start, logger);
-			
+
 			return new ShippingRestWebService().getShipping(token, proposal, shippingId);
 		} catch (Exception e) {
 			this.logError("saveDewar", e, start, logger);
 		}
 		return null;
 	}
-	
-	
+
+
 
 
 	public byte[] getLabels(int dewarId) throws NamingException, Exception {
@@ -318,12 +320,12 @@ public class DewarRestWebService extends RestWebService {
 		// Retrieve shipment object ------------------------
 		Shipping3VO shipping = dewar.getShippingVO();
 		shipping = this.getShipping3Service().loadEager(shipping);
-		
+
 		// Retrieve dewar object ---------------------------
 		//TODO understand why sessionVO is null in dewarVO
-		
+
 //		Integer sessionId = null;
-		
+
 		Session3VO session = null;
 		if (dewar.getSessionVO() != null) {
 //			sessionId = dewar.getSessionVO().getSessionId();
@@ -343,7 +345,7 @@ public class DewarRestWebService extends RestWebService {
 			if (sessions.size() > 0){
 				session = sessions.get(0);
 			}
-		}	
+		}
 		if (session == null){
 			logger.warn("Session is null for dewar: " + dewarId);
 		}
@@ -378,11 +380,11 @@ public class DewarRestWebService extends RestWebService {
 		// PDF Labels generation
 		PDFFormFiller pdfFormFiller = new PDFFormFiller();
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-				
+
 		//TODO put in properties or find a way to read correctly the pdf
-		
+
 		String path= Constants.TEMPLATE_PDF_PARCEL_LABELS_WORLDCOURIER_PYARCH_PATH;
-		
+
 		if (returnLabContact.getDefaultCourrierCompany() != null && returnLabContact.getDefaultCourrierCompany().equals(Constants.SHIPPING_DELIVERY_AGENT_NAME_WORLDCOURIER)) {
 			path= Constants.TEMPLATE_PDF_PARCEL_LABELS_WORLDCOURIER_PYARCH_PATH;
 		} else {
@@ -537,6 +539,6 @@ public class DewarRestWebService extends RestWebService {
 //		return null;
 	}
 
-	
+
 
 }

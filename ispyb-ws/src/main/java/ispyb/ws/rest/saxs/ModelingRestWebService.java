@@ -13,6 +13,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
@@ -25,19 +26,20 @@ import io.swagger.annotations.Api;
 @Api
 @Path("/")
 public class ModelingRestWebService extends SaxsRestWebService {
-	
+
 	private final static Logger logger = Logger.getLogger(ModelingRestWebService.class);
-	
+
 	@RolesAllowed({"User", "Manager", "Industrial", "LocalContact"})
 	@POST
 	@Path("{token}/proposal/{proposal}/saxs/modeling/pdb/get")
 	@Produces({ "application/json" })
+	@Consumes({ "application/x-www-form-urlencoded", "multipart/form-data" })
 	public Response getPDBModels(
-			@PathParam("token") String token, 
+			@PathParam("token") String token,
 			@PathParam("proposal") String proposal,
 			@FormParam("models") String models,
 			@FormParam("superpositions") String superpositionsParam) {
-		
+
 		String methodName = "getPDBModels";
 		long start = this.logInit(methodName, logger, token, proposal);
 		try{
@@ -52,7 +54,7 @@ public class ModelingRestWebService extends SaxsRestWebService {
 
 			HashMap<String, List<HashMap<String, Object>>> map = PDBFactoryProducer.get(modelList, superpositions);
 //			String json = BiosaxsDataAdapterCommon.getGson().toJson(map);
-			
+
 			this.logFinish(methodName, start, logger);
 			return this.sendResponse(map);
 		}
@@ -60,6 +62,6 @@ public class ModelingRestWebService extends SaxsRestWebService {
 			return this.logError(methodName, e, start, logger);
 		}
 	}
-	
-	
+
+
 }

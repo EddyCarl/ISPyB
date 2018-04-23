@@ -20,6 +20,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
@@ -61,7 +62,7 @@ public class MeasurementRestWebService extends SaxsRestWebService {
 			}
 			this.logFinish("removeMeasurement", id, logger);
 			return this.sendResponse("Ok");
-			
+
 		} catch (Exception e) {
 			return this.logError(methodName, e, id, logger);
 		}
@@ -71,6 +72,7 @@ public class MeasurementRestWebService extends SaxsRestWebService {
 	@POST
 	@Path("{token}/proposal/{proposal}/saxs/measurement/save")
 	@Produces({ "application/json" })
+	@Consumes({ "application/x-www-form-urlencoded", "multipart/form-data" })
 	public Response saveMeasurement(@PathParam("token") String token, @PathParam("proposal") String proposal,
 			@FormParam("measurement") String measurement)  {
 

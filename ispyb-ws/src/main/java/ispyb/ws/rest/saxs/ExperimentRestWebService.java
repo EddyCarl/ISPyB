@@ -23,6 +23,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
@@ -56,7 +57,7 @@ public class ExperimentRestWebService extends SaxsRestWebService {
 	private List<Map<String, Object>> getExperimentListBySessionId(String proposal, int sessionId)
 			throws Exception {
 		Ejb3ServiceLocator ejb3ServiceLocator = Ejb3ServiceLocator.getInstance();
-		
+
 		Proposal3Service proposalService = this.getProposal3Service();
 		List<Proposal3VO> proposals = proposalService.findProposalByLoginName(proposal);
 
@@ -70,7 +71,7 @@ public class ExperimentRestWebService extends SaxsRestWebService {
 		return experiments;
 	}
 
-	@RolesAllowed({"User", "Manager", "Industrial", "LocalContact"}) 
+	@RolesAllowed({"User", "Manager", "Industrial", "LocalContact"})
 	@GET
 	@Path("{token}/proposal/{proposalId}/saxs/experiment/list")
 	@Produces({ "application/json" })
@@ -146,15 +147,16 @@ public class ExperimentRestWebService extends SaxsRestWebService {
 	@POST
 	@Path("{token}/proposal/{proposal}/saxs/experiment/save")
 	@Produces({ "application/json" })
+	@Consumes({ "application/x-www-form-urlencoded", "multipart/form-data" })
 	public Response createExperiment(
-			@PathParam("token") String token, 
+			@PathParam("token") String token,
 			@PathParam("proposal") String proposal,
 			@FormParam("name") String name,
 			@FormParam("comments") String comments,
-			@FormParam("experimentId") Integer experimentId, 
+			@FormParam("experimentId") Integer experimentId,
 			@FormParam("measurements") String measurements)
 			throws Exception {
-		
+
 		String methodName = "createExperiment";
 		long start = this.logInit(methodName, logger, token, proposal, name, comments, experimentId, measurements);
 		try {
@@ -184,10 +186,11 @@ public class ExperimentRestWebService extends SaxsRestWebService {
 	@POST
 	@Path("{token}/proposal/{proposal}/saxs/experiment/{experimentId}/save")
 	@Produces({ "application/json" })
+	@Consumes({ "application/x-www-form-urlencoded", "multipart/form-data" })
 	public Response saveExperiment(
-			@PathParam("token") String token, 
+			@PathParam("token") String token,
 			@PathParam("proposal") String proposal,
-			@PathParam("experimentId") int experimentId, 
+			@PathParam("experimentId") int experimentId,
 			@FormParam("name") String name,
 			@FormParam("comments") String comments) throws Exception {
 
@@ -212,10 +215,10 @@ public class ExperimentRestWebService extends SaxsRestWebService {
 	@Path("{token}/proposal/{proposal}/saxs/experiment/session/{sessionId}/list")
 	@Produces({ "application/json" })
 	public Response list(
-			@PathParam("token") String token, 
+			@PathParam("token") String token,
 			@PathParam("proposal") String proposal,
 			@PathParam("sessionId") int sessionId) {
-		
+
 		String methodName = "list";
 		long start = this.logInit(methodName, logger, token, proposal, sessionId);
 		try {
@@ -234,7 +237,7 @@ public class ExperimentRestWebService extends SaxsRestWebService {
 	@Produces({ "application/json" })
 	public Response list(@PathParam("token") String token, @PathParam("proposal") String proposal,
 			@PathParam("key") String key, @PathParam("value") String value) throws Exception {
-		
+
 		String methodName = "list";
 		long start = this.logInit(methodName, logger, token, proposal, key, value);
 		try {
@@ -245,7 +248,7 @@ public class ExperimentRestWebService extends SaxsRestWebService {
 		catch(Exception e){
 			return this.logError(methodName, e, start, logger);
 		}
-		
+
 	}
 
 	private String getH5FilePathByExperimentId(Integer experimentId, Integer proposalId) throws NamingException {

@@ -15,6 +15,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
@@ -24,14 +25,14 @@ import io.swagger.annotations.Api;
 @Api
 @Path("/")
 public class BufferRestWebService extends SaxsRestWebService {
-	
+
 	private final static Logger logger = Logger.getLogger(BufferRestWebService.class);
 	@RolesAllowed({"User", "Manager", "Industrial", "LocalContact"})
 	@GET
 	@Path("{token}/proposal/{proposal}/saxs/buffer/list")
 	@Produces({ "application/json" })
 	public Response getBuffers(
-			@PathParam("token") String token, 
+			@PathParam("token") String token,
 			@PathParam("proposal") String proposal) {
 
 		String methodName = "getBuffers";
@@ -51,16 +52,17 @@ public class BufferRestWebService extends SaxsRestWebService {
 			return this.logError(methodName, e, start, logger);
 		}
 	}
-	
+
 	@RolesAllowed({"User", "Manager", "Industrial", "LocalContact"})
 	@POST
 	@Path("{token}/proposal/{proposal}/saxs/buffer/save")
 	@Produces({ "application/json" })
+	@Consumes({ "application/x-www-form-urlencoded", "multipart/form-data" })
 	public Response saveBuffer(
-			@PathParam("token") String token, 
+			@PathParam("token") String token,
 			@PathParam("proposal") String proposal,
 			@FormParam("buffer") String buffer) throws Exception {
-		
+
 		String methodName = "saveBuffer";
 		long start = this.logInit(methodName, logger, token, proposal, buffer);
 		try {
@@ -72,6 +74,6 @@ public class BufferRestWebService extends SaxsRestWebService {
 			return this.logError(methodName, e, start, logger);
 		}
 	}
-	
-	
+
+
 }

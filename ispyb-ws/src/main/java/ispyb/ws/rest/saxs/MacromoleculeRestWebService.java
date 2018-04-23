@@ -20,6 +20,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
@@ -56,6 +57,7 @@ public class MacromoleculeRestWebService extends SaxsRestWebService {
 	@POST
 	@Path("{token}/proposal/{proposal}/saxs/macromolecule/save")
 	@Produces({ "application/json" })
+	@Consumes({ "application/x-www-form-urlencoded", "multipart/form-data" })
 	public Response saveMacromolecule(@PathParam("token") String token, @PathParam("proposal") String proposal,
 			@FormParam("macromolecule") String macromolecule) throws Exception {
 
@@ -70,11 +72,11 @@ public class MacromoleculeRestWebService extends SaxsRestWebService {
 			return this.logError(methodName, e, id, logger);
 		}
 	}
-	
-	
-	
-	
-	
+
+
+
+
+
 	@RolesAllowed({"User", "Manager", "Industrial", "LocalContact"})
 	@POST
 	@Path("{token}/proposal/{proposal}/saxs/macromolecule/{macromoleculeId}/contactfile/upload")
@@ -85,13 +87,13 @@ public class MacromoleculeRestWebService extends SaxsRestWebService {
 			@PathParam("proposal") String proposal,
 			@PathParam("macromoleculeId") int macromoleculeId,
 			@MultipartForm FileUploadForm form) throws IllegalStateException, IOException{
-				
+
 		String methodName = "uploadContactDescriptionFile";
 		long id = this.logInit(methodName, logger, token, proposal, form);
 		try {
 			if (form.getInputStream() != null){
 				String filePath = this.copyFileToDisk(proposal, form);
-				
+
 				/** If file has been upload then we macromolecule is updated **/
 				Macromolecule3VO macromolecule3VO = this.getSaxsProposal3Service().findMacromoleculesById(macromoleculeId);
 				if (macromolecule3VO != null){
@@ -108,12 +110,12 @@ public class MacromoleculeRestWebService extends SaxsRestWebService {
 			else{
 				throw new Exception("File is empty");
 			}
-			
+
 		} catch (Exception e) {
 			return this.logError(methodName, e, id, logger);
 		}
 	}
-	
+
 	@RolesAllowed({"User", "Manager", "Industrial", "LocalContact"})
 	@GET
 	@Path("{token}/proposal/{proposal}/saxs/macromolecule/{macromoleculeId}/contactfile/remove")
@@ -122,7 +124,7 @@ public class MacromoleculeRestWebService extends SaxsRestWebService {
 			@PathParam("token") String token,
 			@PathParam("proposal") String proposal,
 			@PathParam("macromoleculeId") int macromoleculeId) throws IllegalStateException, IOException{
-				
+
 		String methodName = "removeContactDescriptionFile";
 		long id = this.logInit(methodName, logger, token, proposal);
 		try {
@@ -140,8 +142,8 @@ public class MacromoleculeRestWebService extends SaxsRestWebService {
 			return this.logError(methodName, e, id, logger);
 		}
 	}
-	
-	
+
+
 	@RolesAllowed({"User", "Manager", "Industrial", "LocalContact"})
 	@POST
 	@Path("{token}/proposal/{proposal}/saxs/macromolecule/{macromoleculeId}/pdb/upload")
@@ -152,7 +154,7 @@ public class MacromoleculeRestWebService extends SaxsRestWebService {
 			@PathParam("proposal") String proposal,
 			@PathParam("macromoleculeId") int macromoleculeId,
 			@MultipartForm FileUploadForm form) throws IllegalStateException, IOException{
-				
+
 		String methodName = "uploadPDBFile";
 		long id = this.logInit(methodName, logger, token, proposal, form, macromoleculeId);
 		try {
@@ -171,12 +173,12 @@ public class MacromoleculeRestWebService extends SaxsRestWebService {
 			else{
 				throw new Exception("File is empty");
 			}
-			
+
 		} catch (Exception e) {
 			return this.logError(methodName, e, id, logger);
 		}
 	}
-	
+
 	@RolesAllowed({"User", "Manager", "Industrial", "LocalContact"})
 	@GET
 	@Path("{token}/proposal/{proposal}/saxs/macromolecule/{macromoleculeId}/pdb/{structureId}/remove")
@@ -185,7 +187,7 @@ public class MacromoleculeRestWebService extends SaxsRestWebService {
 			@PathParam("proposal") String proposal,
 			@PathParam("macromoleculeId") int macromoleculeId,
 			@PathParam("structureId") int structureId) throws IllegalStateException, IOException{
-				
+
 		String methodName = "removeStructure";
 		long id = this.logInit(methodName, logger, token, proposal, macromoleculeId, structureId);
 		try {
@@ -198,10 +200,11 @@ public class MacromoleculeRestWebService extends SaxsRestWebService {
 		}
 		return this.sendResponse("ok");
 	}
-	
+
 	@RolesAllowed({"User", "Manager", "Industrial", "LocalContact"})
 	@POST
 	@Path("{token}/proposal/{proposal}/saxs/macromolecule/{macromoleculeId}/pdb/{structureId}/save")
+	@Consumes({ "application/x-www-form-urlencoded", "multipart/form-data" })
 	public Response saveStructure(
 			@PathParam("token") String token,
 			@PathParam("proposal") String proposal,
@@ -209,7 +212,7 @@ public class MacromoleculeRestWebService extends SaxsRestWebService {
 			@PathParam("structureId") int structureId,
 			@FormParam("symmetry") String symmetry,
 			@FormParam("multiplicity") String multiplicity) throws IllegalStateException, IOException{
-				
+
 		String methodName = "saveStructure";
 		long id = this.logInit(methodName, logger, token, proposal, structureId, macromoleculeId, structureId, symmetry, multiplicity);
 		try {
@@ -225,5 +228,5 @@ public class MacromoleculeRestWebService extends SaxsRestWebService {
 		}
 		return this.sendResponse("ok");
 	}
-	
+
 }

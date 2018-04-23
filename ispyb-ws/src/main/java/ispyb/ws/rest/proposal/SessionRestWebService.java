@@ -21,6 +21,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
@@ -37,15 +38,16 @@ public class SessionRestWebService extends RestWebService {
 	@POST
 	@Path("{token}/proposal/{proposal}/mx/session/{sessionId}/comments/save")
 	@Produces("image/png")
+	@Consumes({ "application/x-www-form-urlencoded", "multipart/form-data" })
 	public Response saveSessionComments(
-			@PathParam("token") String token, 
+			@PathParam("token") String token,
 			@PathParam("proposal") String proposal,
 			@PathParam("sessionId") int sessionId,
 			@FormParam("comments") String comments) {
-		
+
 		String methodName = "saveSessionComments";
 		long id = this.logInit(methodName, logger, token, proposal, sessionId, comments);
-		
+
 		try {
 			Session3VO session = this.getSession3Service().findByPk(sessionId, false, false, false);
 			session.setComments(comments);
@@ -56,7 +58,7 @@ public class SessionRestWebService extends RestWebService {
 		}
 		return this.sendResponse(true);
 	}
-	
+
 	@RolesAllowed({ "User", "Manager", "Industrial", "Localcontact" })
 	@GET
 	@GZIP
@@ -91,10 +93,10 @@ public class SessionRestWebService extends RestWebService {
 			return this.logError(methodName, e, id, logger);
 		}
 	}
-	
+
 	/**
 	 * Returns the session list that will take place between start and end date
-	 * 
+	 *
 	 * @param token
 	 * @param proposal name of the proposal
 	 * @param start format is YYYYMMDD
@@ -120,7 +122,7 @@ public class SessionRestWebService extends RestWebService {
 			return this.logError(methodName, e, id, logger);
 		}
 	}
-	
+
 
 	private SessionService getSessionService() throws NamingException {
 		return (SessionService) Ejb3ServiceLocator.getInstance().getLocalService(SessionService.class);
@@ -132,7 +134,7 @@ public class SessionRestWebService extends RestWebService {
 	@Path("{token}/proposal/session/date/{startdate}/{enddate}/list")
 	@Produces({ "application/json" })
 	public Response getSessionsByDate(
-			@PathParam("token") String token, 
+			@PathParam("token") String token,
 			@PathParam("startdate") String start,
 			@PathParam("enddate") String end) throws Exception {
 		String methodName = "getSessionsByDate";
@@ -145,7 +147,7 @@ public class SessionRestWebService extends RestWebService {
 			}
 			else{
 				result = getSessionService().getSessionViewByDates(start, end, login.getSiteId());
-				
+
 			}
 			this.logFinish(methodName, id, logger);
 			return sendResponse(result);
@@ -153,19 +155,19 @@ public class SessionRestWebService extends RestWebService {
 			return this.logError(methodName, e, id, logger);
 		}
 	}
-		
+
 	@RolesAllowed({ "Manager", "Localcontact" })
 	@GET
 	@GZIP
 	@Path("{token}/proposal/session/beamlineoperator/{beamlineOperator}/list")
 	@Produces({ "application/json" })
 	public Response getSessionsByBeamlineOperator(
-			@PathParam("token") String token, 
+			@PathParam("token") String token,
 			@PathParam("beamlineOperator") String beamlineOperator) throws Exception {
 		String methodName = "getSessionsByBeamlineOperator";
 		long id = this.logInit(methodName, logger, token, beamlineOperator);
 		List<Map<String, Object>> result = new ArrayList<Map<String,Object>>();
-			
+
 		try {
 			Login3VO login = this.getLogin3Service().findByToken(token);
 			if (login.isManager() || login.getSiteId() == null){
@@ -176,17 +178,17 @@ public class SessionRestWebService extends RestWebService {
 				String surname = this.getPerson3Service().findBySiteId(login.getSiteId()).getFamilyName();
 				if (beamlineOperator.contains(surname)) {
 					result = getSessionService().getSessionViewByBeamlineOperator(beamlineOperator);
-				} else {					
+				} else {
 					Exception e = new Exception ("Unauthorized " + surname + " to view " + beamlineOperator);
 					throw e;
 				}
 			}
-			
+
 			this.logFinish(methodName, id, logger);
 			return sendResponse(result);
 		} catch (Exception e) {
 			return this.logError(methodName, e, id, logger);
 		}
 	}
-	
+
 }
