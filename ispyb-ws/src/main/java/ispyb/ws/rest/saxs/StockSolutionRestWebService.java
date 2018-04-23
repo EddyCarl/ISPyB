@@ -10,6 +10,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
@@ -23,16 +24,16 @@ import ispyb.server.common.vos.proposals.Proposal3VO;
 @Api
 @Path("/")
 public class StockSolutionRestWebService extends SaxsRestWebService {
-	
+
 	private final static Logger logger = Logger.getLogger(StockSolutionRestWebService.class);
 	@RolesAllowed({"User", "Manager", "Industrial", "LocalContact"})
 	@GET
 	@Path("{token}/proposal/{proposalId}/saxs/stocksolution/list")
 	@Produces({ "application/json" })
 	public Response getStockSolutions(
-			@PathParam("token") String token, 
+			@PathParam("token") String token,
 			@PathParam("proposalId") String login) throws Exception {
-	    
+
 		String methodName = "getStockSolutions";
 		long start = this.logInit(methodName, logger, token, login);
 		try {
@@ -49,18 +50,19 @@ public class StockSolutionRestWebService extends SaxsRestWebService {
 			return this.logError(methodName, e, start, logger);
 		}
 	}
-	
+
 
 	@RolesAllowed({"User", "Manager", "Industrial", "LocalContact"})
 	@POST
 	@Path("{token}/proposal/{proposalId}/saxs/stocksolution/save")
 	@Produces({ "application/json" })
+	@Consumes({ "application/x-www-form-urlencoded", "multipart/form-data" })
 	public Response saveStockSolution(
-			@PathParam("token") String token, 
+			@PathParam("token") String token,
 			@PathParam("proposalId") String proposalId,
 			@FormParam("stocksolution") String stocksolution) throws Exception {
-		
-		
+
+
 		String methodName = "saveStockSolution";
 		long start = this.logInit(methodName, logger, token, stocksolution);
 		try {
@@ -72,6 +74,6 @@ public class StockSolutionRestWebService extends SaxsRestWebService {
 			return this.logError(methodName, e, start, logger);
 		}
 	}
-	
-	
+
+
 }
