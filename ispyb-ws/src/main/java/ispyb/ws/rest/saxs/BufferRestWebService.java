@@ -57,7 +57,7 @@ public class BufferRestWebService extends SaxsRestWebService {
 	@POST
 	@Path("{token}/proposal/{proposal}/saxs/buffer/save")
 	@Produces({ "application/json" })
-	@Consumes({ "application/x-www-form-urlencoded", "multipart/form-data" })
+	@Consumes("multipart/form-data")
 	public Response saveBuffer(
 			@PathParam("token") String token,
 			@PathParam("proposal") String proposal,

@@ -228,7 +228,7 @@ public class DewarRestWebService extends RestWebService {
 	@POST
 	@Path("{token}/proposal/{proposal}/shipping/{shippingId}/dewar/save")
 	@Produces({ "application/json" })
-	@Consumes({ "application/x-www-form-urlencoded", "multipart/form-data" })
+	@Consumes("multipart/form-data")
 	public Response saveDewar(
 			@PathParam("token") String token,
 			@PathParam("proposal") String proposal,

@@ -48,7 +48,7 @@ public class SpecimenRestWebService extends SaxsRestWebService {
 	@POST
 	@Path("{token}/proposal/{proposal}/saxs/specimen/merge")
 	@Produces({ "application/json" })
-	@Consumes({ "application/x-www-form-urlencoded", "multipart/form-data" })
+	@Consumes("multipart/form-data")
 	public Response mergeSpecimens(@PathParam("token") String token, @PathParam("proposal") String proposal,
 			@FormParam("experimentId") String experimentId, @FormParam("sourceSpecimenId") int sourceSpecimenId,
 			@FormParam("targetSpecimenId") int targetSpecimenId) throws Exception {

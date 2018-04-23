@@ -147,7 +147,7 @@ public class ExperimentRestWebService extends SaxsRestWebService {
 	@POST
 	@Path("{token}/proposal/{proposal}/saxs/experiment/save")
 	@Produces({ "application/json" })
-	@Consumes({ "application/x-www-form-urlencoded", "multipart/form-data" })
+	@Consumes("multipart/form-data")
 	public Response createExperiment(
 			@PathParam("token") String token,
 			@PathParam("proposal") String proposal,
@@ -186,7 +186,7 @@ public class ExperimentRestWebService extends SaxsRestWebService {
 	@POST
 	@Path("{token}/proposal/{proposal}/saxs/experiment/{experimentId}/save")
 	@Produces({ "application/json" })
-	@Consumes({ "application/x-www-form-urlencoded", "multipart/form-data" })
+	@Consumes("multipart/form-data")
 	public Response saveExperiment(
 			@PathParam("token") String token,
 			@PathParam("proposal") String proposal,

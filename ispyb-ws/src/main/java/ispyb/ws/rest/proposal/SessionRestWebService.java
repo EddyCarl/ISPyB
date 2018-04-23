@@ -38,7 +38,7 @@ public class SessionRestWebService extends RestWebService {
 	@POST
 	@Path("{token}/proposal/{proposal}/mx/session/{sessionId}/comments/save")
 	@Produces("image/png")
-	@Consumes({ "application/x-www-form-urlencoded", "multipart/form-data" })
+	@Consumes("multipart/form-data")
 	public Response saveSessionComments(
 			@PathParam("token") String token,
 			@PathParam("proposal") String proposal,

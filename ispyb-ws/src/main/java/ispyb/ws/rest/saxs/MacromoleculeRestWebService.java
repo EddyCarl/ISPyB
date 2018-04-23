@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.security.RolesAllowed;
-import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -57,7 +56,7 @@ public class MacromoleculeRestWebService extends SaxsRestWebService {
 	@POST
 	@Path("{token}/proposal/{proposal}/saxs/macromolecule/save")
 	@Produces({ "application/json" })
-	@Consumes({ "application/x-www-form-urlencoded", "multipart/form-data" })
+	@Consumes("multipart/form-data")
 	public Response saveMacromolecule(@PathParam("token") String token, @PathParam("proposal") String proposal,
 			@FormParam("macromolecule") String macromolecule) throws Exception {
 
@@ -204,7 +203,7 @@ public class MacromoleculeRestWebService extends SaxsRestWebService {
 	@RolesAllowed({"User", "Manager", "Industrial", "LocalContact"})
 	@POST
 	@Path("{token}/proposal/{proposal}/saxs/macromolecule/{macromoleculeId}/pdb/{structureId}/save")
-	@Consumes({ "application/x-www-form-urlencoded", "multipart/form-data" })
+	@Consumes("multipart/form-data")
 	public Response saveStructure(
 			@PathParam("token") String token,
 			@PathParam("proposal") String proposal,

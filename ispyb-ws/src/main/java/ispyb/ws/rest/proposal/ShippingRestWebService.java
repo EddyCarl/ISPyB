@@ -99,7 +99,7 @@ public class ShippingRestWebService extends MXRestWebService {
 	@POST
 	@Path("{token}/proposal/{proposal}/shipping/labcontact/save")
 	@Produces({ "application/json" })
-	@Consumes({ "application/x-www-form-urlencoded", "multipart/form-data" })
+	@Consumes("multipart/form-data")
 	public Response saveLabContact(
 			@PathParam("token") String token,
 			@PathParam("proposal") String proposal,
@@ -309,7 +309,7 @@ public class ShippingRestWebService extends MXRestWebService {
 	@POST
 	@Path("{token}/proposal/{proposal}/shipping/{shippingId}/dewar/{dewarId}/puck/{containerId}/save")
 	@Produces({ "application/json" })
-	@Consumes({ "application/x-www-form-urlencoded", "multipart/form-data" })
+	@Consumes("multipart/form-data")
 	public Response savePuck(@PathParam("token") String token, @PathParam("proposal") String proposal,
 			@PathParam("shippingId") Integer shippingId,
 			@PathParam("dewarId") Integer dewarId,
@@ -388,7 +388,7 @@ public class ShippingRestWebService extends MXRestWebService {
 	@POST
 	@Path("{token}/proposal/{proposal}/shipping/save")
 	@Produces({ "application/json" })
-	@Consumes({ "application/x-www-form-urlencoded", "multipart/form-data" })
+	@Consumes("multipart/form-data")
 	public Response saveShipping(@PathParam("token") String token, @PathParam("proposal") String proposal,
 			@FormParam("shippingId") String shippingId, @FormParam("name") String name,
 			@FormParam("comments") String comments,

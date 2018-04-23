@@ -108,7 +108,7 @@ public class CrystalRestWebService extends MXRestWebService {
 	@POST
 	@Path("{token}/proposal/{proposal}/mx/crystal/proteinid/{proteinId}/save")
 	@Produces({ "application/json" })
-	@Consumes({ "application/x-www-form-urlencoded", "multipart/form-data" })
+  @Consumes("multipart/form-data")
 	public Response saveCrystalForm(
 			@PathParam("token") String token,
 			@PathParam("proposal") String proposal,

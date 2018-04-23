@@ -33,7 +33,7 @@ public class ModelingRestWebService extends SaxsRestWebService {
 	@POST
 	@Path("{token}/proposal/{proposal}/saxs/modeling/pdb/get")
 	@Produces({ "application/json" })
-	@Consumes({ "application/x-www-form-urlencoded", "multipart/form-data" })
+	@Consumes("multipart/form-data")
 	public Response getPDBModels(
 			@PathParam("token") String token,
 			@PathParam("proposal") String proposal,

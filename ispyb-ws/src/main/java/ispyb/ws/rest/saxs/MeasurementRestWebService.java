@@ -72,7 +72,7 @@ public class MeasurementRestWebService extends SaxsRestWebService {
 	@POST
 	@Path("{token}/proposal/{proposal}/saxs/measurement/save")
 	@Produces({ "application/json" })
-	@Consumes({ "application/x-www-form-urlencoded", "multipart/form-data" })
+	@Consumes("multipart/form-data")
 	public Response saveMeasurement(@PathParam("token") String token, @PathParam("proposal") String proposal,
 			@FormParam("measurement") String measurement)  {
 

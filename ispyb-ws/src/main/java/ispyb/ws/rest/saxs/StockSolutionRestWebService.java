@@ -56,7 +56,7 @@ public class StockSolutionRestWebService extends SaxsRestWebService {
 	@POST
 	@Path("{token}/proposal/{proposalId}/saxs/stocksolution/save")
 	@Produces({ "application/json" })
-	@Consumes({ "application/x-www-form-urlencoded", "multipart/form-data" })
+	@Consumes("multipart/form-data")
 	public Response saveStockSolution(
 			@PathParam("token") String token,
 			@PathParam("proposalId") String proposalId,
