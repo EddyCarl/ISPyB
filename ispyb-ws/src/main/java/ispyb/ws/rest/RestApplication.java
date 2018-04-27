@@ -40,7 +40,6 @@ import ispyb.ws.rest.saxs.ModelingRestWebService;
 import ispyb.ws.rest.saxs.SaxsRestWebService;
 import ispyb.ws.rest.saxs.SpecimenRestWebService;
 import ispyb.ws.rest.saxs.StatsRestWebService;
-import ispyb.ws.rest.saxs.SaxsStatsRestWebService;
 import ispyb.ws.rest.saxs.StockSolutionRestWebService;
 import ispyb.ws.rest.saxs.SubtractionRestWebService;
 
@@ -60,9 +59,10 @@ public class RestApplication extends Application {
 	public RestApplication() {
         BeanConfig beanConfig = new BeanConfig();
         beanConfig.setVersion("5.4.3");
-        beanConfig.setSchemes(new String[]{"http"});
-        beanConfig.setHost("localhost:8080");
-        beanConfig.setBasePath("/ispyb-ws");
+	beanConfig.setTitle("ISPyB Web Services - Test title!");        
+	beanConfig.setSchemes(new String[]{"http"});
+        beanConfig.setHost("192.168.30.200:8080");
+        beanConfig.setBasePath("/ispyb/ispyb-ws/rest");
         beanConfig.setResourcePackage("io.swagger.resources");
         beanConfig.setScan(true);
     }

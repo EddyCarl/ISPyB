@@ -37,6 +37,25 @@ public class ProposalRestWebService extends MXRestWebService{
 
 	private final static Logger logger = Logger.getLogger(ProposalRestWebService.class);
 
+
+	@RolesAllowed({"User", "Manager", "Industrial", "Localcontact"})
+	@GET
+	@Path("/proposals")
+	@Produces({ "application/json" })
+	public Response getSimpleProposals() throws Exception {
+		String methodName = "getSimpleProposals";
+		long id = this.logInit(methodName, logger);
+		try {
+			List<Map<String, Object>> proposals = this.getProposalsFromTokenNoAuth();
+			this.logFinish(methodName, id, logger);
+			return this.sendResponse(proposals);
+		} catch (Exception e) {
+			return this.logError(methodName, e, id, logger);
+		}				
+	}
+	
+
+
 	@RolesAllowed({"User", "Manager", "Industrial", "Localcontact"})
 	@GET
 	@Path("{token}/proposal/list")
@@ -134,7 +153,9 @@ public class ProposalRestWebService extends MXRestWebService{
 	@GET
 	@Path("{token}/proposal/{proposal}/technique/{technique}/get")
 	@Produces({ "application/json" })
-	public Response listProposal(@PathParam("token") String token, @PathParam("proposal") String login)
+	public Response listProposal(@PathParam("token") String token, 
+				     @PathParam("proposal") String login,
+				     @PathParam("technique") String technique)
 			throws Exception {
 		//TODO remove this method if above getProposaInfos is sufficient
 		long id = this.logInit("listProposal", logger, token, login);
@@ -174,6 +195,13 @@ public class ProposalRestWebService extends MXRestWebService{
 			return this.logError("listProposal", e, id, logger);
 		}
 	}
+
+
+	private List<Map<String, Object>> getProposalsFromTokenNoAuth () throws Exception {
+		List<Map<String, Object>> proposals = new ArrayList<Map<String,Object>>(); 
+		return this.getProposal3Service().findProposals();
+	}
+	
 	
 	private List<Map<String, Object>> getProposalsFromToken (String token) throws Exception {
 		Login3VO login3VO = this.getLogin3Service().findByToken(token);

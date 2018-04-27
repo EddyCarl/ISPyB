@@ -21,8 +21,9 @@ public class Bootstrap extends HttpServlet {
 		BeanConfig beanConfig = new BeanConfig();
 		beanConfig.setVersion("5.4.3");
 		beanConfig.setSchemes(new String[] { "http" });
-		beanConfig.setHost("localhost:8080");
-		beanConfig.setBasePath("/ispyb-ws");
+		//beanConfig.setHost("localhost:8080");
+		beanConfig.setHost("192.168.30.200:8080");
+		beanConfig.setBasePath("/ispyb/ispyb-ws/rest");
 		beanConfig.setResourcePackage("io.swagger.resources");
 		beanConfig.setScan(true);
 	}

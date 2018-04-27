@@ -115,7 +115,7 @@ public class SampleRestWebService extends MXRestWebService {
 
 	@RolesAllowed({ "User", "Manager", "Industrial", "Localcontact" })
 	@GET
-	@Path("{token}/proposal/{proposal}/mx/sample/dewarid/{dewarid}/list")
+	@Path("{token}/proposal/{proposal}/mx/sample/dewarid/{dewarId}/list")
 	@Produces({ "application/json" })
 	public Response getSamplesByDewarId(@PathParam("token") String token, @PathParam("proposal") String proposal, @PathParam("dewarId") int dewarId) {
 		String methodName = "getSamplesByDewarId";
