@@ -56,18 +56,17 @@ import io.swagger.jaxrs.config.BeanConfig;
  */
 @ApplicationPath("rest")
 public class RestApplication extends Application {
-	public RestApplication() {
+    public RestApplication() {
         BeanConfig beanConfig = new BeanConfig();
         beanConfig.setVersion("5.4.3");
-	beanConfig.setTitle("ISPyB Web Services - Test title!");        
-	beanConfig.setSchemes(new String[]{"http"});
+        beanConfig.setTitle("ISPyB Web Services - Test title!");
+        beanConfig.setSchemes(new String[]{"http"});
         beanConfig.setHost("192.168.30.200:8080");
         beanConfig.setBasePath("/ispyb/ispyb-ws/rest");
         beanConfig.setResourcePackage("io.swagger.resources");
         beanConfig.setScan(true);
     }
 
-    
     @Override
     public Set<Class<?>> getClasses() {
         Set<Class<?>> resources = new HashSet<Class<?>> ();
@@ -82,7 +81,7 @@ public class RestApplication extends Application {
         resources.add(SampleRestWebService.class);
         resources.add(WorkflowRestWebService.class);
         resources.add(XFEFluorescenceSpectrumRestWebService.class);
-        
+
         /** SAXS **/
         resources.add(BufferRestWebService.class);
         resources.add(DataCollectionRestWebService.class);
@@ -96,14 +95,14 @@ public class RestApplication extends Application {
         resources.add(StatsRestWebService.class);
         resources.add(StockSolutionRestWebService.class);
         resources.add(SubtractionRestWebService.class);
-        
+
         /** PROPOSAL **/
         resources.add(DewarRestWebService.class);
         resources.add(ProposalRestWebService.class);
         resources.add(SessionRestWebService.class);
         resources.add(ShippingRestWebService.class);
-        
-        
+
+
         resources.add(io.swagger.jaxrs.listing.ApiListingResource.class);
         resources.add(io.swagger.jaxrs.listing.SwaggerSerializers.class);
         return resources;
