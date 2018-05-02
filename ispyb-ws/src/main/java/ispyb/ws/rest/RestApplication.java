@@ -102,6 +102,8 @@ public class RestApplication extends Application {
         resources.add(SessionRestWebService.class);
         resources.add(ShippingRestWebService.class);
 
+        /** AUTHENTICATION **/
+        resources.add(AuthenticationRestWebService.class);
 
         resources.add(io.swagger.jaxrs.listing.ApiListingResource.class);
         resources.add(io.swagger.jaxrs.listing.SwaggerSerializers.class);
