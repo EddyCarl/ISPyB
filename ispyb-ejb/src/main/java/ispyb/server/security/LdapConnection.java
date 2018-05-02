@@ -1,19 +1,19 @@
 /*******************************************************************************
  * This file is part of ISPyB.
- * 
+ *
  * ISPyB is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * ISPyB is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with ISPyB.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * Contributors : S. Delageniere, R. Leal, L. Launer, K. Levik, S. Veyrier, P. Brenchereau, M. Bodin, A. De Maria Antolinos
  ******************************************************************************/
 package ispyb.server.security;
@@ -44,8 +44,8 @@ public class LdapConnection {
 
 	/**
 	 * finder by "uid". uid is a LDAP attribute.
-	 * 
-	 * 
+	 *
+	 *
 	 * @param intMat
 	 * @return
 	 * @throws Exception
@@ -67,6 +67,9 @@ public class LdapConnection {
 	}
 
 	public static EmployeeVO findOneEmployee(String value, String searchAttribute) {
+
+		// findOneEmployee( "guest", "uid" )
+
 		String ldapEmployeeDirectory = LDAP_Employee_Resource;
 		LdapContext ldapCtx;
 		EmployeeVO emp = null;
@@ -197,7 +200,7 @@ public class LdapConnection {
 		}
 		return emp;
 	}
-	
+
 	/**
 	 * @param lastName
 	 * @param fisrtName
@@ -228,7 +231,7 @@ public class LdapConnection {
 				}
 			} else {
 				// Not found
-				LOG.error("findOneEmployeeByNames employee " + lastName + "/" + firstName + " not found.");	
+				LOG.error("findOneEmployeeByNames employee " + lastName + "/" + firstName + " not found.");
 					emp = null;
 			}
 			answer.close();

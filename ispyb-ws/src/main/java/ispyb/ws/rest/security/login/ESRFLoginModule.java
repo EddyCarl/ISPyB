@@ -61,12 +61,12 @@ public class ESRFLoginModule {
 	public static List<String> authenticate(String username, String password)
 			throws Exception {
 
-		System.out.printf("\n*CE* - ESRFLoginModule.auhenticate - Username(%s) Password(%s)\n", username, password);
+		System.out.printf("*CE* - ESRFLoginModule.auhenticate - Username(%s) Password(%s)\n", username, password);
 
 		List<String> myRoles = new ArrayList<String>();
 
 		if (!password.isEmpty()){
-			System.out.printf("\n			*CE* - Password wasn't empty\n");
+			System.out.printf("			*CE* - Password wasn't empty\n");
 			InitialLdapContext ctx = new InitialLdapContext(getConnectionProperties(username, password), null);
 
 
