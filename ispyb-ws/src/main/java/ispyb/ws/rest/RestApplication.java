@@ -42,6 +42,7 @@ import ispyb.ws.rest.saxs.SpecimenRestWebService;
 import ispyb.ws.rest.saxs.StatsRestWebService;
 import ispyb.ws.rest.saxs.StockSolutionRestWebService;
 import ispyb.ws.rest.saxs.SubtractionRestWebService;
+import ispyb.ws.rest.security.AuthenticationRestWebService;
 
 import java.util.HashSet;
 import java.util.Set;
