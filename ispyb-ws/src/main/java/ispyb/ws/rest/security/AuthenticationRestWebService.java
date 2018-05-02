@@ -88,8 +88,10 @@ public class AuthenticationRestWebService extends RestWebService {
 						roles = EMBLLoginModule.authenticate(login, password);
 						break;
 					case "ESRF":
-//						roles = ESRFLoginModule.authenticate(login, password);
-						roles.add("User");
+
+						System.out.printf("			 * CE * - Populating the roles List - Using login[ %s ] & Password[ %s ]", login, password);
+						roles = ESRFLoginModule.authenticate(login, password);
+//						roles.add("User");
 
 //						siteId = LdapConnection.findByUniqueIdentifier(login).getSiteNumber();
 						siteId = "ESRF";
