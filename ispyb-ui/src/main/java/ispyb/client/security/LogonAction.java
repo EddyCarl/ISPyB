@@ -1,19 +1,19 @@
 /*******************************************************************************
  * This file is part of ISPyB.
- * 
+ *
  * ISPyB is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * ISPyB is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with ISPyB.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * Contributors : S. Delageniere, R. Leal, L. Launer, K. Levik, S. Veyrier, P. Brenchereau, M. Bodin, A. De Maria Antolinos
  ****************************************************************************************************/
 package ispyb.client.security;
@@ -58,15 +58,15 @@ import ispyb.server.security.LdapConnection;
 
 /**
  * When this page is called the JBoss Authentification has been successfull
- * 
+ *
  * @struts.action path="/security/logon"
- * 
+ *
  * @struts.action-forward name="guestPage" path="/welcomeGuestPage.do"
- * 
+ *
  * @struts.action-forward name="error" path="site.default.error.page"
- * 
+ *
  * @struts.action-forward name="unauthorised" path="site.logon.error.page"
- * 
+ *
  */
 public class LogonAction extends Action {
 
@@ -94,19 +94,25 @@ public class LogonAction extends Action {
 		ActionMessages messages = new ActionMessages();
 		String site = null;
 
+		System.out.println("Logging in.... ");
+		LOG.error("Logging in.... ");
+
 		try {
 			// --- Log ---
 			String userName = request.getUserPrincipal().getName();
 
+			System.out.println("Input USERNAME: " + userName);
+			LOG.error("Input USERNAME: " + userName);
+
 			String userGivenName = "";
 			String userLastName = "";
 			String userSiteNumber = "";
-			
+
 			/**************************************
 			 * AUTH using properties files
 			 **************************************/
 			if (Constants.SITE_AUTHENTICATION_METHOD.toString().trim().toUpperCase().equals("SIMPLE") ) {
-				
+
 				String userRolesNames = "Roles for user logged in: ";
 
 				// -----------
@@ -132,7 +138,13 @@ public class LogonAction extends Action {
 			}
 
 			LOG.info(Constants.SITE_AUTHENTICATION_METHOD.toString() + " Logon: user = " + userName + " (" + userGivenName + " "
-					+ userLastName + ")  ");
+				+ userLastName + ")  ");
+
+			System.out.println(Constants.SITE_AUTHENTICATION_METHOD.toString() + " Logon: user = " + userName + " (" + userGivenName + " "
+				+ userLastName + ")  ");
+			LOG.error(Constants.SITE_AUTHENTICATION_METHOD.toString() + " Logon: user = " + userName + " (" + userGivenName + " "
+				+ userLastName + ")  ");
+
 
 			HttpSession session = request.getSession();
 			ArrayList<RoleDO> userRoles = getUserRoles(request);
@@ -140,7 +152,7 @@ public class LogonAction extends Action {
 			session.setAttribute(Constants.LDAP_GivenName, userGivenName);
 			session.setAttribute(Constants.LDAP_LastName, userLastName);
 			session.setAttribute(Constants.LDAP_siteNumber, userSiteNumber);
-			
+
 			/**************************************
 			 * TODO: MX initialization to be moved
 			 **************************************/
@@ -157,15 +169,15 @@ public class LogonAction extends Action {
 			if (Constants.SITE_IS_ESRF()) {
 				site = Constants.SITE_ESRF;
 			}
-			
+
 			if (Constants.SITE_IS_MAXIV()) {
 				site = Constants.SITE_MAXIV;
 			}
-			
+
 			if (Constants.SITE_IS_SOLEIL()) {
 				site = Constants.SITE_SOLEIL;
 			}
-			
+
 			this.proposalService = (Proposal3Service) ejb3ServiceLocator.getLocalService(Proposal3Service.class);
 			List<Proposal3VO> proposals = this.proposalService.findProposalByLoginName(userName, site);
 
@@ -180,6 +192,8 @@ public class LogonAction extends Action {
 			if (userRoles.size() > 1) {
 				// forward to page where user can select which Role he want to use
 				response.sendRedirect(request.getContextPath() + "/roleChoosePage.do");
+
+				System.out.println("Redirected to: " + request.getContextPath() + "/roleChoosePage.do");
 
 			} else {
 				// create the menu and
@@ -203,6 +217,7 @@ public class LogonAction extends Action {
 					}
 					else{
 						response.sendRedirect(request.getContextPath() + currentRole.getValue());
+						System.out.println("Redirected to: " + request.getContextPath() + currentRole.getValue() );
 					}
 
 				} else if (proposals.size() == 1) {
@@ -244,9 +259,9 @@ public class LogonAction extends Action {
 		}
 
 		return (mapping.findForward("guestPage"));
-	}
+}
 
-	
+
 //	private String getProposalCode(String userName) {
 //		ArrayList<String> authenticationInfo = StringUtils.GetProposalNumberAndCode(userName);
 //		String proposalCode = authenticationInfo.get(0);
@@ -271,7 +286,7 @@ public class LogonAction extends Action {
 
 	/**
 	 * Get all Groups from DB
-	 * 
+	 *
 	 * @return
 	 */
 	private ArrayList<RoleDO> getGroups() {
@@ -303,7 +318,7 @@ public class LogonAction extends Action {
 
 	/**
 	 * Get All roles which this user belongs
-	 * 
+	 *
 	 * @param request
 	 * @return
 	 */
@@ -321,6 +336,15 @@ public class LogonAction extends Action {
 
 			}
 		}
+
+		for( RoleDO userRole : userRoles )
+		{
+			System.out.println("-- getUserRoles returning a user --");
+			System.out.println("    userRole.getId(): " + userRole.getId());
+			System.out.println("    userRole.getName(): " + userRole.getName());
+			System.out.println("    userRole.getValue(): " + userRole.getValue());
+		}
+
 		return userRoles;
 	}
 
