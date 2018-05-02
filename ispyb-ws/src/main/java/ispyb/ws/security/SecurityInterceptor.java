@@ -24,23 +24,25 @@ import org.jboss.resteasy.core.ServerResponse;
 
 /**
  * This SecurityInterceptor verify the access permissions for a user based on user name and method annotations
- * 
+ *
  * */
 @Provider
 public class SecurityInterceptor implements javax.ws.rs.container.ContainerRequestFilter {
 	private final static Logger logger = Logger.getLogger(SecurityInterceptor.class);
-	
+
 	private static final ServerResponse ACCESS_DENIED = new ServerResponse("Access denied for this resource", 401,new Headers<Object>());
 	private static final ServerResponse ACCESS_FORBIDDEN = new ServerResponse("Nobody can access this resource", 403,new Headers<Object>());
 
-	
+
 //	private Response getUnauthorizedResponse(){
-//		return Response.status(401) 
+//		return Response.status(401)
 //				.header("Access-Control-Allow-Origin", "*").build();
 //	}
-	
+
 	@Override
 	public void filter(ContainerRequestContext requestContext) {
+		System.out.printf("/n*CE* - SecurityInterceptor.filter() called/n");
+
 		ResourceMethodInvoker methodInvoker = (ResourceMethodInvoker) requestContext.getProperty("org.jboss.resteasy.core.ResourceMethodInvoker");
 		Method method = methodInvoker.getMethod();
 
@@ -48,7 +50,7 @@ public class SecurityInterceptor implements javax.ws.rs.container.ContainerReque
 		ArrayList<String> header = new ArrayList<String>();
 		header.add("*");
 		requestContext.getHeaders().put("Access-Control-Allow-Origin", header);
-		
+
 		if (method.isAnnotationPresent(PermitAll.class)) {
 			logger.info("PermitAll " + method.getName() + " "+ method.getDeclaredAnnotations() + " " + method.getAnnotations() + " " + method.getParameterAnnotations());
 			return;
@@ -63,11 +65,13 @@ public class SecurityInterceptor implements javax.ws.rs.container.ContainerReque
 		if (method.isAnnotationPresent(RolesAllowed.class)) {
 			RolesAllowed rolesAnnotation = method.getAnnotation(RolesAllowed.class);
 			Set<String> rolesSet = new HashSet<String>(Arrays.asList(rolesAnnotation.value()));
-						
+
 			String token = requestContext.getUriInfo().getPathParameters().get("token").get(0);
 
+			System.out.printf("/n			*CE* - token from URI: %s/n", token);
+
 			Login3VO login = this.getLogin(token);
-			
+
 			if (login != null) {
 				if (login.checkRoles(rolesSet)){
 					if (login.isValid()) {
@@ -76,7 +80,7 @@ public class SecurityInterceptor implements javax.ws.rs.container.ContainerReque
 							return;
 						}
 						if (login.isUser() || login.isIndustrial()){
-							/** special case to display the list of proposal, with no proposalname present in the url **/ 
+							/** special case to display the list of proposal, with no proposalname present in the url **/
 							if (!requestContext.getUriInfo().getPathParameters().containsKey("proposal")){
 								return;
 							}
@@ -99,7 +103,7 @@ public class SecurityInterceptor implements javax.ws.rs.container.ContainerReque
 					logger.info("Roles not valid");
 					requestContext.abortWith(ACCESS_FORBIDDEN);
 				}
-			} 
+			}
 			requestContext.abortWith(ACCESS_FORBIDDEN);
 		}
 

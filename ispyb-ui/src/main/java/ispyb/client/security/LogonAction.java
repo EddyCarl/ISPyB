@@ -94,15 +94,11 @@ public class LogonAction extends Action {
 		ActionMessages messages = new ActionMessages();
 		String site = null;
 
-		System.out.println("Logging in.... ");
-		LOG.error("Logging in.... ");
-
 		try {
 			// --- Log ---
 			String userName = request.getUserPrincipal().getName();
 
-			System.out.println("Input USERNAME: " + userName);
-			LOG.error("Input USERNAME: " + userName);
+			System.out.println("Logging in as User: " + userName);
 
 			String userGivenName = "";
 			String userLastName = "";
@@ -140,12 +136,6 @@ public class LogonAction extends Action {
 			LOG.info(Constants.SITE_AUTHENTICATION_METHOD.toString() + " Logon: user = " + userName + " (" + userGivenName + " "
 				+ userLastName + ")  ");
 
-			System.out.println(Constants.SITE_AUTHENTICATION_METHOD.toString() + " Logon: user = " + userName + " (" + userGivenName + " "
-				+ userLastName + ")  ");
-			LOG.error(Constants.SITE_AUTHENTICATION_METHOD.toString() + " Logon: user = " + userName + " (" + userGivenName + " "
-				+ userLastName + ")  ");
-
-
 			HttpSession session = request.getSession();
 			ArrayList<RoleDO> userRoles = getUserRoles(request);
 			session.setAttribute(Constants.ROLES, userRoles);
@@ -178,6 +168,7 @@ public class LogonAction extends Action {
 				site = Constants.SITE_SOLEIL;
 			}
 
+			System.out.printf("/n*CE* - Finding proposals by username(%s) and site(%s)/n", userName, site);
 			this.proposalService = (Proposal3Service) ejb3ServiceLocator.getLocalService(Proposal3Service.class);
 			List<Proposal3VO> proposals = this.proposalService.findProposalByLoginName(userName, site);
 
@@ -192,9 +183,6 @@ public class LogonAction extends Action {
 			if (userRoles.size() > 1) {
 				// forward to page where user can select which Role he want to use
 				response.sendRedirect(request.getContextPath() + "/roleChoosePage.do");
-
-				System.out.println("Redirected to: " + request.getContextPath() + "/roleChoosePage.do");
-
 			} else {
 				// create the menu and
 				// forward to Welcome page belonging to the unique role

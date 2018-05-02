@@ -33,14 +33,14 @@ import org.apache.log4j.Logger;
 @Path("/")
 public class AuthenticationRestWebService extends RestWebService {
 	private final static Logger logger = Logger.getLogger(AuthenticationRestWebService.class);
-	
+
 	private String generateRamdomUUID() throws NoSuchAlgorithmException, UnsupportedEncodingException{
 		MessageDigest crypt = MessageDigest.getInstance("SHA-1");
 		crypt.reset();
 		crypt.update( UUID.randomUUID().toString().getBytes("UTF-8"));
 		return byteToHex(crypt.digest());
 	}
-	
+
 	@Override
 	protected long logInit(String methodName, Logger logger, Object... args) {
 		logger.info("-----------------------");
@@ -59,18 +59,20 @@ public class AuthenticationRestWebService extends RestWebService {
 				System.currentTimeMillis(), this.getGson().toJson(params));
 		return this.now;
 	}
-	
+
 	@PermitAll
 	@POST
 	@Path("/authenticate")
 	@Produces({ "application/json" })
 	public Response authenticate(
-			@FormParam("login") String login, 
+			@FormParam("login") String login,
 			@FormParam("password") String password,
 			@QueryParam("site") String site) throws Exception {
 		String methodName = "authenticate";
 		long id = this.logInit(methodName, logger, login, site);
-		
+
+		System.out.printf("\n*CE* - AuthenticateRestWebService.authenticate - Login(%s), Pass(%s), Site(%s)\n", login, password, site);
+
 		/** siteId is need in some cases to get the sessions when, for instance, user is local contact **/
 		String siteId = "";
 		try {
@@ -101,13 +103,15 @@ public class AuthenticationRestWebService extends RestWebService {
 				throw new Exception("Empty passwords are not allowed");
 			}
 
+			System.out.printf("\n				*CE* - Roes.size: %d\n", roles.size());
 			if (roles.size() > 0){
 				String token = generateRamdomUUID();
-				
+				System.out.printf("\n				*CE* - Token generated (%s)\n", token);
+
 				HashMap<String, Object> cookie = new HashMap<String, Object>();
 				cookie.put("token", token);
 				cookie.put("roles", roles);
-				
+
 				/** Creating the login token on database **/
 				Login3VO login3vo = new Login3VO();
 				login3vo.setToken(token);
@@ -117,12 +121,12 @@ public class AuthenticationRestWebService extends RestWebService {
 				/** Retrieving the proposals attached to a User **/
 				List<String> proposalsAuthorized =  this.getProposal3Service().findProposalNamesByLoginName(login, site);
 				login3vo.setAuthorized(proposalsAuthorized.toString());
-							
+
 				/** Calculating expiration time **/
 				Calendar calendar = Calendar.getInstance(); // gets a calendar using the default time zone and locale.
 				calendar.add(Calendar.HOUR, 3);
 				Date expirationTime = calendar.getTime();
-				
+
 				login3vo.setExpirationTime(expirationTime);
 
 				/** Saving login on database **/

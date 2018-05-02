@@ -14,7 +14,7 @@ import ispyb.ws.ParentWebService;
 @Path("/")
 public class RestWebService extends ParentWebService {
 	protected long now;
-		
+
 	/**
 	 * Check if the logged user has the right to see the given proposal data
 	 * this is complementary to the SecurityInterceptor
@@ -24,10 +24,12 @@ public class RestWebService extends ParentWebService {
 	 * @throws NamingException
 	 */
 	protected boolean isProposalAllowedforToken (String token, int proposalId  ) throws NamingException {
-		
-		if ( token == null) 
+
+		System.out.printf("\n*CE* - RestWebService.isPropAllowedForToken called\n");
+
+		if ( token == null)
 			return false;
-		
+
 		Login3VO login3VO;
 			login3VO = this.getLogin3Service().findByToken(token);
 			List<Proposal3VO> proposals = new ArrayList<Proposal3VO>();
@@ -35,11 +37,11 @@ public class RestWebService extends ParentWebService {
 				if (login3VO.isValid()){
 					if (login3VO.isLocalContact() || login3VO.isManager() ){
 						// later add a test for localcontact to give access only to sessions attached to their beamlines
-						return true;				
+						return true;
 					}
 					if (login3VO.isUser()) {
 						proposals = this.getProposal3Service().findProposalByLoginName(login3VO.getUsername());
-						if (proposals == null || proposals.size()<1) 
+						if (proposals == null || proposals.size()<1)
 							return false;
 						for (Iterator<Proposal3VO> iterator = proposals.iterator(); iterator.hasNext();) {
 							Proposal3VO proposal3vo = (Proposal3VO) iterator.next();
@@ -49,10 +51,10 @@ public class RestWebService extends ParentWebService {
 					}
 				}
 			}
-				
-		return false;		
+
+		return false;
 	}
 
-	
+
 
 }

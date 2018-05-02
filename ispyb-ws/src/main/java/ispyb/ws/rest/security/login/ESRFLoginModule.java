@@ -44,9 +44,9 @@ public class ESRFLoginModule {
 		env.put("java.naming.security.authentication", "simple");
 		env.put("java.naming.security.credentials", password);
 		return env;
-		
+
 	}
-	
+
 	protected static String getFilter(String username){
 		String userDN = principalDNPrefix + username + principalDNSuffix;
 		return new StringBuffer().append("(&")
@@ -55,26 +55,29 @@ public class ESRFLoginModule {
 				.append(userDN)
 				.append(")").append(")").toString();
 	}
-	
-	
-	
+
+
+
 	public static List<String> authenticate(String username, String password)
 			throws Exception {
-		
+
+		System.out.printf("\n*CE* - ESRFLoginModule.auhenticate - Username(%s) Password(%s)\n", username, password);
+
 		List<String> myRoles = new ArrayList<String>();
-							
+
 		if (!password.isEmpty()){
+			System.out.printf("\n			*CE* - Password wasn't empty\n");
 			InitialLdapContext ctx = new InitialLdapContext(getConnectionProperties(username, password), null);
-			
-			
+
+
 			// Set up search constraints
 			SearchControls cons = new SearchControls();
 			cons.setSearchScope(SearchControls.SUBTREE_SCOPE);
 			// Search
 			NamingEnumeration<SearchResult> answer = ctx.search(groupCtxDN, getFilter(username),cons);
-			
+
 			System.out.println(answer);
-			
+
 			while (answer.hasMore()) {
 				SearchResult sr = answer.next();
 				System.out.println(sr);
