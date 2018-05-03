@@ -55,11 +55,11 @@ public class ProposalRestWebService extends MXRestWebService{
 		}
 	}
 
-
-
 	@RolesAllowed({"User", "Manager", "Industrial", "Localcontact"})
 	@GET
 	@Path("{token}/proposal/list")
+  @ApiOperation(value = "List all proposals",
+    notes = "Lists all of the proposals currently stored within the database")
 	@Produces({ "application/json" })
 	public Response getProposals(
 		@ApiParam(value = "Authorisation token generated when logging in", required = true) @PathParam("token") String token) throws Exception {
