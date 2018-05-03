@@ -92,11 +92,15 @@ public class ProposalRestWebService extends MXRestWebService{
 				List<Map<String, Object>> proposals = this.getProposalsFromToken(token);
 				results.put("proposal", proposals);
 			} else {
-				int proposalId = this.getProposalId(proposal);
-				System.out.printf("			getProposalInfo - Proposal ID[ %d ]\n", proposalId);
+        System.out.printf("			getProposalInfo - Proposal[ %s ]\n", proposal);
+
+//        int proposalId = this.getProposalId(proposal);
+
+				int proposalId = proposal;
+        System.out.printf("			getProposalInfo - Proposal ID[ %d ]\n", proposalId);
 
 
-				List<Macromolecule3VO> macromolecules = this.getSaxsProposal3Service().findMacromoleculesByProposalId(proposalId);
+        List<Macromolecule3VO> macromolecules = this.getSaxsProposal3Service().findMacromoleculesByProposalId(proposalId);
 				List<Buffer3VO> buffers = this.getSaxsProposal3Service().findBuffersByProposalId(proposalId);
 
 				List<StockSolution3VO> stockSolutions = this.getSaxsProposal3Service().findStockSolutionsByProposalId(
