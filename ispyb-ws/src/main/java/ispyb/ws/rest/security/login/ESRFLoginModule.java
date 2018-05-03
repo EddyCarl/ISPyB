@@ -43,8 +43,10 @@ public class ESRFLoginModule {
 		env.put("java.naming.provider.url", server);
 		env.put("java.naming.security.authentication", "simple");
 		env.put("java.naming.security.credentials", password);
-		return env;
 
+		System.out.printf("			Returning the ESRFLoginModule properties correctly\n");
+
+		return env;
 	}
 
 	protected static String getFilter(String username){
@@ -61,15 +63,12 @@ public class ESRFLoginModule {
 	public static List<String> authenticate(String username, String password)
 			throws Exception {
 
-		System.out.printf("*CE* - ESRFLoginModule.auhenticate - Username(%s) Password(%s)\n", username, password);
-
+		System.out.printf("		ESRFLoginModule.authenticate() :: Username[ %s ], Pass[ %s ]\n", username, password);
 		List<String> myRoles = new ArrayList<String>();
 
 		if (!password.isEmpty()){
-			System.out.printf("			*CE* - Password wasn't empty\n");
+			System.out.printf("			Attempt to create InitialLdapContext\n");
 			InitialLdapContext ctx = new InitialLdapContext(getConnectionProperties(username, password), null);
-			System.out.println("			*CE* - Didn't get past making the InitialLdapContext");
-
 
 			// Set up search constraints
 			SearchControls cons = new SearchControls();

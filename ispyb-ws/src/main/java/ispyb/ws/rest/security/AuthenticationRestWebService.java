@@ -75,7 +75,7 @@ public class AuthenticationRestWebService extends RestWebService {
 		String methodName = "authenticate";
 		long id = this.logInit(methodName, logger, login, site);
 
-		System.out.printf("\n*CE* - AuthenticateRestWebService.authenticate - Login(%s), Pass(%s), Site(%s)\n", login, password, site);
+		System.out.printf("		AuthenticationRestWebService.authenticate() :: Login[ %s ], Pass[ %s ], Site[ %s ]\n", login, password, site);
 
 		/** siteId is need in some cases to get the sessions when, for instance, user is local contact **/
 		String siteId = "";
@@ -88,13 +88,11 @@ public class AuthenticationRestWebService extends RestWebService {
 						roles = EMBLLoginModule.authenticate(login, password);
 						break;
 					case "ESRF":
-
-						System.out.printf("			 * CE * - Populating the roles List - Using login[ %s ] & Password[ %s ]", login, password);
 						roles = ESRFLoginModule.authenticate(login, password);
 //						roles.add("User");
 
-//						siteId = LdapConnection.findByUniqueIdentifier(login).getSiteNumber();
-						siteId = "ESRF";
+						siteId = LdapConnection.findByUniqueIdentifier(login).getSiteNumber();
+//						siteId = "ESRF";
 
 						logger.info(String.format("Login: %s siteId: %s", login, siteId));
 						break;
