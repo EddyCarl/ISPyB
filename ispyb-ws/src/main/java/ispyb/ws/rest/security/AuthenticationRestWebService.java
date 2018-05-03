@@ -89,11 +89,7 @@ public class AuthenticationRestWebService extends RestWebService {
 						break;
 					case "ESRF":
 						roles = ESRFLoginModule.authenticate(login, password);
-//						roles.add("User");
-
 						siteId = LdapConnection.findByUniqueIdentifier(login).getSiteNumber();
-//						siteId = "ESRF";
-
 						logger.info(String.format("Login: %s siteId: %s", login, siteId));
 						break;
 					case "SOLEIL":
@@ -102,6 +98,12 @@ public class AuthenticationRestWebService extends RestWebService {
 					case "MAXIV":
 						roles = MAXIVLoginModule.authenticate(login, password);
 						break;
+
+					case "DLS":
+						roles.add("User");
+						roles.add("Manager");
+						siteId = "ESRF";
+
 					default:
 						throw new Exception("Site is not defined");
 					}
@@ -111,7 +113,7 @@ public class AuthenticationRestWebService extends RestWebService {
 				throw new Exception("Empty passwords are not allowed");
 			}
 
-			System.out.printf("\n				*CE* - Roes.size: %d\n", roles.size());
+			System.out.printf("\n				*CE* - Roles.size: %d\n", roles.size());
 			if (roles.size() > 0){
 				String token = generateRamdomUUID();
 				System.out.printf("\n				*CE* - Token generated (%s)\n", token);

@@ -68,10 +68,7 @@ public class ESRFLoginModule {
 
 		if (!password.isEmpty()){
 			System.out.printf("			Attempt to create InitialLdapContext\n");
-//			InitialLdapContext ctx = new InitialLdapContext(getConnectionProperties(username, password), null);
-			InitialLdapContext ctx = new InitialLdapContext(null, null);
-
-			System.out.println("			Got past the InitialLdapContext bit... ");
+			InitialLdapContext ctx = new InitialLdapContext(getConnectionProperties(username, password), null);
 
 			// Set up search constraints
 			SearchControls cons = new SearchControls();
