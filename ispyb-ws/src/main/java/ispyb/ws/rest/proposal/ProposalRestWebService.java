@@ -96,7 +96,7 @@ public class ProposalRestWebService extends MXRestWebService{
 
 //        int proposalId = this.getProposalId(proposal);
 
-				int proposalId = proposal;
+				int proposalId = Integer.parseInt(proposal);
         System.out.printf("			getProposalInfo - Proposal ID[ %d ]\n", proposalId);
 
 
