@@ -94,9 +94,10 @@ public class ProposalRestWebService extends MXRestWebService{
 			} else {
         System.out.printf("			getProposalInfo - Proposal[ %s ]\n", proposal);
 
-//        int proposalId = this.getProposalId(proposal);
+        int proposalId = this.getProposalId(proposal);
 
-				int proposalId = Integer.parseInt(proposal);
+				// This method worked ... Passing in the ID as the parameter (Which is what I'd expect...)
+//				int proposalId = Integer.parseInt(proposal);
         System.out.printf("			getProposalInfo - Proposal ID[ %d ]\n", proposalId);
 
 
