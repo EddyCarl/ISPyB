@@ -17,6 +17,7 @@ import org.apache.log4j.Logger;
 import com.google.gson.Gson;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiParam;
 import ispyb.server.biosaxs.vos.assembly.Macromolecule3VO;
 import ispyb.server.biosaxs.vos.dataAcquisition.Buffer3VO;
 import ispyb.server.biosaxs.vos.dataAcquisition.StockSolution3VO;
@@ -51,16 +52,17 @@ public class ProposalRestWebService extends MXRestWebService{
 			return this.sendResponse(proposals);
 		} catch (Exception e) {
 			return this.logError(methodName, e, id, logger);
-		}				
+		}
 	}
-	
+
 
 
 	@RolesAllowed({"User", "Manager", "Industrial", "Localcontact"})
 	@GET
 	@Path("{token}/proposal/list")
 	@Produces({ "application/json" })
-	public Response getProposals(@PathParam("token") String token) throws Exception {
+	public Response getProposals(
+		@ApiParam(value = "Authorisation token generated when logging in", required = true) @PathParam("token") String token) throws Exception {
 		String methodName = "getProposals";
 		long id = this.logInit(methodName, logger, token);
 		try {
@@ -69,9 +71,9 @@ public class ProposalRestWebService extends MXRestWebService{
 			return this.sendResponse(proposals);
 		} catch (Exception e) {
 			return this.logError("getProposals", e, id, logger);
-		}				
+		}
 	}
-	
+
 	@RolesAllowed({"User", "Manager", "Industrial", "Localcontact"})
 	@GET
 	@Path("{token}/proposal/{proposal}/info/get")
@@ -81,15 +83,15 @@ public class ProposalRestWebService extends MXRestWebService{
 		String methodName = "getProposaInfos";
 		long id = this.logInit(methodName, logger, token, proposal);
 		try {
-			ArrayList<HashMap<String, List<?>>> multiple = new ArrayList<HashMap<String, List<?>>>();				
+			ArrayList<HashMap<String, List<?>>> multiple = new ArrayList<HashMap<String, List<?>>>();
 			HashMap<String, List<?>> results = new HashMap<String, List<?>>();
-			
-			if (proposal == null || proposal.isEmpty()) {					
+
+			if (proposal == null || proposal.isEmpty()) {
 				List<Map<String, Object>> proposals = this.getProposalsFromToken(token);
 				results.put("proposal", proposals);
-				
+
 			} else {
-						
+
 				int proposalId = this.getProposalId(proposal);
 
 				List<Macromolecule3VO> macromolecules = this.getSaxsProposal3Service().findMacromoleculesByProposalId(proposalId);
@@ -100,10 +102,10 @@ public class ProposalRestWebService extends MXRestWebService{
 				List<Platetype3VO> plateTypes = this.getPlateType3Service().findAll();
 				List<Proposal3VO> proposals = new ArrayList<Proposal3VO>();
 				proposals.add(this.getProposal3Service().findProposalById(proposalId));
-				
+
 				List<Protein3VO> proteins = this.getProtein3Service().findByProposalId(proposalId);
 				List<Crystal3VO> crystals = this.getCrystal3Service().findByProposalId(proposalId);
-				
+
 				List<LabContact3VO> labContacts = this.getLabContact3Service().findFiltered(proposalId, null);
 				results.put("proposal", proposals);
 				results.put("crystals", crystals);
@@ -113,7 +115,7 @@ public class ProposalRestWebService extends MXRestWebService{
 				results.put("stockSolutions", stockSolutions);
 				results.put("labcontacts", labContacts);
 				results.put("proteins", proteins);
-				
+
 			}
 
 			multiple.add(results);
@@ -125,8 +127,8 @@ public class ProposalRestWebService extends MXRestWebService{
 			return this.logError(methodName, e, id, logger);
 		}
 	}
-	
-	
+
+
 	@RolesAllowed({"User", "Manager", "Industrial", "Localcontact"})
 	@GET
 	@Path("{token}/proposal/session/{sessionId}/list")
@@ -147,13 +149,13 @@ public class ProposalRestWebService extends MXRestWebService{
 			return this.logError(methodName, e, id, logger);
 		}
 	}
-	
+
 
 	@RolesAllowed({"User", "Manager", "Industrial", "Localcontact"})
 	@GET
 	@Path("{token}/proposal/{proposal}/technique/{technique}/get")
 	@Produces({ "application/json" })
-	public Response listProposal(@PathParam("token") String token, 
+	public Response listProposal(@PathParam("token") String token,
 				     @PathParam("proposal") String login,
 				     @PathParam("technique") String technique)
 			throws Exception {
@@ -172,10 +174,10 @@ public class ProposalRestWebService extends MXRestWebService{
 			List<Platetype3VO> plateTypes = this.getPlateType3Service().findAll();
 			List<Proposal3VO> proposals = new ArrayList<Proposal3VO>();
 			proposals.add(this.getProposal3Service().findProposalById(proposalId));
-			
+
 			List<Protein3VO> proteins = this.getProtein3Service().findByProposalId(proposalId);
 			List<Crystal3VO> crystals = this.getCrystal3Service().findByProposalId(proposalId);
-			
+
 			List<LabContact3VO> labContacts = this.getLabContact3Service().findFiltered(proposalId, null);
 			results.put("proposal", proposals);
 			results.put("crystals", crystals);
@@ -198,39 +200,39 @@ public class ProposalRestWebService extends MXRestWebService{
 
 
 	private List<Map<String, Object>> getProposalsFromTokenNoAuth () throws Exception {
-		List<Map<String, Object>> proposals = new ArrayList<Map<String,Object>>(); 
+		List<Map<String, Object>> proposals = new ArrayList<Map<String,Object>>();
 		return this.getProposal3Service().findProposals();
 	}
-	
-	
+
+
 	private List<Map<String, Object>> getProposalsFromToken (String token) throws Exception {
 		Login3VO login3VO = this.getLogin3Service().findByToken(token);
-		List<Map<String, Object>> proposals = new ArrayList<Map<String,Object>>(); 
-		
+		List<Map<String, Object>> proposals = new ArrayList<Map<String,Object>>();
+
 		if (login3VO != null){
 			if (login3VO.isValid()){
-				
+
 				if (login3VO.isLocalContact() || login3VO.isManager()){
 					proposals = this.getProposal3Service().findProposals();
 				}
 				else{
 					proposals = this.getProposal3Service().findProposals(login3VO.getUsername());
-				}				
+				}
 			}
-		}	else {		
+		}	else {
 			throw new Exception("Token is not valid");
 		}
 		return (proposals);
 
 	}
-	
+
 	@RolesAllowed({"User", "Manager", "Industrial", "Localcontact"})
 	@GET
 	@Path("{token}/proposal/{proposal}/update")
 	@Produces({ "application/json" })
 	public Response updateProposal(@PathParam("token") String token, @PathParam("proposal") String proposal)
 			throws Exception {
-		
+
 		long id = this.logInit("updateProposal", logger, token, proposal);
 		int proposalId = this.getProposalId(proposal);
 		try {
