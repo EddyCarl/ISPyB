@@ -30,10 +30,6 @@ import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
 
-import io.swagger.annotations.Api;
-
-
-@Api
 @Path("/")
 public class AuthenticationRestWebService extends RestWebService {
 	private final static Logger logger = Logger.getLogger(AuthenticationRestWebService.class);
@@ -75,8 +71,6 @@ public class AuthenticationRestWebService extends RestWebService {
 		String methodName = "authenticate";
 		long id = this.logInit(methodName, logger, login, site);
 
-		System.out.printf("		AuthenticationRestWebService.authenticate() :: Login[ %s ], Pass[ %s ], Site[ %s ]\n", login, password, site);
-
 		/** siteId is need in some cases to get the sessions when, for instance, user is local contact **/
 		String siteId = "";
 		try {
@@ -98,13 +92,10 @@ public class AuthenticationRestWebService extends RestWebService {
 					case "MAXIV":
 						roles = MAXIVLoginModule.authenticate(login, password);
 						break;
-
-					case "DLS":
-						roles.add("User");
-						roles.add("Manager");
-						siteId = "ESRF";
-						break;
-
+          case "DLS":
+            roles.add("User");
+            roles.add("Manager");
+            siteId = "ESRF";
 					default:
 						throw new Exception("Site is not defined");
 					}
@@ -114,10 +105,8 @@ public class AuthenticationRestWebService extends RestWebService {
 				throw new Exception("Empty passwords are not allowed");
 			}
 
-			System.out.printf("\n				*CE* - Roles.size: %d\n", roles.size());
 			if (roles.size() > 0){
 				String token = generateRamdomUUID();
-				System.out.printf("\n				*CE* - Token generated (%s)\n", token);
 
 				HashMap<String, Object> cookie = new HashMap<String, Object>();
 				cookie.put("token", token);
