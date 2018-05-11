@@ -96,6 +96,7 @@ public class AuthenticationRestWebService extends RestWebService {
             roles.add("User");
             roles.add("Manager");
             siteId = "ESRF";
+            break;
 					default:
 						throw new Exception("Site is not defined");
 					}
