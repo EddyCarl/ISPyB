@@ -97,14 +97,14 @@
 		<dependency>
 			<groupId>org.jasig.cas.client</groupId>
 			<artifactId>cas-client-core</artifactId>
-			<version>${java.cas.client.version}</version>
+			<version>3.5.0</version>
 		</dependency>
 
 		<!-- JBoss integration is provided by this dependency -->
 		<dependency>
 			<groupId>org.jasig.cas.client</groupId>
 			<artifactId>cas-client-integration-jboss</artifactId>
-			<version>${java.cas.client.version}</version>
+			<version>3.5.0</version>
 		</dependency>
 
  <dependency>
