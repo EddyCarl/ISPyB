@@ -7,7 +7,7 @@
 
 	<display-name>ISPyB</display-name>
 	<description>ISPyB Web Application</description>
-	
+
 	<context-param>
 		<param-name>resteasy.scan</param-name>
 		<param-value>true</param-value>
@@ -46,13 +46,13 @@
 			ispyb.ws.rest.proposal.ShippingRestWebService,
 		</param-value>
 	</context-param>
-<!-- 
+<!--
 	<servlet>
 		<servlet-name>SwaggerBootstrap</servlet-name>
 		<servlet-class>ispyb.ws.Bootstrap</servlet-class>
 		<load-on-startup>2</load-on-startup>
 	</servlet>
---> 
+-->
 	<servlet>
 		<servlet-name>Jersey2Config</servlet-name>
 		<servlet-class>io.swagger.jaxrs.config.DefaultJaxrsConfig</servlet-class>
@@ -66,5 +66,41 @@
 		</init-param>
 		<load-on-startup>2</load-on-startup>
 	</servlet>
+
+	<filter>
+		<filter-name>CAS Authentication Filter</filter-name>
+		<filter-class>org.jasig.cas.client.authentication.AuthenticationFilter</filter-class>
+		<init-param>
+			<param-name>casServerLoginUrl</param-name>
+			<param-value>http://192.168.33.12:8080/cas/login</param-value>
+		</init-param>
+		<init-param>
+			<param-name>serverName</param-name>
+			<param-value>http://192.168.30.200:8080/</param-value>
+		</init-param>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>CAS Authentication Filter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<filter>
+		<filter-name>CAS Validation Filter</filter-name>
+		<filter-class>org.jasig.cas.client.validation.Cas30ProxyReceivingTicketValidationFilter</filter-class>
+		<init-param>
+			<param-name>casServerUrlPrefix</param-name>
+			<param-value>http://192.168.33.12:8080/cas</param-value>
+		</init-param>
+		<init-param>
+			<param-name>serverName</param-name>
+			<param-value>http://192.168.30.200:8080/</param-value>
+		</init-param>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>CAS Validation Filter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
 
 </web-app>
