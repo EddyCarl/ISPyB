@@ -94,8 +94,8 @@ public class AuthenticationRestWebService extends RestWebService {
 						roles = MAXIVLoginModule.authenticate(login, password);
 						break;
           case "DLS":
-//          	roles = DLSLoginModule.authenticate(login, password);
-//						logger.info(String.format("Authenticating - Site[%s], Login[%s]", site, login));
+          	roles = DLSLoginModule.authenticate(login, password);
+						logger.info(String.format("Authenticating - Site[%s], Login[%s]", site, login));
 						break;
 					default:
 						throw new Exception("Site is not defined");
