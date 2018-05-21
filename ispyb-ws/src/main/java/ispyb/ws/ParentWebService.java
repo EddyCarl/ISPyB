@@ -54,7 +54,7 @@ import com.google.gson.GsonBuilder;
 public  class ParentWebService {
 	protected long now;
 	private final static Logger log = Logger.getLogger(ParentWebService.class);
-		
+
 	protected Response sendImage(String filePath) {
 		if (filePath != null) {
 			if (new File(filePath).exists())
@@ -71,7 +71,7 @@ public  class ParentWebService {
 		}
 		return Response.status(Response.Status.NOT_FOUND).header("Access-Control-Allow-Origin", "*").build();
 	}
-	
+
 	protected Response downloadFileAsAttachment(String filePath) throws Exception {
 		File file = new File(filePath);
 		if (file.exists()) {
@@ -83,7 +83,7 @@ public  class ParentWebService {
 			throw new Exception("File " + file.getAbsolutePath() + " does not exist");
 		}
 	}
-	
+
 	protected Response downloadFile(String filePath) throws Exception {
 		File file = new File(filePath);
 		if (file.exists()) {
@@ -95,9 +95,9 @@ public  class ParentWebService {
 			throw new Exception("File " + file.getAbsolutePath() + " does not exist");
 		}
 	}
-	
-	
-	
+
+
+
 	/**
 	 * File name can not contain commas!!!
 	 * @param bs
@@ -109,13 +109,13 @@ public  class ParentWebService {
 		response.header("Content-Disposition", "attachment; filename=" + fileName);
 		return response.header("Access-Control-Allow-Origin", "*").build();
 	}
-		
+
 	/** TODO: it does not work when retrieving using Constants class **/
 	protected String getFolderForUploads() {
 		Properties mProp3 = PropertyLoader.loadProperties("ISPyB");
 		return mProp3.getProperty("ISPyB.uploaded.root.folder");
 	}
-	
+
 	/** Folder where the pdb and all the other apriori information files will be uploaded **/
 	protected String getTargetFolder(int proposalId) throws Exception {
 		Proposal3VO proposal = this.getProposal3Service().findProposalById(proposalId);
@@ -125,11 +125,11 @@ public  class ParentWebService {
 		}
 		return  this.getFolderForUploads() +  proposalName;
 	}
-	
+
 	protected String copyFileToDisk(String proposal, FileUploadForm form) throws Exception {
 		int proposalId = this.getProposalId(proposal);
 		String filePath = this.getTargetFolder(proposalId) + "/" + form.getFileName();
-		
+
 		log.info("Copying file " + form.getFileName() + " to " + filePath );
 		File file = new File(filePath);
 		FileOutputStream fileOut = new FileOutputStream(file.getAbsolutePath());
@@ -137,18 +137,18 @@ public  class ParentWebService {
 		fileOut.close();
 		log.info("File has been copied on " + filePath);
 		return filePath;
-		
+
 	}
-	
+
 	protected Gson getGson() {
 		return new GsonBuilder().serializeNulls().excludeFieldsWithModifiers(Modifier.PRIVATE).serializeSpecialFloatingPointValues()
 				.create();
 	}
-	
+
 	protected Gson getGson(boolean serializeNull) {
 		if (serializeNull)
 			return this.getGson();
-					
+
 		return new GsonBuilder().excludeFieldsWithModifiers(Modifier.PRIVATE).serializeSpecialFloatingPointValues()
 				.create();
 	}
@@ -162,14 +162,18 @@ public  class ParentWebService {
 		return Response.ok(response).header("Access-Control-Allow-Origin", "*").build();
 	}
 
+	// I believe that this is the sendReponse method being called...
 	protected Response sendResponse(Object response) {
+
+		System.out.println("Returning the following in the OK Response: " + getGson().toJson(response));
+
 		return Response.ok(getGson().toJson(response)).header("Access-Control-Allow-Origin", "*").build();
 	}
-	
+
 	protected Response sendError(String message) {
 		return Response.serverError().entity(message).header("Access-Control-Allow-Origin", "*").build();
 	}
-	
+
 	protected Response sendResponse(Object response, boolean serializeNulls) {
 		return Response.ok(getGson(serializeNulls).toJson(response)).header("Access-Control-Allow-Origin", "*").build();
 	}
@@ -181,45 +185,45 @@ public  class ParentWebService {
 	protected External3Service getExternal3Service() throws NamingException {
 		return (External3Service) Ejb3ServiceLocator.getInstance().getLocalService(External3Service.class);
 	}
-	
+
 	protected DewarTransportHistory3Service getDewarTransportHistory3Service() throws NamingException {
 		return (DewarTransportHistory3Service) Ejb3ServiceLocator.getInstance().getLocalService(DewarTransportHistory3Service.class);
 	}
-	
+
 	protected Protein3Service getProtein3Service() throws NamingException {
 		return (Protein3Service) Ejb3ServiceLocator.getInstance().getLocalService(Protein3Service.class);
 	}
-	
+
 	protected Container3Service getContainer3Service() throws NamingException {
 		return (Container3Service) Ejb3ServiceLocator.getInstance().getLocalService(Container3Service.class);
 	}
-	
-	
+
+
 	protected ShipmentRestWsService getShipmentWsService() throws NamingException {
 		return (ShipmentRestWsService) Ejb3ServiceLocator.getInstance().getLocalService(ShipmentRestWsService.class);
 	}
-		
+
 	protected Sampleplate3Service getSamplePlate3Service() throws NamingException {
 		return (Sampleplate3Service) Ejb3ServiceLocator.getInstance().getLocalService(Sampleplate3Service.class);
 	}
-	
+
 	protected DataCollection3Service getDataCollection3Service() throws NamingException {
 		return (DataCollection3Service) Ejb3ServiceLocator.getInstance().getLocalService(DataCollection3Service.class);
 	}
-	
+
 	protected DataCollectionGroup3Service getDataCollectionGroup3Service() throws NamingException {
 		return (DataCollectionGroup3Service) Ejb3ServiceLocator.getInstance().getLocalService(DataCollectionGroup3Service.class);
 	}
-	
+
 	protected Image3Service getImage3Service() throws NamingException {
 		return (Image3Service) Ejb3ServiceLocator.getInstance().getLocalService(Image3Service.class);
 	}
-	
+
 	protected MenuGroup3Service getMenuGroup3Service() throws NamingException {
 		return (MenuGroup3Service) Ejb3ServiceLocator.getInstance().getLocalService(MenuGroup3Service.class);
 	}
 
-	
+
 	protected Session3Service getSession3Service() throws NamingException {
 		return (Session3Service) Ejb3ServiceLocator.getInstance().getLocalService(Session3Service.class);
 	}
@@ -232,15 +236,15 @@ public  class ParentWebService {
 		return (Login3Service) Ejb3ServiceLocator.getInstance().getLocalService(
 				Login3Service.class);
 	}
-	
+
 	protected LabContact3Service getLabContact3Service() throws NamingException {
 		return (LabContact3Service) Ejb3ServiceLocator.getInstance().getLocalService(LabContact3Service.class);
 	}
-	
+
 	protected Laboratory3Service getLaboratory3Service() throws NamingException {
 		return (Laboratory3Service) Ejb3ServiceLocator.getInstance().getLocalService(Laboratory3Service.class);
 	}
-	
+
 	protected Person3Service getPerson3Service() throws NamingException {
 		return (Person3Service) Ejb3ServiceLocator.getInstance().getLocalService(Person3Service.class);
 	}
@@ -252,7 +256,7 @@ public  class ParentWebService {
 	protected SaxsProposal3Service getSaxsProposal3Service() throws NamingException {
 		return (SaxsProposal3Service) Ejb3ServiceLocator.getInstance().getLocalService(SaxsProposal3Service.class);
 	}
-	
+
 	protected Proposal3Service getProposal3Service() throws NamingException {
 		return (Proposal3Service) Ejb3ServiceLocator.getInstance().getLocalService(Proposal3Service.class);
 	}
@@ -260,14 +264,14 @@ public  class ParentWebService {
 	protected Dewar3Service getDewar3Service() throws NamingException {
 		return (Dewar3Service) Ejb3ServiceLocator.getInstance().getLocalService(Dewar3Service.class);
 	}
-	
+
 	protected SchemaStatusService getSchemaStatusService() throws NamingException {
 		return (SchemaStatusService) Ejb3ServiceLocator.getInstance().getLocalService(SchemaStatusService.class);
 	}
 
 	/**
 	 * Gets proposal Id by login name
-	 * 
+	 *
 	 * @param proposal
 	 * @return
 	 * @throws Exception
@@ -322,7 +326,7 @@ public  class ParentWebService {
 
 	/**
 	 * Form a comma separated string returns a list of integers
-	 * 
+	 *
 	 * @param commaSeparated
 	 * @return
 	 */
@@ -397,7 +401,7 @@ public  class ParentWebService {
 	protected Response logError(String methodName, Exception e, long start, Logger logger) {
 		return this.logError( methodName,  e,  start,  logger, LoggerFormatter.Package.ISPyB_API_ERROR);
 	}
-	
+
 	protected Response logError(String methodName, Exception e, long start, Logger logger,  LoggerFormatter.Package myPackage) {
 		e.printStackTrace();
 		LoggerFormatter.log(logger, myPackage, methodName, start,System.currentTimeMillis(), e.getMessage(), e);

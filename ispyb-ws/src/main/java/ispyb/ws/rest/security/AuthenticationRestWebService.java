@@ -94,8 +94,8 @@ public class AuthenticationRestWebService extends RestWebService {
 						roles = MAXIVLoginModule.authenticate(login, password);
 						break;
           case "DLS":
-          	roles = DLSLoginModule.authenticate(login, password);
-						logger.info(String.format("Site[%s], Login[%s]", site, login));
+//          	roles = DLSLoginModule.authenticate(login, password);
+//						logger.info(String.format("Authenticating - Site[%s], Login[%s]", site, login));
 						break;
 					default:
 						throw new Exception("Site is not defined");
@@ -108,19 +108,39 @@ public class AuthenticationRestWebService extends RestWebService {
 
 			if (roles.size() > 0){
 				String token = generateRamdomUUID();
+				System.out.println("Randomly generated 'token': "  + token);
 
 				HashMap<String, Object> cookie = new HashMap<String, Object>();
 				cookie.put("token", token);
 				cookie.put("roles", roles);
 
+
+				/*
+					Required to create the Login3VO class instance:
+						- Randomly generated 'token'
+						- Username
+						- Roles array list represented as a string
+						- The Site ID
+						- A List of strings representing the proposalsAuthorised
+						- An expiry time (Set to 3 hours)
+				 */
+
+
 				/** Creating the login token on database **/
 				Login3VO login3vo = new Login3VO();
+
+				System.out.println("Initialising the token with the following parameters:");
+				System.out.printf("Token [%s], Username [%s], Roles [%s], SiteID [%s]\n", token, login, roles.toString(),siteId);
+
 				login3vo.setToken(token);
 				login3vo.setUsername(login);
 				login3vo.setRoles(roles.toString());
 				login3vo.setSiteId(siteId);
+
 				/** Retrieving the proposals attached to a User **/
 				List<String> proposalsAuthorized =  this.getProposal3Service().findProposalNamesByLoginName(login, site);
+
+				System.out.println("Proposals attached to this user: " + proposalsAuthorized.toString());
 				login3vo.setAuthorized(proposalsAuthorized.toString());
 
 				/** Calculating expiration time **/
@@ -130,6 +150,7 @@ public class AuthenticationRestWebService extends RestWebService {
 
 				login3vo.setExpirationTime(expirationTime);
 
+				System.out.println("Adding token to database.");
 				/** Saving login on database **/
 				this.getLogin3Service().persist(login3vo);
 				return sendResponse(cookie);
