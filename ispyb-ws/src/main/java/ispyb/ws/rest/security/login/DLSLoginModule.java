@@ -27,35 +27,63 @@ import org.jboss.security.SubjectSecurityManager;
  */
 public class DLSLoginModule
 {
-  private final static String AUTH_TYPE = "simple";
-//  private final static String SERVER_URL = "ldap://ldap.esrf.fr:389/";
-  private final static String SERVER_URL = "http://192.168.33.12:8080/cas";
-
-  /**
-   * Creates a set of environment variable properties to return that allow the DLSLoginModule to be configured.
-   *
-   * (Realistically, this should probably be done via a config file perhaps rather than hardcoded in the codebase?)
-   *
-   * @param username
-   *        - The login username
-   *
-   * @param password
-   *        - The login password
-   *
-   * @return Properties props
-   *        - A set of environment variables to configure the DLSLoginModule
-   */
-//  private Properties getConnectionProperties(final String username, final String password)
-//  {
-//    Properties props = new Properties();
+//  private final static String AUTH_TYPE = "simple";
+////  private final static String SERVER_URL = "ldap://ldap.esrf.fr:389/";
+//  private final static String SERVER_URL = "http://192.168.33.12:8080/cas";
 //
-//    props.put( "java.naming.provider.url", SERVER_URL );
-//    props.put("java.naming.security.authentication", AUTH_TYPE);
+//  /**
+//   * Creates a set of environment variable properties to return that allow the DLSLoginModule to be configured.
+//   *
+//   * (Realistically, this should probably be done via a config file perhaps rather than hardcoded in the codebase?)
+//   *
+//   * @param username
+//   *        - The login username
+//   *
+//   * @param password
+//   *        - The login password
+//   *
+//   * @return Properties props
+//   *        - A set of environment variables to configure the DLSLoginModule
+//   */
+////  private Properties getConnectionProperties(final String username, final String password)
+////  {
+////    Properties props = new Properties();
+////
+////    props.put( "java.naming.provider.url", SERVER_URL );
+////    props.put("java.naming.security.authentication", AUTH_TYPE);
+////
+////
+////
+////
+////
+//////    env.put( "java.naming.factory.initial", "com.sun.jndi.ldap.LdapCtxFactory" );
+//////    env.put( "principalDNPrefix", principalDNPrefix );
+//////    env.put( "java.naming.security.principal", "uid=" + username + ",ou=People,dc=esrf,dc=fr" );
+//////    env.put( "groupAttributeID", groupAttributeID );
+//////    env.put( "groupCtxDN", groupCtxDN );
+//////    env.put( "principalDNSuffix", principalDNSuffix );
+//////    env.put( "allowEmptyPasswords", "false" );
+//////    env.put( "groupUniqueMember", groupUniqueMemberName );
+//////    env.put( "jboss.security.security_domain", "ispyb" );
+//////    env.put( "java.naming.provider.url", server );
+//////    env.put( "java.naming.security.credentials", password );
+////
+////
+////
+////    return props;
+////  }
 //
-//
-//
-//
-//
+////  protected static Properties getConnectionProperties( String username, String password )
+////  {
+////    private static String groupUniqueMemberName = "uniqueMember";
+////    private static String principalDNSuffix = ",ou=People,dc=esrf,dc=fr";
+////    private static String groupCtxDN = "ou=Pxwebgroups,dc=esrf,dc=fr";
+////    private static String principalDNPrefix = "uid=";
+////    private static String groupAttributeID = "cn";
+////    private static String server = "ldap://ldap.esrf.fr:389/";
+////
+////
+////    Properties env = new Properties();
 ////    env.put( "java.naming.factory.initial", "com.sun.jndi.ldap.LdapCtxFactory" );
 ////    env.put( "principalDNPrefix", principalDNPrefix );
 ////    env.put( "java.naming.security.principal", "uid=" + username + ",ou=People,dc=esrf,dc=fr" );
@@ -66,53 +94,25 @@ public class DLSLoginModule
 ////    env.put( "groupUniqueMember", groupUniqueMemberName );
 ////    env.put( "jboss.security.security_domain", "ispyb" );
 ////    env.put( "java.naming.provider.url", server );
+////    env.put( "java.naming.security.authentication", "simple" );
 ////    env.put( "java.naming.security.credentials", password );
+////
+////    System.out.printf( "			Returning the ESRFLoginModule properties correctly\n" );
+////
+////    return env;
+////  }
 //
 //
-//
-//    return props;
-//  }
-
-//  protected static Properties getConnectionProperties( String username, String password )
+//  protected static String getFilter( String username )
 //  {
-//    private static String groupUniqueMemberName = "uniqueMember";
-//    private static String principalDNSuffix = ",ou=People,dc=esrf,dc=fr";
-//    private static String groupCtxDN = "ou=Pxwebgroups,dc=esrf,dc=fr";
-//    private static String principalDNPrefix = "uid=";
-//    private static String groupAttributeID = "cn";
-//    private static String server = "ldap://ldap.esrf.fr:389/";
-//
-//
-//    Properties env = new Properties();
-//    env.put( "java.naming.factory.initial", "com.sun.jndi.ldap.LdapCtxFactory" );
-//    env.put( "principalDNPrefix", principalDNPrefix );
-//    env.put( "java.naming.security.principal", "uid=" + username + ",ou=People,dc=esrf,dc=fr" );
-//    env.put( "groupAttributeID", groupAttributeID );
-//    env.put( "groupCtxDN", groupCtxDN );
-//    env.put( "principalDNSuffix", principalDNSuffix );
-//    env.put( "allowEmptyPasswords", "false" );
-//    env.put( "groupUniqueMember", groupUniqueMemberName );
-//    env.put( "jboss.security.security_domain", "ispyb" );
-//    env.put( "java.naming.provider.url", server );
-//    env.put( "java.naming.security.authentication", "simple" );
-//    env.put( "java.naming.security.credentials", password );
-//
-//    System.out.printf( "			Returning the ESRFLoginModule properties correctly\n" );
-//
-//    return env;
+//    String userDN = principalDNPrefix + username + principalDNSuffix;
+//    return new StringBuffer().append( "(&" )
+//      .append( "(objectClass=groupOfUniqueNames)" )
+//      .append( "(" + groupUniqueMemberName + "=" )
+//      .append( userDN )
+//      .append( ")" ).append( ")" ).toString();
 //  }
-
-
-  protected static String getFilter( String username )
-  {
-    String userDN = principalDNPrefix + username + principalDNSuffix;
-    return new StringBuffer().append( "(&" )
-      .append( "(objectClass=groupOfUniqueNames)" )
-      .append( "(" + groupUniqueMemberName + "=" )
-      .append( userDN )
-      .append( ")" ).append( ")" ).toString();
-  }
-
+//
 
   public static List<String> authenticate( String username, String password )
   {
