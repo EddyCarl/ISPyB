@@ -38,8 +38,8 @@ public class DLSLoginModule
 
   static final Map<String, String> HEADERS = new HashMap<String, String>()
   {{
-    headerMap.put( "accept", "application/json" );
-    headerMap.put( "content-type", "application/x-www-form-urlencoded" );
+    put( "accept", "application/json" );
+    put( "content-type", "application/x-www-form-urlencoded" );
   }};
 
   public static final List<String> getRoles()
