@@ -66,7 +66,7 @@ public class DLSLoginModule
 
 
       // Check the returned response for a valid status code and a ticket that has been granted (Starting TGT)
-      if(rsp.getStatus() == 201 && rsp.getBody().contains("TGT"))
+      if(((rsp.getStatus() == 200) || (rsp.getStatus() == 201)) && rsp.getBody().contains("TGT"))
       {
         return true;
       }
