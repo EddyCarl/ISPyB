@@ -107,12 +107,6 @@
 			<version>3.5.0</version>
 		</dependency>
 
-		<dependency>
-			<groupId>org.pac4j</groupId>
-			<artifactId>pac4j-cas</artifactId>
-			<version>${pac4j.version}</version>
-		</dependency>
-
 		<!-- https://mvnrepository.com/artifact/com.mashape.unirest/unirest-java -->
 		<dependency>
 			<groupId>com.mashape.unirest</groupId>
