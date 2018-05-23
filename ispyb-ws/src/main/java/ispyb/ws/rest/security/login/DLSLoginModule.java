@@ -77,7 +77,7 @@ public class DLSLoginModule
     }
     catch( UnirestException e )
     {
-      System.out.println("There was a problem issuing the request: " + e.getMessage();
+      System.out.println("There was a problem issuing the request: " + e.getMessage());
     }
 
     return false;
