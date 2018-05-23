@@ -48,7 +48,7 @@ public class DLSLoginModule
   }
 
   // Performs CAS authentication and returns a boolean value if the user was successfully logged in or not
-  public boolean authenticateUser( String username, String password )
+  public static boolean authenticateUser( String username, String password )
   {
     System.out.printf("Authenticating user[ Uname: %s | Pass: %s ] on CAS server[ %s ]", username,
                                                                                          password,
