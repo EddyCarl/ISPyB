@@ -54,7 +54,7 @@ public class DLSLoginModule
                                                                                          password,
                                                                                          CAS_SERVER_ADDRESS );
 
-    final String bodyString = "{\"username\":\"" + username + "\", \"password\":\"" + password + "\"}";
+    final String bodyString = String.format("username=%s&password=%s", username, password);
 
     try
     {
