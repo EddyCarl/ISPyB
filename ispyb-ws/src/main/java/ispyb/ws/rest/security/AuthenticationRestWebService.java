@@ -94,7 +94,16 @@ public class AuthenticationRestWebService extends RestWebService {
 						roles = MAXIVLoginModule.authenticate(login, password);
 						break;
           case "DLS":
-          	roles = DLSLoginModule.authenticate(login, password);
+          	// Obtaining the roles is a weird one - Does CAS have any notion of "roles"?
+          	roles = DLSLoginModule.getRoles();
+
+          	// Attempt to authenticate the user via the CAS server...
+						if(!DLSLoginModule.authenticateUser(login, password))
+						{
+							throw new Exception("Input details are incorrect or the user does not exist in the CAS database.");
+						}
+
+						// Then just go off and generate the token as we would with any of the other login modules... Just a random string
 						logger.info(String.format("Authenticating - Site[%s], Login[%s]", site, login));
 						break;
 					default:
