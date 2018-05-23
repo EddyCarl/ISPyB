@@ -54,21 +54,15 @@ public class DLSLoginModule
                                                                                          password,
                                                                                          CAS_SERVER_ADDRESS );
 
+    final String bodyString = "{\"username\":\"" + username + "\", \"password\":\"" + password + "\"}";
+
     try
     {
       // Build the POST request and send it
       HttpResponse<String> rsp = Unirest.post( CAS_LOGIN_URL )
         .headers( HEADERS )
-        .body( "username=boaty&password=mcboatface" )
+        .body(bodyString)
         .asString();
-
-
-      System.out.println("Printing result: ");
-      System.out.println( "Body - " + rsp.getBody() );
-      System.out.println( "Headers - " + rsp.getHeaders() );
-      System.out.println( "RawBody - " + rsp.getRawBody() );
-      System.out.println( "Status - " + rsp.getStatus() );
-      System.out.println( "StatusText - " + rsp.getStatusText() );
 
 
       // Check the returned response for a valid status code and a ticket that has been granted (Starting TGT)
