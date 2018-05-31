@@ -34,6 +34,22 @@ import io.swagger.annotations.Api;
 public class SessionRestWebService extends RestWebService {
 	private final static Logger logger = Logger.getLogger(SessionRestWebService.class);
 
+	@GET
+	@Path("sessions")
+	@Produces({ "application/json" })
+	public Response getSessionInformation(List<Integer> sessionIDs)
+	{
+		String methodName = "getSessionInformation";
+		System.out.println("Called " + methodName + " with sessionIDs:");
+
+		for(Integer i : sessionIDs)
+		{
+			System.out.println("~~~ ID: " + i + " ~~~");
+		}
+
+		return this.sendResponse(true);
+	}
+
 	@RolesAllowed({ "User", "Manager", "Industrial", "Localcontact" })
 	@POST
 	@Path("{token}/proposal/{proposal}/mx/session/{sessionId}/comments/save")
