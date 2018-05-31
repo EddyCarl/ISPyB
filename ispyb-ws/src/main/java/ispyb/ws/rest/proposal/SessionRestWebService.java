@@ -37,7 +37,7 @@ public class SessionRestWebService extends RestWebService {
 	@GET
 	@Path("sessions")
 	@Produces({ "application/json" })
-	public Response getSessionInformation(List<Integer> sessionIDs)
+	public Response getSessionInformation(@QueryParam("id") List<Integer> sessionIDs)
 	{
 		String methodName = "getSessionInformation";
 		System.out.println("Called " + methodName + " with sessionIDs:");
