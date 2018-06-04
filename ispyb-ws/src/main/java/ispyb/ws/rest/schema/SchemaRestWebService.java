@@ -10,11 +10,14 @@ import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
 
+import io.swagger.annotations.Api;
+
+@Api
 @Path("/")
 public class SchemaRestWebService extends RestWebService{
 
 	private final static Logger logger = Logger.getLogger(SchemaRestWebService.class);
-		
+
 	@PermitAll
 	@GET
 	@Path("/schema/status")
@@ -28,7 +31,7 @@ public class SchemaRestWebService extends RestWebService{
 			return this.logError("getScriptsDone", e, id, logger);
 		}
 	}
-	
+
 //	@RolesAllowed({"Manager"})
 //	@GET
 //	@Path("{token}/schemastatus/scriptsNotDone/get")
