@@ -25,6 +25,9 @@ import org.jboss.resteasy.annotations.GZIP;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.swagger.annotations.Api;
+
+@Api
 @Path("/")
 public class MovieRestWebService extends RestWebService {
 
@@ -118,7 +121,7 @@ public class MovieRestWebService extends RestWebService {
 		}
 		return null;
 	}
-	
+
 	@RolesAllowed({ "User", "Manager", "Industrial", "Localcontact" })
 	@GET
 	@Path("{token}/proposal/{proposal}/em/datacollection/{dataCollectionId}/movie/{movieId}/mrc")
@@ -137,6 +140,6 @@ public class MovieRestWebService extends RestWebService {
 		}
 		return null;
 	}
-	
+
 
 }

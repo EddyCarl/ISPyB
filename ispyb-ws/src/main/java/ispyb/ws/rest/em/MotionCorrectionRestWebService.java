@@ -20,6 +20,9 @@ import org.jboss.resteasy.annotations.GZIP;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.swagger.annotations.Api;
+
+@Api
 @Path("/")
 public class MotionCorrectionRestWebService extends RestWebService {
 
@@ -54,7 +57,7 @@ public class MotionCorrectionRestWebService extends RestWebService {
 		return null;
 
 	}
-	
+
 	@RolesAllowed({ "User", "Manager", "Industrial", "Localcontact" })
 	@GET
 	@GZIP

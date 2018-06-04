@@ -21,6 +21,9 @@ import org.jboss.resteasy.annotations.GZIP;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.swagger.annotations.Api;
+
+@Api
 @Path("/")
 public class CTFRestWebService extends RestWebService {
 
