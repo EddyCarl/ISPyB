@@ -18,22 +18,25 @@ import org.jboss.resteasy.annotations.GZIP;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.swagger.annotations.Api;
+
+@Api
 @Path("/")
 public class DataCollectionGroupRestWebService extends MXRestWebService {
 
 
 	protected Logger log = LoggerFactory.getLogger(ToolsForEMDataCollection.class);
-	
+
 	@RolesAllowed({ "User", "Manager", "Industrial", "Localcontact" })
 	@POST
 	@Path("{token}/proposal/{proposal}/mx/datacollectiongroup/{dataCollectionGroupId}/comments/save")
 	@Produces("image/png")
 	public Response saveDataCollectionComments(
-			@PathParam("token") String token, 
+			@PathParam("token") String token,
 			@PathParam("proposal") String proposal,
 			@PathParam("dataCollectionGroupId") int dataCollectionGroupId,
 			@FormParam("comments") String comments) {
-		
+
 		try {
 			DataCollectionGroup3VO dataCollectionGroup = this.getDataCollectionGroup3Service().findByPk(dataCollectionGroupId, false, false);
 			dataCollectionGroup.setComments(comments);
@@ -44,7 +47,7 @@ public class DataCollectionGroupRestWebService extends MXRestWebService {
 		}
 		return this.sendResponse(true);
 	}
-	
+
 	@RolesAllowed({ "User", "Manager", "Industrial", "Localcontact" })
 	@GET
 	@GZIP

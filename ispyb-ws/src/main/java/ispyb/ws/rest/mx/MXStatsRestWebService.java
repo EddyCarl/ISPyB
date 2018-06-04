@@ -23,7 +23,9 @@ import org.supercsv.io.CsvMapWriter;
 import org.supercsv.io.ICsvMapWriter;
 import org.supercsv.prefs.CsvPreference;
 
+import io.swagger.annotations.Api;
 
+@Api
 @Path("/")
 public class MXStatsRestWebService extends MXRestWebService {
 
@@ -44,9 +46,9 @@ public class MXStatsRestWebService extends MXRestWebService {
 		String methodName = "getCSVAutoprocessingStatisticsByDate";
 		long id = this.logInit(methodName, logger, autoprocStatisticsType, startDate, endDate);
 		try {
-			
+
 			List<Map<String, Object>> list = new ArrayList<Map<String,Object>>();
-			
+
 			if (beamlinesName != null){
 				List<String> beamlines = this.parseToString(beamlinesName);
 				if (beamlines.size() > 0){
@@ -58,7 +60,7 @@ public class MXStatsRestWebService extends MXRestWebService {
 			else{
 				list.addAll(this.getStatsWSService().getAutoprocStatsByDate(autoprocStatisticsType, startDate, endDate));
 			}
-			
+
 			return this.sendResponse(list);
 
 		} catch (Exception e) {
@@ -66,8 +68,8 @@ public class MXStatsRestWebService extends MXRestWebService {
 		}
 		return null;
 	}
-	
-	
+
+
 	@RolesAllowed({ "Manager", "LocalContact" })
 	@GET
 	@Path("{token}/stats/autoprocstatistics/{type}/{start}/{end}/csv")
@@ -78,9 +80,9 @@ public class MXStatsRestWebService extends MXRestWebService {
 		String methodName = "getCSVAutoprocessingStatisticsByDate";
 		long id = this.logInit(methodName, logger, autoprocStatisticsType, startDate, endDate);
 		try {
-			
+
 			List<Map<String, Object>> list = new ArrayList<Map<String,Object>>();
-			
+
 			if (beamlinesName != null){
 				List<String> beamlines = this.parseToString(beamlinesName);
 				if (beamlines.size() > 0){
@@ -92,7 +94,7 @@ public class MXStatsRestWebService extends MXRestWebService {
 			else{
 				list.addAll(this.getStatsWSService().getAutoprocStatsByDate(autoprocStatisticsType, startDate, endDate));
 			}
-			
+
 			return this.sendResponse(this.parseListToCSV(list));
 
 		} catch (Exception e) {
@@ -100,10 +102,10 @@ public class MXStatsRestWebService extends MXRestWebService {
 		}
 		return null;
 	}
-	
-	
 
-	
+
+
+
 	public String parseListToCSV(List<Map<String, Object>> list) {
 		StringWriter output = new StringWriter();
 
