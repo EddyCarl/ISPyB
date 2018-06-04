@@ -22,7 +22,9 @@ import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
 
+import io.swagger.annotations.Api;
 
+@Api
 @Path("/")
 public class HPLCRestWebService extends SaxsRestWebService {
 	private final static Logger logger = Logger.getLogger(BufferRestWebService.class);
@@ -37,10 +39,10 @@ public class HPLCRestWebService extends SaxsRestWebService {
 	@Produces("text/plain")
 	public Response overview(@PathParam("token") String token, @PathParam("proposalId") String proposal,
 			@PathParam("experimentId") int experimentId) throws Exception {
-		
+
 		String methodName = "overview";
 		long start = this.logInit(methodName, logger, token, proposal, experimentId);
-		
+
 		try {
 			String params = ("I0,I0_Stdev,sum_I,Rg,Rg_Stdev,Vc,Vc_Stdev,Qr,Qr_Stdev,mass,mass_Stdev,quality");
 			List<String> parameters = Arrays.asList(params.split(","));
@@ -58,8 +60,8 @@ public class HPLCRestWebService extends SaxsRestWebService {
 		}
 		return null;
 	}
-	
-	
+
+
 
 	private String get(String y, String error, String operation) {
 		if (Float.valueOf(y) == 0)
@@ -81,7 +83,7 @@ public class HPLCRestWebService extends SaxsRestWebService {
 	}
 
 	private String getLine(
-			List<Integer> ids, 
+			List<Integer> ids,
 			HashMap<Integer, HashMap<String, ArrayList<String>>> result, int index,
 			String operation) {
 		StringBuilder sb = new StringBuilder();
@@ -112,11 +114,11 @@ public class HPLCRestWebService extends SaxsRestWebService {
 		return sb.append("\n").toString();
 
 	}
-	
+
 	private String checkFilePathForDevelopment(String filePath) {
 		return PathUtils.getPath(filePath);
 	}
-	
+
 	private String getH5FilePathByExperimentId(Integer experimentId, Integer proposalId) throws NamingException {
 		Experiment3VO experiment = this.getExperiment3Service().findById(experimentId, ExperimentScope.MINIMAL, proposalId);
 		if (experiment != null) {
@@ -125,28 +127,28 @@ public class HPLCRestWebService extends SaxsRestWebService {
 		}
 		return null;
 	}
-	
+
 	private byte[] getZipFileH5ByFramesRange(Integer experimentId, Integer proposalId, Integer startFrame, Integer endFrame)
 			throws Exception {
 		String filePath = this.getH5FilePathByExperimentId(experimentId, proposalId);
 		HDF5FileReader reader = new HDF5FileReader(filePath);
 		return reader.getH5ZipFileByteArrayByFrameRange(startFrame, endFrame);
 	}
-	
+
 	@RolesAllowed({"User", "Manager", "Industrial", "LocalContact"})
 	@GET
 	@Path("{token}/proposal/{proposal}/saxs/experiment/{experimentId}/hplc/frame/{start}/{end}/zip")
 	@Produces("application/x-octet-stream")
 	public Response getZipH5Frames(
-			@PathParam("token") String token, 
+			@PathParam("token") String token,
 			@PathParam("proposal") String proposal,
-			@PathParam("experimentId") int experimentId, 
+			@PathParam("experimentId") int experimentId,
 			@PathParam("start") int start,
 			@PathParam("end") int end) throws Exception {
 
 		String methodName = "getZipH5Frames";
 		long id = this.logInit(methodName, logger, token, proposal, experimentId, start, end);
-		
+
 		try {
 
 			byte[] bytes = this.getZipFileH5ByFramesRange(experimentId, this.getProposalId(proposal), start, end);
@@ -158,20 +160,20 @@ public class HPLCRestWebService extends SaxsRestWebService {
 			return this.logError(methodName, e, id, logger);
 		}
 	}
-	
-	
+
+
 	@RolesAllowed({"User", "Manager", "Industrial", "LocalContact"})
 	@GET
 	@Path("{token}/proposal/{proposal}/saxs/experiment/{experimentId}/hplc/download")
 	@Produces("application/x-octet-stream")
 	public Response downloadHDF5(
-			@PathParam("token") String token, 
+			@PathParam("token") String token,
 			@PathParam("proposal") String proposal,
 			@PathParam("experimentId") int experimentId) throws Exception {
-		
+
 		String methodName = "downloadHDF5";
 		long start = this.logInit(methodName, logger, token, proposal, experimentId);
-		
+
 		try {
 			String filePath = getH5FilePathByExperimentId(experimentId, this.getProposalId(proposal));
 			return this.downloadFileAsAttachment(filePath);
@@ -179,8 +181,8 @@ public class HPLCRestWebService extends SaxsRestWebService {
 			return this.logError(methodName, e, start, logger);
 		}
 	}
-	
-	
+
+
 	@RolesAllowed({"User", "Manager", "Industrial", "LocalContact"})
 	@GET
 	@Path("{token}/proposal/{proposalId}/saxs/experiment/{experimentId}/hplc/frame/{frameId}/get")
@@ -191,7 +193,7 @@ public class HPLCRestWebService extends SaxsRestWebService {
 
 		String methodName = "getFrame";
 		long start = this.logInit(methodName, logger, token, proposalId, experimentId, frameNumberList, operation);
-		
+
 		try {
 
 			String filePath = this.getH5FilePathByExperimentId(experimentId, this.getProposalId(proposalId));
