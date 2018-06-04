@@ -17,31 +17,43 @@
 
 package ispyb.ws.rest;
 
+import ispyb.server.common.services.ws.rest.session.SessionService;
+import ispyb.server.common.services.ws.rest.session.SessionServiceBean;
+import ispyb.ws.rest.em.CTFRestWebService;
+import ispyb.ws.rest.em.MotionCorrectionRestWebService;
+import ispyb.ws.rest.em.MovieRestWebService;
 import ispyb.ws.rest.mx.AutoprocintegrationRestWebService;
 import ispyb.ws.rest.mx.CrystalRestWebService;
+import ispyb.ws.rest.mx.DataCollectionGroupRestWebService;
 import ispyb.ws.rest.mx.EnergyScanRestWebService;
 import ispyb.ws.rest.mx.ImageWebService;
+import ispyb.ws.rest.mx.MXStatsRestWebService;
 import ispyb.ws.rest.mx.PhasingRestWebService;
 import ispyb.ws.rest.mx.ProteinRestWebService;
 import ispyb.ws.rest.mx.SampleRestWebService;
 import ispyb.ws.rest.mx.WorkflowRestWebService;
 import ispyb.ws.rest.mx.XFEFluorescenceSpectrumRestWebService;
+import ispyb.ws.rest.proposal.ContainerRestWebService;
 import ispyb.ws.rest.proposal.DewarRestWebService;
 import ispyb.ws.rest.proposal.ProposalRestWebService;
 import ispyb.ws.rest.proposal.SessionRestWebService;
 import ispyb.ws.rest.proposal.ShippingRestWebService;
+import ispyb.ws.rest.proposal.UserPortalRestWebService;
 import ispyb.ws.rest.saxs.BufferRestWebService;
 import ispyb.ws.rest.saxs.DataCollectionRestWebService;
 import ispyb.ws.rest.saxs.ExperimentRestWebService;
 import ispyb.ws.rest.saxs.FrameRestWebService;
+import ispyb.ws.rest.saxs.HPLCRestWebService;
 import ispyb.ws.rest.saxs.MacromoleculeRestWebService;
 import ispyb.ws.rest.saxs.MeasurementRestWebService;
 import ispyb.ws.rest.saxs.ModelingRestWebService;
 import ispyb.ws.rest.saxs.SaxsRestWebService;
+import ispyb.ws.rest.saxs.SaxsStatsRestWebService;
 import ispyb.ws.rest.saxs.SpecimenRestWebService;
 import ispyb.ws.rest.saxs.StatsRestWebService;
 import ispyb.ws.rest.saxs.StockSolutionRestWebService;
 import ispyb.ws.rest.saxs.SubtractionRestWebService;
+import ispyb.ws.rest.schema.SchemaRestWebService;
 import ispyb.ws.rest.security.AuthenticationRestWebService;
 
 import java.util.HashSet;
@@ -71,6 +83,12 @@ public class RestApplication extends Application {
     @Override
     public Set<Class<?>> getClasses() {
         Set<Class<?>> resources = new HashSet<Class<?>> ();
+
+        /** EM **/
+        resources.add(CTFRestWebService.class);
+        resources.add(MotionCorrectionRestWebService.class);
+        resources.add(MovieRestWebService.class);
+
         /** MX **/
         resources.add(AutoprocintegrationRestWebService.class);
         resources.add(CrystalRestWebService.class);
@@ -82,6 +100,8 @@ public class RestApplication extends Application {
         resources.add(SampleRestWebService.class);
         resources.add(WorkflowRestWebService.class);
         resources.add(XFEFluorescenceSpectrumRestWebService.class);
+        resources.add(DataCollectionGroupRestWebService.class);
+        resources.add(MXStatsRestWebService.class);
 
         /** SAXS **/
         resources.add(BufferRestWebService.class);
@@ -96,15 +116,24 @@ public class RestApplication extends Application {
         resources.add(StatsRestWebService.class);
         resources.add(StockSolutionRestWebService.class);
         resources.add(SubtractionRestWebService.class);
+        resources.add(HPLCRestWebService.class);
+        resources.add(SaxsStatsRestWebService.class);
 
         /** PROPOSAL **/
         resources.add(DewarRestWebService.class);
         resources.add(ProposalRestWebService.class);
         resources.add(SessionRestWebService.class);
         resources.add(ShippingRestWebService.class);
+        resources.add(ContainerRestWebService.class);
+        resources.add(UserPortalRestWebService.class);
 
         /** AUTHENTICATION **/
         resources.add(AuthenticationRestWebService.class);
+
+        /** SCHEMA **/
+        resources.add(SessionService.class);
+        resources.add(SessionServiceBean.class);
+        resources.add(SchemaRestWebService.class);
 
         resources.add(io.swagger.jaxrs.listing.ApiListingResource.class);
         resources.add(io.swagger.jaxrs.listing.SwaggerSerializers.class);
