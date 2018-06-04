@@ -17,6 +17,9 @@ import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
 
+import io.swagger.annotations.Api;
+
+@Api
 @Path("/")
 public class ContainerRestWebService extends RestWebService {
 	private final static Logger logger = Logger
@@ -31,17 +34,17 @@ public class ContainerRestWebService extends RestWebService {
 			@PathParam("containerIds") String containerIds,
 			@PathParam("beamlines") String beamlines,
 			@FormParam("sampleChangerLocation") String sampleChangerLocation) throws NamingException {
-		
+
 		long id = this.logInit("updateSampleLocation", logger, token, proposal);
 		try {
-			
+
 			List<Integer> containerIdList = this.parseToInteger(containerIds);
 			List<String> beamlinesList = this.parseToString(beamlines);
 			List<String> sampleChangerLocationList = this.parseToString(sampleChangerLocation);
-			
+
 			System.out.println("List " + sampleChangerLocationList);
 			System.out.println("sampleChangerLocation " + sampleChangerLocation);
-			
+
 			for (int i = 0; i < containerIdList.size(); i++) {
 
 				Container3VO container = this.getContainer3Service().findByPk(containerIdList.get(i), false);
@@ -54,7 +57,7 @@ public class ContainerRestWebService extends RestWebService {
 				}
 				this.getContainer3Service().update(container);
 			}
-			
+
 			this.logFinish("updateSampleLocation", id, logger);
 			HashMap<String, String> response = new HashMap<String, String>();
 			response.put("updateSampleLocation", "ok");
@@ -63,7 +66,7 @@ public class ContainerRestWebService extends RestWebService {
 			return this.logError("updateSampleLocation", e, id, logger);
 		}
 	}
-	
+
 	@RolesAllowed({ "User", "Manager", "Industrial", "Localcontact" })
 	@POST
 	@Path("{token}/proposal/{proposal}/container/{containerIds}/samplechangerlocation/empty")
@@ -72,7 +75,7 @@ public class ContainerRestWebService extends RestWebService {
 			@PathParam("proposal") String proposal,
 			@PathParam("containerIds") String containerIds
 			) throws NamingException {
-		
+
 		long id = this.logInit("emptySampleLocation", logger, token, proposal, containerIds);
 		try {
 			List<Integer> containerIdList = this.parseToInteger(containerIds);
@@ -81,14 +84,14 @@ public class ContainerRestWebService extends RestWebService {
 				container.setSampleChangerLocation(null);
 				container.setBeamlineLocation("");
 				this.getContainer3Service().update(container);
-			}			
+			}
 			this.logFinish("emptySampleLocation", id, logger);
 			return sendResponse(Response.ok());
 		} catch (Exception e) {
 			return this.logError("emptySampleLocation", e, id, logger);
 		}
 	}
-	
-		
+
+
 
 }
