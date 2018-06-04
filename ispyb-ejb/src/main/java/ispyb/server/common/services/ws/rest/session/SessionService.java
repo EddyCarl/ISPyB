@@ -40,5 +40,6 @@ public interface SessionService {
 
 	public List<Map<String, Object>> getSessionViewByDates(String start, String end, String siteId);
 
-	public List<Map<String, Object>> geSessionViewBySessionIdList(List<Integer> sessionIDs);
+
+
 }

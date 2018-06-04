@@ -150,18 +150,4 @@ public class SessionServiceBean extends WsServiceBean  implements SessionService
 		return executeSQLQuery(query);
 	}
 
-
-	@Override
-	public List<Map<String, Object>> geSessionViewBySessionIdList( List<Integer> sessionIDs )
-	{
-		Session session = (Session) this.entityManager.getDelegate();
-
-		SQLQuery query = session.createSQLQuery(ByDatesAndSiteId);
-		query.setParameter("startDate", startDate);
-		query.setParameter("endDate", endDate);
-		query.setParameter("siteId", siteId);
-		return executeSQLQuery(query);
-
-	}
-
 }
