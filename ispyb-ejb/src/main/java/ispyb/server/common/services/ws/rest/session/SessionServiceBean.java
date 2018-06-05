@@ -164,13 +164,16 @@ public class SessionServiceBean extends WsServiceBean  implements SessionService
 	@Override
 	public List<Map<String, Object>> getTestSessionInfo( List<Integer> sessionIDs )
 	{
+    System.out.println("--- getTestSessionInfo called ----");
 		Session session = (Session) this.entityManager.getDelegate();
-		SQLQuery query = session.createSQLQuery(testQuery);
 
-		String sessionIDString = StringUtils.join( sessionIDs, "," );
-		System.out.println( "--- Checking query: " + sessionIDString );
+    String sessionIDString = StringUtils.join( sessionIDs, "," );
+    System.out.println( "--- Checking query: " + sessionIDString );
 
+
+    SQLQuery query = session.createSQLQuery(testQuery);
 		query.setParameter("sessionIds", sessionIDString);
+
 		return executeSQLQuery(query);
 	}
 
