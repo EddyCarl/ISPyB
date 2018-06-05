@@ -69,7 +69,7 @@ public class SessionServiceBean extends WsServiceBean  implements SessionService
 	private String testQuery =
 		"SELECT t1.sessionId, t1.proposalId, t1.startDate, t1.beamlineName, t1.beamLineOperator, t1.projectCode, t1.visit_number, "
 			+ "@rownum \\:= @rownum+1 as \"RNUM\" FROM BLSession t1, "
-			+ "(SELECT @rownum \\:= 0) r WHERE t1.sessionid > '-1' AND (t1.sessionId in (:sessionIds)) "
+			+ "(SELECT @rownum \\:= 0) r WHERE t1.sessionid > '-1' AND (t1.sessionId in (:sessionIDs)) "
 			+ "ORDER BY t1.startDate desc LIMIT 100 OFFSET 0";
 
 	/**
@@ -169,12 +169,10 @@ public class SessionServiceBean extends WsServiceBean  implements SessionService
 
     String sessionIDString = StringUtils.join( sessionIDs, "," );
 
-    System.out.println("TestQuery: " + testQuery);
-
     SQLQuery query = session.createSQLQuery(testQuery);
-		query.setParameter("sessionIds", sessionIDString);
+		query.setParameter("sessionIDs", sessionIDString);
 
-		System.out.println("Query with param: " + query.toString());
+		System.out.println("Query with param: " + query.getQueryString());
 
 		return executeSQLQuery(query);
 	}
