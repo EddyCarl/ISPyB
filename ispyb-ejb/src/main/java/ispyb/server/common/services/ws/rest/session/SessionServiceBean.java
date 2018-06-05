@@ -170,7 +170,7 @@ public class SessionServiceBean extends WsServiceBean  implements SessionService
     String sessionIDString = StringUtils.join( sessionIDs, "," );
 
     SQLQuery query = session.createSQLQuery(testQuery);
-		query.setParameter("sessionIDs", sessionIDString);
+		query.setParameter("sessionIDs", "55167, 55168");
 
 		System.out.println("Query with param: " + query.getQueryString());
 
