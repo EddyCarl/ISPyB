@@ -12,11 +12,8 @@ public class WsServiceBean {
 
 	protected List<Map<String, Object>> executeSQLQuery(SQLQuery query ){
 		query.setResultTransformer(AliasToEntityMapResultTransformer.INSTANCE);
+		System.out.println("Query list: " + query.list());
 		@SuppressWarnings("unchecked")
-
-			System.out.println("Query list: " + query.list());
-
-
 		List<Map<String, Object>> aliasToValueMapList = query.list();
 		return aliasToValueMapList;
 	}
