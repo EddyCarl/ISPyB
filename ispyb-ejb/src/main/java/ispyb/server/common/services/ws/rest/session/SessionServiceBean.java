@@ -168,11 +168,13 @@ public class SessionServiceBean extends WsServiceBean  implements SessionService
 		Session session = (Session) this.entityManager.getDelegate();
 
     String sessionIDString = StringUtils.join( sessionIDs, "," );
-    System.out.println( "--- Checking query: " + sessionIDString );
 
+    System.out.println("TestQuery: " + testQuery);
 
     SQLQuery query = session.createSQLQuery(testQuery);
 		query.setParameter("sessionIds", sessionIDString);
+
+		System.out.println("Query with param: " + query.toString());
 
 		return executeSQLQuery(query);
 	}
