@@ -68,8 +68,8 @@ public class SessionServiceBean extends WsServiceBean  implements SessionService
 
 	private String testQuery =
 		"SELECT t1.sessionId, t1.proposalId, t1.startDate, t1.beamlineName, t1.beamLineOperator, t1.projectCode, t1.visit_number, "
-			+ "@rownum:=@rownum+1 as \"RNUM\" FROM BLSession t1, "
-			+ "(SELECT @rownum:=0) r WHERE t1.sessionid > '-1' AND (t1.sessionId in ( :sessionIds )) "
+			+ "@rownum \\:= @rownum+1 as \"RNUM\" FROM BLSession t1, "
+			+ "(SELECT @rownum \\:= 0) r WHERE t1.sessionid > '-1' AND (t1.sessionId in (:sessionIds)) "
 			+ "ORDER BY t1.startDate desc LIMIT 100 OFFSET 0";
 
 	/**
