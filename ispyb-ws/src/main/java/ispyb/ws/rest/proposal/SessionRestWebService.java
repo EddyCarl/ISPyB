@@ -48,7 +48,21 @@ public class SessionRestWebService extends RestWebService {
 			System.out.println("~~~ ID: " + i + " ~~~");
 		}
 
-		return this.sendResponse(true);
+
+		long id = this.logInit(methodName, logger, sessionIDs);
+
+		try
+		{
+			System.out.println("Calling the service method here... ");
+			List<Map<String, Object>> result = getSessionService().getTestSessionInfo(sessionIDs);
+			this.logFinish(methodName, id, logger);
+			return sendResponse(result);
+		}
+		catch (Exception e)
+		{
+			return this.logError(methodName, e, id, logger);
+		}
+
 	}
 
 	@RolesAllowed({ "User", "Manager", "Industrial", "Localcontact" })

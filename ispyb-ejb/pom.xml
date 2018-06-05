@@ -206,8 +206,14 @@
 			<version>1.7.5</version>
 			<scope>runtime</scope>
 		</dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.4</version>
+            <scope>compile</scope>
+        </dependency>
 
-	</dependencies>
+    </dependencies>
 
 	  <!--  profiles to separate dev to prod properties -->
   <!--  the dev properties have to be set according to your own dev environment -->
