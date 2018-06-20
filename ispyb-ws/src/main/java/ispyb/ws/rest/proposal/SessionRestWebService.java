@@ -45,7 +45,7 @@ public class SessionRestWebService extends RestWebService {
 	@Produces({ "application/json" })
 	public Response getSessionInformation(@QueryParam("id") List<Integer> sessionIDs,
 																				@Context HttpHeaders headers,
-																				@HeaderParam("Auth Token") String authToken )
+																				@HeaderParam("Auth-Token") String authToken )
 	{
 		String methodName = "getSessionInformation";
 		System.out.println("Called " + methodName + " with sessionIDs:");
