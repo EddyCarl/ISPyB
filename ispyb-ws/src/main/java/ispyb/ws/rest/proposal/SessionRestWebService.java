@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.security.RolesAllowed;
 import javax.naming.NamingException;
@@ -54,18 +55,20 @@ public class SessionRestWebService extends RestWebService {
 
 
 		MultivaluedMap<String, String> rhs = headers.getRequestHeaders();
+		System.out.println("RHS map size " + rhs.size());
 
-		for( int j = 0; j < rhs.size(); j++ )
+		for( Map.Entry<String, List<String>> rhsVals : rhs.entrySet()  )
 		{
-			List<String> values = rhs.get( j );
-			System.out.println( "RHS.get(j): " + values );
+			String key = rhsVals.getKey();
+			List<String> values = rhsVals.getValue();
 
-			for( int k = 0; k < values.size(); k++ )
+			System.out.println("RHS Key: " + key);
+			System.out.println("RHS Vals size: " + values.size());
+			for( String s : values )
 			{
-				System.out.println("Values: " + k);
+				System.out.println("RHS Val s: " + s);
 			}
 		}
-
 
 		long id = this.logInit(methodName, logger, sessionIDs);
 
