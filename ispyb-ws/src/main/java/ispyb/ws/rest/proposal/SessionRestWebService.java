@@ -1,5 +1,6 @@
 package ispyb.ws.rest.proposal;
 
+import io.swagger.annotations.ApiParam;
 import ispyb.server.common.services.ws.rest.session.SessionService;
 import ispyb.server.common.util.ejb.Ejb3ServiceLocator;
 import ispyb.server.common.vos.login.Login3VO;
@@ -7,17 +8,14 @@ import ispyb.server.mx.vos.collections.Session3VO;
 import ispyb.ws.rest.RestWebService;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
-import java.util.Set;
 
 import javax.annotation.security.RolesAllowed;
 import javax.naming.NamingException;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
+
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -27,7 +25,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
@@ -45,7 +42,8 @@ public class SessionRestWebService extends RestWebService {
 	@Produces({ "application/json" })
 	public Response getSessionInformation(@QueryParam("id") List<Integer> sessionIDs,
 																				@Context HttpHeaders headers,
-																				@HeaderParam("Auth-Token") String authToken )
+																				@ApiParam(value = "Authorisation token for the session", required = true)
+																					@HeaderParam("Auth-Token") String authToken )
 	{
 		String methodName = "getSessionInformation";
 		System.out.println("Called " + methodName + " with sessionIDs:");
@@ -59,22 +57,6 @@ public class SessionRestWebService extends RestWebService {
 		System.out.println("Auth Token: " + authToken);
 		System.out.println("-------------------------------");
 
-
-		MultivaluedMap<String, String> rhs = headers.getRequestHeaders();
-		System.out.println("RHS map size " + rhs.size());
-
-		for( Map.Entry<String, List<String>> rhsVals : rhs.entrySet()  )
-		{
-			String key = rhsVals.getKey();
-			List<String> values = rhsVals.getValue();
-
-			System.out.println("RHS Key: " + key);
-			System.out.println("RHS Vals size: " + values.size());
-			for( String s : values )
-			{
-				System.out.println("RHS Val s: " + s);
-			}
-		}
 
 		long id = this.logInit(methodName, logger, sessionIDs);
 
