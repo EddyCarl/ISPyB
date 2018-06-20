@@ -18,6 +18,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.naming.NamingException;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -43,7 +44,8 @@ public class SessionRestWebService extends RestWebService {
 	@Path("sessions")
 	@Produces({ "application/json" })
 	public Response getSessionInformation(@QueryParam("id") List<Integer> sessionIDs,
-																				@Context HttpHeaders headers)
+																				@Context HttpHeaders headers,
+																				@HeaderParam("Auth Token") String authToken )
 	{
 		String methodName = "getSessionInformation";
 		System.out.println("Called " + methodName + " with sessionIDs:");
@@ -52,6 +54,10 @@ public class SessionRestWebService extends RestWebService {
 		{
 			System.out.println("~~~ ID: " + i + " ~~~");
 		}
+
+		System.out.println("-------------------------------");
+		System.out.println("Auth Token: " + authToken);
+		System.out.println("-------------------------------");
 
 
 		MultivaluedMap<String, String> rhs = headers.getRequestHeaders();
