@@ -23,6 +23,9 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
@@ -38,7 +41,8 @@ public class SessionRestWebService extends RestWebService {
 	@GET
 	@Path("sessions")
 	@Produces({ "application/json" })
-	public Response getSessionInformation(@QueryParam("id") List<Integer> sessionIDs)
+	public Response getSessionInformation(@QueryParam("id") List<Integer> sessionIDs,
+																				@Context HttpHeaders headers)
 	{
 		String methodName = "getSessionInformation";
 		System.out.println("Called " + methodName + " with sessionIDs:");
@@ -46,6 +50,20 @@ public class SessionRestWebService extends RestWebService {
 		for(Integer i : sessionIDs)
 		{
 			System.out.println("~~~ ID: " + i + " ~~~");
+		}
+
+
+		MultivaluedMap<String, String> rhs = headers.getRequestHeaders();
+
+		for( int j = 0; j < rhs.size(); j++ )
+		{
+			List<String> values = rhs.get( j );
+			System.out.println( "RHS.get(j): " + values );
+
+			for( int k = 0; k < values.size(); k++ )
+			{
+				System.out.println("Values: " + k);
+			}
 		}
 
 
