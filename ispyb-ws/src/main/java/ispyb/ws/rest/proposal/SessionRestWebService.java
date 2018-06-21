@@ -1,6 +1,7 @@
 package ispyb.ws.rest.proposal;
 
 import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.Authorization;
 import ispyb.server.common.services.ws.rest.session.SessionService;
 import ispyb.server.common.util.ejb.Ejb3ServiceLocator;
 import ispyb.server.common.vos.login.Login3VO;
@@ -72,6 +73,8 @@ public class SessionRestWebService extends RestWebService {
       else
       {
         System.out.println("Login3vo is null - Couldn't find with the input token");
+
+        return Response.status( Response.Status.UNAUTHORIZED ).entity( "Input auth-token does not relate to a valid user session" ).build();
       }
     }
     catch( NamingException e )

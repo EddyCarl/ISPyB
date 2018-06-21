@@ -96,6 +96,7 @@ public class AuthenticationRestWebService extends RestWebService {
           case "DLS":
           	// Obtaining the roles is a weird one - Does CAS have any notion of "roles"?
           	roles = DLSLoginModule.getRoles();
+						siteId = "DLS";
 
           	// Attempt to authenticate the user via the CAS server...
 						if(!DLSLoginModule.authenticateUser(login, password))
