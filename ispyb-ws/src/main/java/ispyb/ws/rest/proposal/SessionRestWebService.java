@@ -44,7 +44,7 @@ public class SessionRestWebService extends RestWebService {
 	public Response getSessionInformation(@QueryParam("id") List<Integer> sessionIDs,
 																				@Context HttpHeaders headers,
 																				@ApiParam(value = "Authorisation token for the session", required = true)
-																					@HeaderParam("Auth-Token") String authToken )
+																					@HeaderParam("X-API-KEY") String authToken )
 	{
 		String methodName = "getSessionInformation";
 		System.out.println("Called " + methodName + " with sessionIDs:");
@@ -73,8 +73,8 @@ public class SessionRestWebService extends RestWebService {
       else
       {
         System.out.println("Login3vo is null - Couldn't find with the input token");
-
-        return Response.status( Response.Status.UNAUTHORIZED ).entity( "Input auth-token does not relate to a valid user session" ).build();
+        String jsonError = getGson().toJson( "Input X-API-KEY token does not relate to a valid user session" );
+        return Response.status( Response.Status.UNAUTHORIZED ).entity( jsonError ).build();
       }
     }
     catch( NamingException e )
