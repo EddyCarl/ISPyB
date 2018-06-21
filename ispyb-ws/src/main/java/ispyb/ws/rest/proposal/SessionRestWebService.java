@@ -62,9 +62,17 @@ public class SessionRestWebService extends RestWebService {
     try
     {
       Login3VO login3VO = this.getLogin3Service().findByToken( authToken );
-      System.out.println("login3vo.getusername(): " + login3VO.getUsername());
-      System.out.println("login3vo.getauthorised(): " + login3VO.getAuthorized());
-      System.out.println("login3vo.getsiteid(): " + login3VO.getSiteId());
+
+      if(login3VO != null)
+      {
+        System.out.println( "login3vo.getusername(): " + login3VO.getUsername() );
+        System.out.println( "login3vo.getauthorised(): " + login3VO.getAuthorized() );
+        System.out.println( "login3vo.getsiteid(): " + login3VO.getSiteId() );
+      }
+      else
+      {
+        System.out.println("Login3vo is null - Couldn't find with the input token");
+      }
     }
     catch( NamingException e )
     {
