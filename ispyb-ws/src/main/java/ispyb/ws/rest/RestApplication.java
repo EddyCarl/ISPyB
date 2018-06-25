@@ -21,6 +21,7 @@ import io.swagger.config.Scanner;
 import io.swagger.jaxrs.config.SwaggerContextService;
 import io.swagger.models.Info;
 import io.swagger.models.Scheme;
+import io.swagger.models.SecurityRequirement;
 import io.swagger.models.Swagger;
 import io.swagger.models.Tag;
 import io.swagger.models.auth.ApiKeyAuthDefinition;
@@ -79,17 +80,20 @@ public class RestApplication extends Application {
 
 
       Swagger swagger = new Swagger().info( info );
-      swagger.securityDefinition( "api_key",
+
+      swagger.addSecurityDefinition( "api_key",
         new ApiKeyAuthDefinition( "api_key", In.HEADER ) );
-      swagger.tag( new Tag()
+
+      swagger.addTag( new Tag()
         .name( "Test-Tag" )
         .description( "All of the test endpoints" ) );
 
-      swagger.tag( new Tag()
+      swagger.addTag( new Tag()
         .name( "Another test tag" )
         .description( "More rubbish text" ) );
 
-      swagger.setSchemes( Collections.singletonList( Scheme.HTTP ) );
+      swagger.addScheme( Scheme.HTTP );
+//      swagger.setSchemes( Collections.singletonList( Scheme.HTTP ) );
       swagger.setHost( "192.168.30.200:8080" );
       swagger.setBasePath( "/ispyb/ispyb-ws/rest" );
 
@@ -100,7 +104,7 @@ public class RestApplication extends Application {
 //        beanConfig.setHost("192.168.30.200:8080");
 //        beanConfig.setBasePath("/ispyb/ispyb-ws/rest");
         beanConfig.setResourcePackage("io.swagger.resources");
-        beanConfig.setScan(true);
+//        beanConfig.setScan(true);
 
 
         beanConfig.setInfo( info );
