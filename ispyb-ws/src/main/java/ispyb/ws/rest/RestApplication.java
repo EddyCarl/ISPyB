@@ -55,59 +55,59 @@ import io.swagger.jaxrs.config.BeanConfig;
 /**
  * A class extending {@link javax.ws.rs.core.Application} is the portable way to define JAX-RS 2.0 resources, and the {@link javax.ws.rs.ApplicationPath} defines the root path shared by all these resources.
  */
-@ApplicationPath("rest")
-public class RestApplication extends Application {
-    public RestApplication() {
-        BeanConfig beanConfig = new BeanConfig();
-        beanConfig.setVersion("5.4.3");
-        beanConfig.setTitle("ISPyB Web Services - Test title!");
-        beanConfig.setSchemes(new String[]{"http"});
-        beanConfig.setHost("192.168.30.200:8080");
-        beanConfig.setBasePath("/ispyb/ispyb-ws/rest");
-        beanConfig.setResourcePackage("io.swagger.resources");
-        beanConfig.setScan(true);
-    }
+//@ApplicationPath("rest")
+//public class RestApplication extends Application {
+//    public RestApplication() {
+//        BeanConfig beanConfig = new BeanConfig();
+//        beanConfig.setVersion("5.4.3");
+//        beanConfig.setTitle("ISPyB Web Services - Test title!");
+//        beanConfig.setSchemes(new String[]{"http"});
+//        beanConfig.setHost("192.168.30.200:8080");
+//        beanConfig.setBasePath("/ispyb/ispyb-ws/rest");
+//        beanConfig.setResourcePackage("io.swagger.resources");
+//        beanConfig.setScan(true);
+//    }
 
-    @Override
-    public Set<Class<?>> getClasses() {
-        Set<Class<?>> resources = new HashSet<Class<?>> ();
-        /** MX **/
-        resources.add(AutoprocintegrationRestWebService.class);
-        resources.add(CrystalRestWebService.class);
-        resources.add(DataCollectionRestWebService.class);
-        resources.add(EnergyScanRestWebService.class);
-        resources.add(ImageWebService.class);
-        resources.add(PhasingRestWebService.class);
-        resources.add(ProteinRestWebService.class);
-        resources.add(SampleRestWebService.class);
-        resources.add(WorkflowRestWebService.class);
-        resources.add(XFEFluorescenceSpectrumRestWebService.class);
-
-        /** SAXS **/
-        resources.add(BufferRestWebService.class);
-        resources.add(DataCollectionRestWebService.class);
-        resources.add(ExperimentRestWebService.class);
-        resources.add(FrameRestWebService.class);
-        resources.add(MacromoleculeRestWebService.class);
-        resources.add(MeasurementRestWebService.class);
-        resources.add(ModelingRestWebService.class);
-        resources.add(SaxsRestWebService.class);
-        resources.add(SpecimenRestWebService.class);
-        resources.add(StatsRestWebService.class);
-        resources.add(StockSolutionRestWebService.class);
-        resources.add(SubtractionRestWebService.class);
-
-        /** PROPOSAL **/
-        resources.add(DewarRestWebService.class);
-        resources.add(ProposalRestWebService.class);
-        resources.add(SessionRestWebService.class);
-        resources.add(ShippingRestWebService.class);
-
-        /** AUTHENTICATION **/
-        resources.add(AuthenticationRestWebService.class);
-
-        resources.add(io.swagger.jaxrs.listing.ApiListingResource.class);
-        resources.add(io.swagger.jaxrs.listing.SwaggerSerializers.class);
-        return resources;
-    }
-}
+//    @Override
+//    public Set<Class<?>> getClasses() {
+//        Set<Class<?>> resources = new HashSet<Class<?>> ();
+//        /** MX **/
+//        resources.add(AutoprocintegrationRestWebService.class);
+//        resources.add(CrystalRestWebService.class);
+//        resources.add(DataCollectionRestWebService.class);
+//        resources.add(EnergyScanRestWebService.class);
+//        resources.add(ImageWebService.class);
+//        resources.add(PhasingRestWebService.class);
+//        resources.add(ProteinRestWebService.class);
+//        resources.add(SampleRestWebService.class);
+//        resources.add(WorkflowRestWebService.class);
+//        resources.add(XFEFluorescenceSpectrumRestWebService.class);
+//
+//        /** SAXS **/
+//        resources.add(BufferRestWebService.class);
+//        resources.add(DataCollectionRestWebService.class);
+//        resources.add(ExperimentRestWebService.class);
+//        resources.add(FrameRestWebService.class);
+//        resources.add(MacromoleculeRestWebService.class);
+//        resources.add(MeasurementRestWebService.class);
+//        resources.add(ModelingRestWebService.class);
+//        resources.add(SaxsRestWebService.class);
+//        resources.add(SpecimenRestWebService.class);
+//        resources.add(StatsRestWebService.class);
+//        resources.add(StockSolutionRestWebService.class);
+//        resources.add(SubtractionRestWebService.class);
+//
+//        /** PROPOSAL **/
+//        resources.add(DewarRestWebService.class);
+//        resources.add(ProposalRestWebService.class);
+//        resources.add(SessionRestWebService.class);
+//        resources.add(ShippingRestWebService.class);
+//
+//        /** AUTHENTICATION **/
+//        resources.add(AuthenticationRestWebService.class);
+//
+//        resources.add(io.swagger.jaxrs.listing.ApiListingResource.class);
+//        resources.add(io.swagger.jaxrs.listing.SwaggerSerializers.class);
+//        return resources;
+//    }
+//}
