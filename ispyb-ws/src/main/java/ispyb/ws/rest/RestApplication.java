@@ -71,14 +71,41 @@ import io.swagger.jaxrs.config.BeanConfig;
 @ApplicationPath("rest")
 public class RestApplication extends Application {
     public RestApplication() {
-//        BeanConfig beanConfig = new BeanConfig();
+
+      Info info = new Info()
+        .title( "Some new test title" )
+        .description( "Adding some bloat text for test purposes" )
+        .version( "5.4.3" );
+
+
+      Swagger swagger = new Swagger().info( info );
+      swagger.securityDefinition( "api_key",
+        new ApiKeyAuthDefinition( "api_key", In.HEADER ) );
+      swagger.tag( new Tag()
+        .name( "Test-Tag" )
+        .description( "All of the test endpoints" ) );
+
+      swagger.tag( new Tag()
+        .name( "Another test tag" )
+        .description( "More rubbish text" ) );
+
+      swagger.setSchemes( Collections.singletonList( Scheme.HTTP ) );
+      swagger.setHost( "192.168.30.200:8080" );
+      swagger.setBasePath( "/ispyb/ispyb-ws/rest" );
+
+      BeanConfig beanConfig = new BeanConfig();
 //        beanConfig.setVersion("5.4.3");
 //        beanConfig.setTitle("ISPyB Web Services - Test title!");
 //        beanConfig.setSchemes(new String[]{"http"});
 //        beanConfig.setHost("192.168.30.200:8080");
 //        beanConfig.setBasePath("/ispyb/ispyb-ws/rest");
-//        beanConfig.setResourcePackage("io.swagger.resources");
-//        beanConfig.setScan(true);
+        beanConfig.setResourcePackage("io.swagger.resources");
+        beanConfig.setScan(true);
+
+
+        beanConfig.setInfo( info );
+        beanConfig.configure( swagger );
+
 
 
     }
@@ -126,61 +153,44 @@ public class RestApplication extends Application {
         return resources;
     }
 
-
-
-//  @Path( "/ispyb-ws" )
-  public void init(ServletConfig config) throws ServletException
-  {
-    //		super.init(config);
-
-    Info info = new Info()
-      .title( "Some new test title" )
-      .description( "Adding some bloat text for test purposes" )
-      .version( "5.4.3" );
-
-    ServletContext context = config.getServletContext();
-    Swagger swagger = new Swagger().info( info );
-    swagger.securityDefinition( "api_key",
-      new ApiKeyAuthDefinition( "api_key", In.HEADER ) );
-    swagger.tag( new Tag()
-      .name( "Test-Tag" )
-      .description( "All of the test endpoints" ) );
-
-    swagger.tag( new Tag()
-      .name( "Another test tag" )
-      .description( "More rubbish text" ) );
-
-    swagger.setSchemes( Collections.singletonList( Scheme.HTTP ) );
-    swagger.setHost( "192.168.30.200:8080" );
-    swagger.setBasePath( "/ispyb/ispyb-ws/rest" );
-    //    swagger.setResourcePackage("io.swagger.resources");
-    //    swagger.setScan(true);
-
-    Scanner scanner = new Scanner()
-    {
-      @Override
-      public Set<Class<?>> classes()
-      {
-        return getClasses();
-      }
-
-
-      @Override
-      public boolean getPrettyPrint()
-      {
-        return false;
-      }
-
-
-      @Override
-      public void setPrettyPrint( boolean b )
-      {
-
-      }
-    };
-
-    new SwaggerContextService().withServletConfig( config ).updateSwagger( swagger ).setScanner( scanner );
-  }
+//
+//
+////  @Path( "/ispyb-ws" )
+//  public void init(ServletConfig config) throws ServletException
+//  {
+//    //		super.init(config);
+//
+//
+//    ServletContext context = config.getServletContext();
+//
+//    //    swagger.setResourcePackage("io.swagger.resources");
+//    //    swagger.setScan(true);
+//
+//    Scanner scanner = new Scanner()
+//    {
+//      @Override
+//      public Set<Class<?>> classes()
+//      {
+//        return getClasses();
+//      }
+//
+//
+//      @Override
+//      public boolean getPrettyPrint()
+//      {
+//        return false;
+//      }
+//
+//
+//      @Override
+//      public void setPrettyPrint( boolean b )
+//      {
+//
+//      }
+//    };
+//
+//    new SwaggerContextService().withServletConfig( config ).updateSwagger( swagger ).setScanner( scanner );
+//  }
 
 
 
