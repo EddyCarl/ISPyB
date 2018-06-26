@@ -71,6 +71,9 @@ import io.swagger.jaxrs.config.BeanConfig;
  */
 @ApplicationPath("rest")
 public class RestApplication extends Application {
+
+
+
     public RestApplication() {
 
       Info info = new Info()
@@ -104,7 +107,7 @@ public class RestApplication extends Application {
 //        beanConfig.setHost("192.168.30.200:8080");
 //        beanConfig.setBasePath("/ispyb/ispyb-ws/rest");
         beanConfig.setResourcePackage("io.swagger.resources");
-//        beanConfig.setScan(true);
+        beanConfig.setScan(true);
 
 
         beanConfig.setInfo( info );
