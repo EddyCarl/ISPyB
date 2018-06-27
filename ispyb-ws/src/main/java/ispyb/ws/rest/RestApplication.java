@@ -128,16 +128,47 @@ public class RestApplication extends Application {
 //        beanConfig.setSchemes(new String[]{"http"});
 //        beanConfig.setHost("192.168.30.200:8080");
 //        beanConfig.setBasePath("/ispyb/ispyb-ws/rest");
+        updateInfo(beanConfig);
+
         beanConfig.setResourcePackage("io.swagger.resources");
         beanConfig.setScan(true);
 
 
-//        beanConfig.setInfo( info );
-//        beanConfig.configure( swagger );
+        //        beanConfig.setInfo( info );
+        //        beanConfig.configure( swagger );
 
 
+
+//        description = "Another bloody test",
+//          version = "1.0",
+//          title = "Another bloody test title!!!!!!!!!",
+//          contact = @Contact(
+//          name = "Carl Edmunds",
+//          email = "this.is.an.email@address.com",
+//          url = "www.thisisurl.com"
 
     }
+
+
+    private void updateInfo( BeanConfig beanConfig )
+    {
+        io.swagger.models.Contact contact = new io.swagger.models.Contact();
+        contact.setName( "Carl Edmunds" );
+        contact.setUrl( "www.anoherurl.com" );
+        contact.setEmail( "this.another.email@emial.com" );
+
+        beanConfig.getInfo().setTitle( "Another bloody test title ... AGAIN" );
+        beanConfig.getInfo().setDescription( "Trying another bloody method of updating info" );
+        beanConfig.getInfo().setVersion( "1.0" );
+        beanConfig.getInfo().setContact( contact );
+    }
+
+
+
+
+
+
+
 
     @Override
     public Set<Class<?>> getClasses() {
