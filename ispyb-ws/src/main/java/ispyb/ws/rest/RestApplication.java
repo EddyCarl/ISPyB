@@ -138,6 +138,7 @@ public class RestApplication extends Application {
         beanConfig.setResourcePackage("io.swagger.resources");
         beanConfig.setContact( "Carl Edmunds" );
         beanConfig.setScan(true);
+        beanConfig.setDescription( "THIS IS TEXT" );
 
 
         //        beanConfig.setInfo( info );
