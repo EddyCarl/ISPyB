@@ -17,6 +17,8 @@
 
 package ispyb.ws.rest;
 
+import io.swagger.annotations.Contact;
+import io.swagger.annotations.SwaggerDefinition;
 import io.swagger.config.Scanner;
 import io.swagger.jaxrs.config.SwaggerContextService;
 import io.swagger.models.Info;
@@ -66,10 +68,29 @@ import javax.ws.rs.core.Application;
 
 import io.swagger.jaxrs.config.BeanConfig;
 
+import io.swagger.annotations.Tag;
+
+
 /**
  * A class extending {@link javax.ws.rs.core.Application} is the portable way to define JAX-RS 2.0 resources, and the {@link javax.ws.rs.ApplicationPath} defines the root path shared by all these resources.
  */
 @ApplicationPath("rest")
+@SwaggerDefinition(
+  info = @io.swagger.annotations.Info(
+    description = "Another bloody test",
+    version = "1.0",
+    title = "Another bloody test title!!!!!!!!!",
+    contact = @Contact(
+      name = "Carl Edmunds",
+      email = "this.is.an.email@address.com",
+      url = "www.thisisurl.com"
+    )),
+schemes = {SwaggerDefinition.Scheme.HTTP},
+  tags = {
+    @io.swagger.annotations.Tag( name = "TAG ONE" , description = "THIS IS TAG ONE"),
+    @io.swagger.annotations.Tag( name = "TAG 2" , description = "THIS IS TAG 2")
+  }
+)
 public class RestApplication extends Application {
 
 
@@ -82,23 +103,23 @@ public class RestApplication extends Application {
         .version( "5.4.3" );
 
 
-      Swagger swagger = new Swagger().info( info );
-
-      swagger.addSecurityDefinition( "api_key",
-        new ApiKeyAuthDefinition( "api_key", In.HEADER ) );
-
-      swagger.addTag( new Tag()
-        .name( "Test-Tag" )
-        .description( "All of the test endpoints" ) );
-
-      swagger.addTag( new Tag()
-        .name( "Another test tag" )
-        .description( "More rubbish text" ) );
-
-      swagger.addScheme( Scheme.HTTP );
-//      swagger.setSchemes( Collections.singletonList( Scheme.HTTP ) );
-      swagger.setHost( "192.168.30.200:8080" );
-      swagger.setBasePath( "/ispyb/ispyb-ws/rest" );
+//      Swagger swagger = new Swagger().info( info );
+//
+//      swagger.addSecurityDefinition( "api_key",
+//        new ApiKeyAuthDefinition( "api_key", In.HEADER ) );
+//
+//      swagger.addTag( new Tag()
+//        .name( "Test-Tag" )
+//        .description( "All of the test endpoints" ) );
+//
+//      swagger.addTag( new Tag()
+//        .name( "Another test tag" )
+//        .description( "More rubbish text" ) );
+//
+//      swagger.addScheme( Scheme.HTTP );
+////      swagger.setSchemes( Collections.singletonList( Scheme.HTTP ) );
+//      swagger.setHost( "192.168.30.200:8080" );
+//      swagger.setBasePath( "/ispyb/ispyb-ws/rest" );
 
       BeanConfig beanConfig = new BeanConfig();
 //        beanConfig.setVersion("5.4.3");
@@ -111,7 +132,7 @@ public class RestApplication extends Application {
 
 
         beanConfig.setInfo( info );
-        beanConfig.configure( swagger );
+//        beanConfig.configure( swagger );
 
 
 
