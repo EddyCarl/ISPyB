@@ -157,6 +157,14 @@ public class RestApplication extends Application {
         contact.setUrl( "www.anoherurl.com" );
         contact.setEmail( "this.another.email@emial.com" );
 
+        if(beanConfig.getInfo() == null)
+        {
+            System.out.println("It was null... Creating");
+
+            io.swagger.models.Info info = new io.swagger.models.Info();
+            beanConfig.setInfo( info );
+        }
+
         beanConfig.getInfo().setTitle( "Another bloody test title ... AGAIN" );
         beanConfig.getInfo().setDescription( "Trying another bloody method of updating info" );
         beanConfig.getInfo().setVersion( "1.0" );
