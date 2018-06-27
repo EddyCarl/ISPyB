@@ -28,6 +28,10 @@ import io.swagger.jaxrs.config.SwaggerContextService;
 //import io.swagger.models.Tag;
 //import io.swagger.models.auth.ApiKeyAuthDefinition;
 //import io.swagger.models.auth.In;
+import io.swagger.models.Scheme;
+import io.swagger.models.Swagger;
+import io.swagger.models.auth.ApiKeyAuthDefinition;
+import io.swagger.models.auth.In;
 import ispyb.ws.rest.mx.AutoprocintegrationRestWebService;
 import ispyb.ws.rest.mx.CrystalRestWebService;
 import ispyb.ws.rest.mx.EnergyScanRestWebService;
@@ -56,6 +60,7 @@ import ispyb.ws.rest.saxs.SubtractionRestWebService;
 import ispyb.ws.rest.security.AuthenticationRestWebService;
 
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -122,15 +127,16 @@ public class RestApplication extends Application {
 //      swagger.setHost( "192.168.30.200:8080" );
 //      swagger.setBasePath( "/ispyb/ispyb-ws/rest" );
 
-      BeanConfig beanConfig = new BeanConfig();
-//        beanConfig.setVersion("5.4.3");
-//        beanConfig.setTitle("ISPyB Web Services - Test title!");
-//        beanConfig.setSchemes(new String[]{"http"});
-//        beanConfig.setHost("192.168.30.200:8080");
-//        beanConfig.setBasePath("/ispyb/ispyb-ws/rest");
-        updateInfo(beanConfig);
 
+      BeanConfig beanConfig = new BeanConfig();
+
+        beanConfig.setVersion("5.4.3");
+        beanConfig.setTitle("ISPyB Web Services - Test title!");
+        beanConfig.setSchemes(new String[]{"http"});
+        beanConfig.setHost("192.168.30.200:8080");
+        beanConfig.setBasePath("/ispyb/ispyb-ws/rest");
         beanConfig.setResourcePackage("io.swagger.resources");
+        beanConfig.setContact( "Carl Edmunds" );
         beanConfig.setScan(true);
 
 
@@ -150,26 +156,28 @@ public class RestApplication extends Application {
     }
 
 
-    private void updateInfo( BeanConfig beanConfig )
-    {
-        io.swagger.models.Contact contact = new io.swagger.models.Contact();
-        contact.setName( "Carl Edmunds" );
-        contact.setUrl( "www.anoherurl.com" );
-        contact.setEmail( "this.another.email@emial.com" );
-
-        if(beanConfig.getInfo() == null)
-        {
-            System.out.println("It was null... Creating");
-
-            io.swagger.models.Info info = new io.swagger.models.Info();
-            beanConfig.setInfo( info );
-        }
-
-        beanConfig.getInfo().setTitle( "Another bloody test title ... AGAIN" );
-        beanConfig.getInfo().setDescription( "Trying another bloody method of updating info" );
-        beanConfig.getInfo().setVersion( "1.0" );
-        beanConfig.getInfo().setContact( contact );
-    }
+//    private void updateInfo( BeanConfig beanConfig )
+//    {
+//        io.swagger.models.Contact contact = new io.swagger.models.Contact();
+//        contact.setName( "Carl Edmunds" );
+//        contact.setUrl( "www.anoherurl.com" );
+//        contact.setEmail( "this.another.email@emial.com" );
+//
+//        beanConfig.setInfo( @Info( title = "B" ) );
+//
+//        if(beanConfig.getInfo() == null)
+//        {
+//            System.out.println("It was null... Creating");
+//
+//            io.swagger.models.Info info = new io.swagger.models.Info();
+//            beanConfig.setInfo( info );
+//        }
+//
+//        beanConfig.getInfo().setTitle( "Another bloody test title ... AGAIN" );
+//        beanConfig.getInfo().setDescription( "Trying another bloody method of updating info" );
+//        beanConfig.getInfo().setVersion( "1.0" );
+//        beanConfig.getInfo().setContact( contact );
+//    }
 
 
 
