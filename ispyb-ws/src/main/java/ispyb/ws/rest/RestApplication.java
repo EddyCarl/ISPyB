@@ -132,13 +132,13 @@ public class RestApplication extends Application {
 
         beanConfig.setVersion("5.4.3");
         beanConfig.setTitle("ISPyB Web Services - Test title!");
+        beanConfig.setDescription( "THIS IS TEXT- LOTS OF TEXT LALALALLALA" );
         beanConfig.setSchemes(new String[]{"http"});
         beanConfig.setHost("192.168.30.200:8080");
         beanConfig.setBasePath("/ispyb/ispyb-ws/rest");
         beanConfig.setResourcePackage("io.swagger.resources");
         beanConfig.setContact( "Carl Edmunds" );
         beanConfig.setScan(true);
-        beanConfig.setDescription( "THIS IS TEXT" );
 
 
         //        beanConfig.setInfo( info );
