@@ -21,13 +21,13 @@ import io.swagger.annotations.Contact;
 import io.swagger.annotations.SwaggerDefinition;
 import io.swagger.config.Scanner;
 import io.swagger.jaxrs.config.SwaggerContextService;
-import io.swagger.models.Info;
-import io.swagger.models.Scheme;
-import io.swagger.models.SecurityRequirement;
-import io.swagger.models.Swagger;
-import io.swagger.models.Tag;
-import io.swagger.models.auth.ApiKeyAuthDefinition;
-import io.swagger.models.auth.In;
+//import io.swagger.models.Info;
+//import io.swagger.models.Scheme;
+//import io.swagger.models.SecurityRequirement;
+//import io.swagger.models.Swagger;
+//import io.swagger.models.Tag;
+//import io.swagger.models.auth.ApiKeyAuthDefinition;
+//import io.swagger.models.auth.In;
 import ispyb.ws.rest.mx.AutoprocintegrationRestWebService;
 import ispyb.ws.rest.mx.CrystalRestWebService;
 import ispyb.ws.rest.mx.EnergyScanRestWebService;
@@ -69,6 +69,7 @@ import javax.ws.rs.core.Application;
 import io.swagger.jaxrs.config.BeanConfig;
 
 import io.swagger.annotations.Tag;
+import io.swagger.annotations.Info;
 
 
 /**
@@ -76,7 +77,7 @@ import io.swagger.annotations.Tag;
  */
 @ApplicationPath("rest")
 @SwaggerDefinition(
-  info = @io.swagger.annotations.Info(
+  info = @Info(
     description = "Another bloody test",
     version = "1.0",
     title = "Another bloody test title!!!!!!!!!",
@@ -87,8 +88,8 @@ import io.swagger.annotations.Tag;
     )),
 schemes = {SwaggerDefinition.Scheme.HTTP},
   tags = {
-    @io.swagger.annotations.Tag( name = "TAG ONE" , description = "THIS IS TAG ONE"),
-    @io.swagger.annotations.Tag( name = "TAG 2" , description = "THIS IS TAG 2")
+    @Tag( name = "TAG ONE" , description = "THIS IS TAG ONE"),
+    @Tag( name = "TAG 2" , description = "THIS IS TAG 2")
   }
 )
 public class RestApplication extends Application {
@@ -97,10 +98,10 @@ public class RestApplication extends Application {
 
     public RestApplication() {
 
-      Info info = new Info()
-        .title( "Some new test title" )
-        .description( "Adding some bloat text for test purposes" )
-        .version( "5.4.3" );
+//      Info info = new Info()
+//        .title( "Some new test title" )
+//        .description( "Adding some bloat text for test purposes" )
+//        .version( "5.4.3" );
 
 
 //      Swagger swagger = new Swagger().info( info );
@@ -131,7 +132,7 @@ public class RestApplication extends Application {
         beanConfig.setScan(true);
 
 
-        beanConfig.setInfo( info );
+//        beanConfig.setInfo( info );
 //        beanConfig.configure( swagger );
 
 
