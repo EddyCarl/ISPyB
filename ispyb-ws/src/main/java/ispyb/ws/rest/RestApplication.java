@@ -17,21 +17,6 @@
 
 package ispyb.ws.rest;
 
-import io.swagger.annotations.Contact;
-import io.swagger.annotations.SwaggerDefinition;
-import io.swagger.config.Scanner;
-import io.swagger.jaxrs.config.SwaggerContextService;
-//import io.swagger.models.Info;
-//import io.swagger.models.Scheme;
-//import io.swagger.models.SecurityRequirement;
-//import io.swagger.models.Swagger;
-//import io.swagger.models.Tag;
-//import io.swagger.models.auth.ApiKeyAuthDefinition;
-//import io.swagger.models.auth.In;
-import io.swagger.models.Scheme;
-import io.swagger.models.Swagger;
-import io.swagger.models.auth.ApiKeyAuthDefinition;
-import io.swagger.models.auth.In;
 import ispyb.ws.rest.mx.AutoprocintegrationRestWebService;
 import ispyb.ws.rest.mx.CrystalRestWebService;
 import ispyb.ws.rest.mx.EnergyScanRestWebService;
@@ -41,10 +26,12 @@ import ispyb.ws.rest.mx.ProteinRestWebService;
 import ispyb.ws.rest.mx.SampleRestWebService;
 import ispyb.ws.rest.mx.WorkflowRestWebService;
 import ispyb.ws.rest.mx.XFEFluorescenceSpectrumRestWebService;
+
 import ispyb.ws.rest.proposal.DewarRestWebService;
 import ispyb.ws.rest.proposal.ProposalRestWebService;
 import ispyb.ws.rest.proposal.SessionRestWebService;
 import ispyb.ws.rest.proposal.ShippingRestWebService;
+
 import ispyb.ws.rest.saxs.BufferRestWebService;
 import ispyb.ws.rest.saxs.DataCollectionRestWebService;
 import ispyb.ws.rest.saxs.ExperimentRestWebService;
@@ -57,219 +44,82 @@ import ispyb.ws.rest.saxs.SpecimenRestWebService;
 import ispyb.ws.rest.saxs.StatsRestWebService;
 import ispyb.ws.rest.saxs.StockSolutionRestWebService;
 import ispyb.ws.rest.saxs.SubtractionRestWebService;
+
 import ispyb.ws.rest.security.AuthenticationRestWebService;
 
-import java.util.Collections;
-import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
 import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.Path;
 import javax.ws.rs.core.Application;
 
 import io.swagger.jaxrs.config.BeanConfig;
-
-import io.swagger.annotations.Tag;
-import io.swagger.annotations.Info;
 
 
 /**
  * A class extending {@link javax.ws.rs.core.Application} is the portable way to define JAX-RS 2.0 resources, and the {@link javax.ws.rs.ApplicationPath} defines the root path shared by all these resources.
  */
 @ApplicationPath("rest")
-@SwaggerDefinition(
-  info = @Info(
-    description = "Another bloody test",
-    version = "1.0",
-    title = "Another bloody test title!!!!!!!!!",
-    contact = @Contact(
-      name = "Carl Edmunds",
-      email = "this.is.an.email@address.com",
-      url = "www.thisisurl.com"
-    )),
-schemes = {SwaggerDefinition.Scheme.HTTP},
-  tags = {
-    @Tag( name = "TAG ONE" , description = "THIS IS TAG ONE"),
-    @Tag( name = "TAG 2" , description = "THIS IS TAG 2")
+public class RestApplication extends Application
+{
+  public RestApplication()
+  {
+    BeanConfig beanConfig = new BeanConfig();
+
+    beanConfig.setVersion("5.4.3");
+    beanConfig.setTitle("ISPyB Web Services - Test title!");
+    beanConfig.setDescription( "THIS IS TEXT- LOTS OF TEXT LALALALLALA" );
+    beanConfig.setSchemes(new String[]{"http"});
+    beanConfig.setHost("192.168.30.200:8080");
+    beanConfig.setBasePath("/ispyb/ispyb-ws/rest");
+    beanConfig.setResourcePackage("io.swagger.resources");
+    beanConfig.setContact( "Carl Edmunds" );
+    beanConfig.setScan(true);
   }
-)
-public class RestApplication extends Application {
 
+  @Override
+  public Set<Class<?>> getClasses()
+  {
+    Set<Class<?>> resources = new HashSet<Class<?>> ();
 
+    /** MX **/
+    resources.add(AutoprocintegrationRestWebService.class);
+    resources.add(CrystalRestWebService.class);
+    resources.add(DataCollectionRestWebService.class);
+    resources.add(EnergyScanRestWebService.class);
+    resources.add(ImageWebService.class);
+    resources.add(PhasingRestWebService.class);
+    resources.add(ProteinRestWebService.class);
+    resources.add(SampleRestWebService.class);
+    resources.add(WorkflowRestWebService.class);
+    resources.add(XFEFluorescenceSpectrumRestWebService.class);
 
-    public RestApplication() {
+    /** SAXS **/
+    resources.add(BufferRestWebService.class);
+    resources.add(DataCollectionRestWebService.class);
+    resources.add(ExperimentRestWebService.class);
+    resources.add(FrameRestWebService.class);
+    resources.add(MacromoleculeRestWebService.class);
+    resources.add(MeasurementRestWebService.class);
+    resources.add(ModelingRestWebService.class);
+    resources.add(SaxsRestWebService.class);
+    resources.add(SpecimenRestWebService.class);
+    resources.add(StatsRestWebService.class);
+    resources.add(StockSolutionRestWebService.class);
+    resources.add(SubtractionRestWebService.class);
 
-//      Info info = new Info()
-//        .title( "Some new test title" )
-//        .description( "Adding some bloat text for test purposes" )
-//        .version( "5.4.3" );
+    /** PROPOSAL **/
+    resources.add(DewarRestWebService.class);
+    resources.add(ProposalRestWebService.class);
+    resources.add(SessionRestWebService.class);
+    resources.add(ShippingRestWebService.class);
 
+    /** AUTHENTICATION **/
+    resources.add(AuthenticationRestWebService.class);
 
-//      Swagger swagger = new Swagger().info( info );
-//
-//      swagger.addSecurityDefinition( "api_key",
-//        new ApiKeyAuthDefinition( "api_key", In.HEADER ) );
-//
-//      swagger.addTag( new Tag()
-//        .name( "Test-Tag" )
-//        .description( "All of the test endpoints" ) );
-//
-//      swagger.addTag( new Tag()
-//        .name( "Another test tag" )
-//        .description( "More rubbish text" ) );
-//
-//      swagger.addScheme( Scheme.HTTP );
-////      swagger.setSchemes( Collections.singletonList( Scheme.HTTP ) );
-//      swagger.setHost( "192.168.30.200:8080" );
-//      swagger.setBasePath( "/ispyb/ispyb-ws/rest" );
+    resources.add(io.swagger.jaxrs.listing.ApiListingResource.class);
+    resources.add(io.swagger.jaxrs.listing.SwaggerSerializers.class);
 
-
-      BeanConfig beanConfig = new BeanConfig();
-
-        beanConfig.setVersion("5.4.3");
-        beanConfig.setTitle("ISPyB Web Services - Test title!");
-        beanConfig.setDescription( "THIS IS TEXT- LOTS OF TEXT LALALALLALA" );
-        beanConfig.setSchemes(new String[]{"http"});
-        beanConfig.setHost("192.168.30.200:8080");
-        beanConfig.setBasePath("/ispyb/ispyb-ws/rest");
-        beanConfig.setResourcePackage("io.swagger.resources");
-        beanConfig.setContact( "Carl Edmunds" );
-        beanConfig.setScan(true);
-
-
-        //        beanConfig.setInfo( info );
-        //        beanConfig.configure( swagger );
-
-
-
-//        description = "Another bloody test",
-//          version = "1.0",
-//          title = "Another bloody test title!!!!!!!!!",
-//          contact = @Contact(
-//          name = "Carl Edmunds",
-//          email = "this.is.an.email@address.com",
-//          url = "www.thisisurl.com"
-
-    }
-
-
-//    private void updateInfo( BeanConfig beanConfig )
-//    {
-//        io.swagger.models.Contact contact = new io.swagger.models.Contact();
-//        contact.setName( "Carl Edmunds" );
-//        contact.setUrl( "www.anoherurl.com" );
-//        contact.setEmail( "this.another.email@emial.com" );
-//
-//        beanConfig.setInfo( @Info( title = "B" ) );
-//
-//        if(beanConfig.getInfo() == null)
-//        {
-//            System.out.println("It was null... Creating");
-//
-//            io.swagger.models.Info info = new io.swagger.models.Info();
-//            beanConfig.setInfo( info );
-//        }
-//
-//        beanConfig.getInfo().setTitle( "Another bloody test title ... AGAIN" );
-//        beanConfig.getInfo().setDescription( "Trying another bloody method of updating info" );
-//        beanConfig.getInfo().setVersion( "1.0" );
-//        beanConfig.getInfo().setContact( contact );
-//    }
-
-
-
-
-
-
-
-
-    @Override
-    public Set<Class<?>> getClasses() {
-        Set<Class<?>> resources = new HashSet<Class<?>> ();
-        /** MX **/
-        resources.add(AutoprocintegrationRestWebService.class);
-        resources.add(CrystalRestWebService.class);
-        resources.add(DataCollectionRestWebService.class);
-        resources.add(EnergyScanRestWebService.class);
-        resources.add(ImageWebService.class);
-        resources.add(PhasingRestWebService.class);
-        resources.add(ProteinRestWebService.class);
-        resources.add(SampleRestWebService.class);
-        resources.add(WorkflowRestWebService.class);
-        resources.add(XFEFluorescenceSpectrumRestWebService.class);
-
-        /** SAXS **/
-        resources.add(BufferRestWebService.class);
-        resources.add(DataCollectionRestWebService.class);
-        resources.add(ExperimentRestWebService.class);
-        resources.add(FrameRestWebService.class);
-        resources.add(MacromoleculeRestWebService.class);
-        resources.add(MeasurementRestWebService.class);
-        resources.add(ModelingRestWebService.class);
-        resources.add(SaxsRestWebService.class);
-        resources.add(SpecimenRestWebService.class);
-        resources.add(StatsRestWebService.class);
-        resources.add(StockSolutionRestWebService.class);
-        resources.add(SubtractionRestWebService.class);
-
-        /** PROPOSAL **/
-        resources.add(DewarRestWebService.class);
-        resources.add(ProposalRestWebService.class);
-        resources.add(SessionRestWebService.class);
-        resources.add(ShippingRestWebService.class);
-
-        /** AUTHENTICATION **/
-        resources.add(AuthenticationRestWebService.class);
-
-        resources.add(io.swagger.jaxrs.listing.ApiListingResource.class);
-        resources.add(io.swagger.jaxrs.listing.SwaggerSerializers.class);
-        return resources;
-    }
-
-//
-//
-////  @Path( "/ispyb-ws" )
-//  public void init(ServletConfig config) throws ServletException
-//  {
-//    //		super.init(config);
-//
-//
-//    ServletContext context = config.getServletContext();
-//
-//    //    swagger.setResourcePackage("io.swagger.resources");
-//    //    swagger.setScan(true);
-//
-//    Scanner scanner = new Scanner()
-//    {
-//      @Override
-//      public Set<Class<?>> classes()
-//      {
-//        return getClasses();
-//      }
-//
-//
-//      @Override
-//      public boolean getPrettyPrint()
-//      {
-//        return false;
-//      }
-//
-//
-//      @Override
-//      public void setPrettyPrint( boolean b )
-//      {
-//
-//      }
-//    };
-//
-//    new SwaggerContextService().withServletConfig( config ).updateSwagger( swagger ).setScanner( scanner );
-//  }
-
-
-
-
+    return resources;
   }
+}

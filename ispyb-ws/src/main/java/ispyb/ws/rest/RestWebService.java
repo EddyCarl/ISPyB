@@ -16,18 +16,6 @@ import ispyb.server.common.vos.proposals.Proposal3VO;
 import ispyb.ws.ParentWebService;
 
 @Path("/")
-@SwaggerDefinition(
-	info = @Info(
-		description = "Another bloody test",
-		version = "1.0",
-		title = "Another bloody test title!!!!!!!!!",
-		contact = @Contact(
-			name = "Carl Edmunds",
-			email = "this.is.an.email@address.com",
-			url = "www.thisisurl.com"
-		)),
-	schemes = {SwaggerDefinition.Scheme.HTTP}
-)
 public class RestWebService extends ParentWebService {
 	protected long now;
 
