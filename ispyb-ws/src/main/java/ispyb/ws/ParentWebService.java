@@ -164,9 +164,6 @@ public  class ParentWebService {
 
 	// I believe that this is the sendReponse method being called...
 	protected Response sendResponse(Object response) {
-
-		System.out.println("Returning the following in the OK Response: " + getGson().toJson(response));
-
 		return Response.ok(getGson().toJson(response)).header("Access-Control-Allow-Origin", "*").build();
 	}
 
@@ -233,8 +230,7 @@ public  class ParentWebService {
 	}
 
 	protected Login3Service getLogin3Service() throws NamingException {
-		return (Login3Service) Ejb3ServiceLocator.getInstance().getLocalService(
-				Login3Service.class);
+		return (Login3Service) Ejb3ServiceLocator.getInstance().getLocalService(Login3Service.class);
 	}
 
 	protected LabContact3Service getLabContact3Service() throws NamingException {
@@ -408,4 +404,45 @@ public  class ParentWebService {
 		return this.sendResponse(e.getMessage());
 	}
 
+
+	/**
+	 * Wrapper method to output a debug message in a logfile whilst returning an error response to the caller.
+	 *
+	 * The API returnes with a 401 - Unauthorised response with a JSON body expressing that the authorisation token
+	 * added to the request (via the X-API-KEY header) was either invalid or could not be matched to a user in the
+	 * database.
+	 *
+	 * @param methodName	The method that produced the error.
+	 * @param start				The time the method was called in ms.
+	 * @param logger			The Logger instance used
+	 *
+	 * @return Response		A 401 Unauthorised response with a relevant error message.
+	 */
+	protected Response unathorisedResponse(String methodName, long start, Logger logger)
+	{
+		String errorMessage = "Input token does not match a valid user session or was invalid (Header - X-API-KEY value)";
+		this.logFinish( methodName, start, logger );
+		return Response.status( Response.Status.UNAUTHORIZED ).entity( getGson().toJson( errorMessage ) ).build();
+	}
+
+	/**
+	 * Wrapper method to output a debug message in a logfile whilst returning an error response to the caller.
+	 *
+	 * The API returnes with a 500 - Internal Server Error response with a JSON body expressing that there was an
+	 * issue processing the request on the server.
+	 *
+	 * @param methodName	The method that produced the error.
+	 * @param start				The time the method was called in ms.
+	 * @param logger			The Logger instance used
+	 *
+	 * @return Response		A 500 Internal Server Error response with a relevant error message.
+	 */
+	protected Response serverError(String methodName, Exception e, long start, Logger logger)
+	{
+		String errorMessage = "There was an issue processing the request on the server.";
+		LoggerFormatter.log(logger, LoggerFormatter.Package.ISPyB_API_ERROR, methodName,
+												start, System.currentTimeMillis(), e.getMessage(), e);
+//		e.printStackTrace();
+		return Response.status( Response.Status.INTERNAL_SERVER_ERROR ).entity( getGson().toJson( errorMessage ) ).build();
+	}
 }
