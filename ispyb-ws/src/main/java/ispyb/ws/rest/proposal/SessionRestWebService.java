@@ -1,5 +1,6 @@
 package ispyb.ws.rest.proposal;
 
+import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.Authorization;
 import ispyb.server.common.services.ws.rest.session.SessionService;
@@ -41,50 +42,34 @@ public class SessionRestWebService extends RestWebService {
 	@GET
 	@Path("sessions")
 	@Produces({ "application/json" })
-	public Response getSessionInformation(@QueryParam("id") List<Integer> sessionIDs,
+	@ApiOperation( value = "Retrieve a list of sessions from the database",
+							   authorizations = @Authorization( value = "basic")
+	)
+	public Response getSessions(@QueryParam("id") List<Integer> sessionIDs,
 																				@Context HttpHeaders headers,
 																				@ApiParam(value = "Authorisation token for the session", required = true)
 																					@HeaderParam("X-API-KEY") String authToken )
 	{
-		String methodName = "getSessionInformation";
-		System.out.println("Called " + methodName + " with sessionIDs:");
+		String methodName = "getSessions";
+		long id = this.logInit(methodName, logger, sessionIDs);
 
-		for(Integer i : sessionIDs)
-		{
-			System.out.println("~~~ ID: " + i + " ~~~");
-		}
-
-		System.out.println("-------------------------------");
-		System.out.println("Auth Token: " + authToken);
-		System.out.println("-------------------------------");
-
-
-    System.out.println("Checking that the auth token is valid");
+		// Check the input X-API-Key auth token by attempting to retrieve a session from the DB
     try
     {
       Login3VO login3VO = this.getLogin3Service().findByToken( authToken );
 
-      if(login3VO != null)
-      {
-        System.out.println( "login3vo.getusername(): " + login3VO.getUsername() );
-        System.out.println( "login3vo.getauthorised(): " + login3VO.getAuthorized() );
-        System.out.println( "login3vo.getsiteid(): " + login3VO.getSiteId() );
-      }
-      else
-      {
-        System.out.println("Login3vo is null - Couldn't find with the input token");
-        String jsonError = getGson().toJson( "Input X-API-KEY token does not relate to a valid user session" );
-        return Response.status( Response.Status.UNAUTHORIZED ).entity( jsonError ).build();
-      }
+      if(login3VO == null)
+			{
+				return this.unathorisedResponse( methodName, id, logger );
+			}
     }
-    catch( NamingException e )
+    catch( NamingException ne )
     {
-      System.out.println("Caught namingexception ");
-      e.printStackTrace();
+			return this.serverError(methodName, ne, id, logger);
     }
 
 
-    long id = this.logInit(methodName, logger, sessionIDs);
+    // Retrieve the valid users list of sessions
 
 		try
 		{
@@ -95,9 +80,8 @@ public class SessionRestWebService extends RestWebService {
 		}
 		catch (Exception e)
 		{
-			return this.logError(methodName, e, id, logger);
+			return this.serverError(methodName, e, id, logger);
 		}
-
 	}
 
 	@RolesAllowed({ "User", "Manager", "Industrial", "Localcontact" })
