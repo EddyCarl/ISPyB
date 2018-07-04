@@ -18,43 +18,16 @@
 package ispyb.ws.rest;
 
 import io.swagger.jaxrs.Reader;
+
+import io.swagger.jaxrs.config.BeanConfig;
 import io.swagger.jaxrs.config.ReaderListener;
-import io.swagger.models.Swagger;
+
 import io.swagger.models.auth.BasicAuthDefinition;
-import ispyb.ws.rest.mx.AutoprocintegrationRestWebService;
-import ispyb.ws.rest.mx.CrystalRestWebService;
-import ispyb.ws.rest.mx.EnergyScanRestWebService;
-import ispyb.ws.rest.mx.ImageWebService;
-import ispyb.ws.rest.mx.PhasingRestWebService;
-import ispyb.ws.rest.mx.ProteinRestWebService;
-import ispyb.ws.rest.mx.SampleRestWebService;
-import ispyb.ws.rest.mx.WorkflowRestWebService;
-import ispyb.ws.rest.mx.XFEFluorescenceSpectrumRestWebService;
 
-import ispyb.ws.rest.proposal.DewarRestWebService;
-import ispyb.ws.rest.proposal.ProposalRestWebService;
-import ispyb.ws.rest.proposal.SessionRestWebService;
-import ispyb.ws.rest.proposal.ShippingRestWebService;
-
-import ispyb.ws.rest.saxs.BufferRestWebService;
-import ispyb.ws.rest.saxs.DataCollectionRestWebService;
-import ispyb.ws.rest.saxs.ExperimentRestWebService;
-import ispyb.ws.rest.saxs.FrameRestWebService;
-import ispyb.ws.rest.saxs.MacromoleculeRestWebService;
-import ispyb.ws.rest.saxs.MeasurementRestWebService;
-import ispyb.ws.rest.saxs.ModelingRestWebService;
-import ispyb.ws.rest.saxs.SaxsRestWebService;
-import ispyb.ws.rest.saxs.SpecimenRestWebService;
-import ispyb.ws.rest.saxs.StatsRestWebService;
-import ispyb.ws.rest.saxs.StockSolutionRestWebService;
-import ispyb.ws.rest.saxs.SubtractionRestWebService;
-
-import ispyb.ws.rest.security.AuthenticationRestWebService;
+import io.swagger.models.Swagger;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
-
-import io.swagger.jaxrs.config.BeanConfig;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -67,6 +40,15 @@ import java.util.Set;
 @ApplicationPath("rest")
 public class RestApplication extends Application implements ReaderListener
 {
+  private final static String TITLE = "ISPyB Web Services";
+  private final static String DESCRIPTION = "This webservice is used to support the Diamond Light Source " +
+                                            "SynchLink mobile application.";
+  private final static String[] SCHEMES = new String[] { "http" };
+  private final static String HOST = "192.168.30.200:8080";
+  private final static String BASE_PATH = "/ispyb/ispyb-ws/rest";
+  private final static String RESOURCE_PACKAGE = "io.swagger.resources";
+  private final static String CONTACT = "Neil Smith";
+
   /**
    * Constructor that is used to setup the application.
    *
@@ -77,16 +59,14 @@ public class RestApplication extends Application implements ReaderListener
   public RestApplication()
   {
     BeanConfig beanConfig = new BeanConfig();
-
-    beanConfig.setVersion("5.4.3");
-    beanConfig.setTitle("ISPyB Web Services - Test title!");
-    beanConfig.setDescription( "THIS IS TEXT- LOTS OF TEXT LALALALLALA" );
-    beanConfig.setSchemes(new String[]{"http"});
-    beanConfig.setHost("192.168.30.200:8080");
-    beanConfig.setBasePath("/ispyb/ispyb-ws/rest");
-    beanConfig.setResourcePackage("io.swagger.resources");
-    beanConfig.setContact( "Carl Edmunds" );
-    beanConfig.setScan(true);
+    beanConfig.setTitle( TITLE );
+    beanConfig.setDescription( DESCRIPTION );
+    beanConfig.setSchemes( SCHEMES );
+    beanConfig.setHost( HOST );
+    beanConfig.setBasePath( BASE_PATH );
+    beanConfig.setResourcePackage( RESOURCE_PACKAGE );
+    beanConfig.setContact( CONTACT );
+    beanConfig.setScan( true );
   }
 
 
@@ -95,49 +75,50 @@ public class RestApplication extends Application implements ReaderListener
    *
    * Swagger requires a list of classes to scan so that it can pick up on any annotations that have been added to them.
    * This method returns a Set that contains all of the classes that contain endpoints that have been created.
-   * @return
+   *
+   * @return Set<Class<?>> - The classes containing resources that are to be scanned.
    */
   @Override
   public Set<Class<?>> getClasses()
   {
     Set<Class<?>> resources = new HashSet<>();
 
-    /** MX **/
-    resources.add(AutoprocintegrationRestWebService.class);
-    resources.add(CrystalRestWebService.class);
-    resources.add(DataCollectionRestWebService.class);
-    resources.add(EnergyScanRestWebService.class);
-    resources.add(ImageWebService.class);
-    resources.add(PhasingRestWebService.class);
-    resources.add(ProteinRestWebService.class);
-    resources.add(SampleRestWebService.class);
-    resources.add(WorkflowRestWebService.class);
-    resources.add(XFEFluorescenceSpectrumRestWebService.class);
+    // MX package classes
+    resources.add(ispyb.ws.rest.mx.AutoprocintegrationRestWebService.class);
+    resources.add(ispyb.ws.rest.mx.CrystalRestWebService.class);
+    resources.add(ispyb.ws.rest.mx.DataCollectionRestWebService.class);
+    resources.add(ispyb.ws.rest.mx.EnergyScanRestWebService.class);
+    resources.add(ispyb.ws.rest.mx.ImageWebService.class);
+    resources.add(ispyb.ws.rest.mx.PhasingRestWebService.class);
+    resources.add(ispyb.ws.rest.mx.ProteinRestWebService.class);
+    resources.add(ispyb.ws.rest.mx.SampleRestWebService.class);
+    resources.add(ispyb.ws.rest.mx.WorkflowRestWebService.class);
+    resources.add(ispyb.ws.rest.mx.XFEFluorescenceSpectrumRestWebService.class);
 
-    /** SAXS **/
-    resources.add(BufferRestWebService.class);
-    resources.add(DataCollectionRestWebService.class);
-    resources.add(ExperimentRestWebService.class);
-    resources.add(FrameRestWebService.class);
-    resources.add(MacromoleculeRestWebService.class);
-    resources.add(MeasurementRestWebService.class);
-    resources.add(ModelingRestWebService.class);
-    resources.add(SaxsRestWebService.class);
-    resources.add(SpecimenRestWebService.class);
-    resources.add(StatsRestWebService.class);
-    resources.add(StockSolutionRestWebService.class);
-    resources.add(SubtractionRestWebService.class);
+    // Saxs package classes
+    resources.add(ispyb.ws.rest.saxs.BufferRestWebService.class);
+    resources.add(ispyb.ws.rest.saxs.DataCollectionRestWebService.class);
+    resources.add(ispyb.ws.rest.saxs.ExperimentRestWebService.class);
+    resources.add(ispyb.ws.rest.saxs.FrameRestWebService.class);
+    resources.add(ispyb.ws.rest.saxs.MacromoleculeRestWebService.class);
+    resources.add(ispyb.ws.rest.saxs.MeasurementRestWebService.class);
+    resources.add(ispyb.ws.rest.saxs.ModelingRestWebService.class);
+    resources.add(ispyb.ws.rest.saxs.SaxsRestWebService.class);
+    resources.add(ispyb.ws.rest.saxs.SpecimenRestWebService.class);
+    resources.add(ispyb.ws.rest.saxs.StatsRestWebService.class);
+    resources.add(ispyb.ws.rest.saxs.StockSolutionRestWebService.class);
+    resources.add(ispyb.ws.rest.saxs.SubtractionRestWebService.class);
 
-    /** PROPOSAL **/
-    resources.add(DewarRestWebService.class);
-    resources.add(ProposalRestWebService.class);
-    resources.add(SessionRestWebService.class);
-    resources.add(ShippingRestWebService.class);
+    // Proposal package classes
+    resources.add(ispyb.ws.rest.proposal.DewarRestWebService.class);
+    resources.add(ispyb.ws.rest.proposal.ProposalRestWebService.class);
+    resources.add(ispyb.ws.rest.proposal.SessionRestWebService.class);
+    resources.add(ispyb.ws.rest.proposal.ShippingRestWebService.class);
 
-    /** AUTHENTICATION **/
-    resources.add(AuthenticationRestWebService.class);
+    // Security package classes
+    resources.add(ispyb.ws.rest.security.AuthenticationRestWebService.class);
 
-    resources.add( RestApplication.class );
+    // Swagger classes
     resources.add(io.swagger.jaxrs.listing.ApiListingResource.class);
     resources.add(io.swagger.jaxrs.listing.SwaggerSerializers.class);
 
