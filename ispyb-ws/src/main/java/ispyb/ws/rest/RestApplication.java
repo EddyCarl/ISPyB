@@ -17,7 +17,6 @@
 
 package ispyb.ws.rest;
 
-import io.swagger.annotations.SwaggerDefinition;
 import io.swagger.jaxrs.Reader;
 import io.swagger.jaxrs.config.ReaderListener;
 import io.swagger.models.Swagger;
@@ -52,29 +51,29 @@ import ispyb.ws.rest.saxs.SubtractionRestWebService;
 
 import ispyb.ws.rest.security.AuthenticationRestWebService;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
 import io.swagger.jaxrs.config.BeanConfig;
 
+import java.util.HashSet;
+import java.util.Set;
 
 
 /**
  * A class extending {@link javax.ws.rs.core.Application} is the portable way to define JAX-RS 2.0 resources,
  * and the {@link javax.ws.rs.ApplicationPath} defines the root path shared by all these resources.
  */
-
-@SwaggerDefinition(
-
-)
-
-
 @ApplicationPath("rest")
 public class RestApplication extends Application implements ReaderListener
 {
+  /**
+   * Constructor that is used to setup the application.
+   *
+   * The main purpose of this constructor is to setup & configure the Swagger UI information. The BeanConfig is used
+   * in order to set various properties that will be displayed in the output Swagger UI page (and the JSON page that
+   * it is generated from).
+   */
   public RestApplication()
   {
     BeanConfig beanConfig = new BeanConfig();
@@ -91,13 +90,17 @@ public class RestApplication extends Application implements ReaderListener
   }
 
 
-
-
-
+  /**
+   * Used to retrieve a list of classes that are to be scanned.
+   *
+   * Swagger requires a list of classes to scan so that it can pick up on any annotations that have been added to them.
+   * This method returns a Set that contains all of the classes that contain endpoints that have been created.
+   * @return
+   */
   @Override
   public Set<Class<?>> getClasses()
   {
-    Set<Class<?>> resources = new HashSet<Class<?>> ();
+    Set<Class<?>> resources = new HashSet<>();
 
     /** MX **/
     resources.add(AutoprocintegrationRestWebService.class);
@@ -142,27 +145,33 @@ public class RestApplication extends Application implements ReaderListener
   }
 
 
+  /**
+   * Called before the Swagger definition gets populated from scanned classes.
+   * Use this method to pre-process the Swagger definition before it gets populated.
+   * This method is unused in this instance but must be implemented due to the usage of the ReaderListener interface.
+   *
+   * @param reader    - The reader used to read annotations and build the Swagger definition
+   * @param swagger   - The initial swagger definition
+   */
   @Override
   public void beforeScan( Reader reader, Swagger swagger )
   {
-    System.out.println("--- BeforeScan ---");
   }
 
 
+  /**
+   * Called after a Swagger definition has been populated from scanned classes.
+   * Use this method to post-process Swagger definitions.
+   * This method is being used to add some authentication scheme information to the Swagger output.
+   *
+   * @param reader    - The reader used to read annotations and build the Swagger definition
+   * @param swagger   - The configured Swagger definition
+   */
   @Override
   public void afterScan( Reader reader, Swagger swagger )
   {
-    System.out.println("--- AfterScan ---");
-
-    if(swagger == null)
-    {
-      System.out.println("Swagger instance is null");
-    }
-    else
-    {
-      // Set up the auth stuff...
-      BasicAuthDefinition basicAuthDefinition = new BasicAuthDefinition();
-      swagger.addSecurityDefinition( "basicAuth", basicAuthDefinition);
-    }
+    // Set up the authentication scheme (basic authentication)
+    BasicAuthDefinition basicAuthDefinition = new BasicAuthDefinition();
+    swagger.addSecurityDefinition( "basicAuth", basicAuthDefinition);
   }
 }
