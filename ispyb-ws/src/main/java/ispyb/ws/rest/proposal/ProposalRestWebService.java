@@ -12,6 +12,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.Authorization;
 import org.apache.log4j.Logger;
 
 import com.google.gson.Gson;
@@ -42,6 +44,7 @@ public class ProposalRestWebService extends MXRestWebService{
 	@GET
 	@Path("/proposals")
 	@Produces({ "application/json" })
+	@ApiOperation( value = "Return list of proposals", httpMethod="GET", authorizations = {@Authorization(value="basicAuth")})
 	public Response getSimpleProposals() throws Exception {
 		String methodName = "getSimpleProposals";
 		long id = this.logInit(methodName, logger);

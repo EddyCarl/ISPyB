@@ -17,6 +17,11 @@
 
 package ispyb.ws.rest;
 
+import io.swagger.annotations.SwaggerDefinition;
+import io.swagger.jaxrs.Reader;
+import io.swagger.jaxrs.config.ReaderListener;
+import io.swagger.models.Swagger;
+import io.swagger.models.auth.BasicAuthDefinition;
 import ispyb.ws.rest.mx.AutoprocintegrationRestWebService;
 import ispyb.ws.rest.mx.CrystalRestWebService;
 import ispyb.ws.rest.mx.EnergyScanRestWebService;
@@ -56,12 +61,19 @@ import javax.ws.rs.core.Application;
 import io.swagger.jaxrs.config.BeanConfig;
 
 
+
 /**
  * A class extending {@link javax.ws.rs.core.Application} is the portable way to define JAX-RS 2.0 resources,
  * and the {@link javax.ws.rs.ApplicationPath} defines the root path shared by all these resources.
  */
+
+@SwaggerDefinition(
+
+)
+
+
 @ApplicationPath("rest")
-public class RestApplication extends Application
+public class RestApplication extends Application implements ReaderListener
 {
   public RestApplication()
   {
@@ -77,6 +89,10 @@ public class RestApplication extends Application
     beanConfig.setContact( "Carl Edmunds" );
     beanConfig.setScan(true);
   }
+
+
+
+
 
   @Override
   public Set<Class<?>> getClasses()
@@ -118,9 +134,35 @@ public class RestApplication extends Application
     /** AUTHENTICATION **/
     resources.add(AuthenticationRestWebService.class);
 
+    resources.add( RestApplication.class );
     resources.add(io.swagger.jaxrs.listing.ApiListingResource.class);
     resources.add(io.swagger.jaxrs.listing.SwaggerSerializers.class);
 
     return resources;
+  }
+
+
+  @Override
+  public void beforeScan( Reader reader, Swagger swagger )
+  {
+    System.out.println("--- BeforeScan ---");
+  }
+
+
+  @Override
+  public void afterScan( Reader reader, Swagger swagger )
+  {
+    System.out.println("--- AfterScan ---");
+
+    if(swagger == null)
+    {
+      System.out.println("Swagger instance is null");
+    }
+    else
+    {
+      // Set up the auth stuff...
+      BasicAuthDefinition basicAuthDefinition = new BasicAuthDefinition();
+      swagger.addSecurityDefinition( "basicAuth", basicAuthDefinition);
+    }
   }
 }
