@@ -83,44 +83,47 @@ public class RestApplication extends Application implements ReaderListener
   {
     Set<Class<?>> resources = new HashSet<>();
 
+    // This class
+    resources.add( ispyb.ws.rest.RestApplication.class );
+
     // MX package classes
-    resources.add(ispyb.ws.rest.mx.AutoprocintegrationRestWebService.class);
-    resources.add(ispyb.ws.rest.mx.CrystalRestWebService.class);
-    resources.add(ispyb.ws.rest.mx.DataCollectionRestWebService.class);
-    resources.add(ispyb.ws.rest.mx.EnergyScanRestWebService.class);
-    resources.add(ispyb.ws.rest.mx.ImageWebService.class);
-    resources.add(ispyb.ws.rest.mx.PhasingRestWebService.class);
-    resources.add(ispyb.ws.rest.mx.ProteinRestWebService.class);
-    resources.add(ispyb.ws.rest.mx.SampleRestWebService.class);
-    resources.add(ispyb.ws.rest.mx.WorkflowRestWebService.class);
-    resources.add(ispyb.ws.rest.mx.XFEFluorescenceSpectrumRestWebService.class);
+    resources.add( ispyb.ws.rest.mx.AutoprocintegrationRestWebService.class );
+    resources.add( ispyb.ws.rest.mx.CrystalRestWebService.class );
+    resources.add( ispyb.ws.rest.mx.DataCollectionRestWebService.class );
+    resources.add( ispyb.ws.rest.mx.EnergyScanRestWebService.class );
+    resources.add( ispyb.ws.rest.mx.ImageWebService.class );
+    resources.add( ispyb.ws.rest.mx.PhasingRestWebService.class );
+    resources.add( ispyb.ws.rest.mx.ProteinRestWebService.class );
+    resources.add( ispyb.ws.rest.mx.SampleRestWebService.class );
+    resources.add( ispyb.ws.rest.mx.WorkflowRestWebService.class );
+    resources.add( ispyb.ws.rest.mx.XFEFluorescenceSpectrumRestWebService.class );
 
     // Saxs package classes
-    resources.add(ispyb.ws.rest.saxs.BufferRestWebService.class);
-    resources.add(ispyb.ws.rest.saxs.DataCollectionRestWebService.class);
-    resources.add(ispyb.ws.rest.saxs.ExperimentRestWebService.class);
-    resources.add(ispyb.ws.rest.saxs.FrameRestWebService.class);
-    resources.add(ispyb.ws.rest.saxs.MacromoleculeRestWebService.class);
-    resources.add(ispyb.ws.rest.saxs.MeasurementRestWebService.class);
-    resources.add(ispyb.ws.rest.saxs.ModelingRestWebService.class);
-    resources.add(ispyb.ws.rest.saxs.SaxsRestWebService.class);
-    resources.add(ispyb.ws.rest.saxs.SpecimenRestWebService.class);
-    resources.add(ispyb.ws.rest.saxs.StatsRestWebService.class);
-    resources.add(ispyb.ws.rest.saxs.StockSolutionRestWebService.class);
-    resources.add(ispyb.ws.rest.saxs.SubtractionRestWebService.class);
+    resources.add( ispyb.ws.rest.saxs.BufferRestWebService.class );
+    resources.add( ispyb.ws.rest.saxs.DataCollectionRestWebService.class );
+    resources.add( ispyb.ws.rest.saxs.ExperimentRestWebService.class );
+    resources.add( ispyb.ws.rest.saxs.FrameRestWebService.class );
+    resources.add( ispyb.ws.rest.saxs.MacromoleculeRestWebService.class );
+    resources.add( ispyb.ws.rest.saxs.MeasurementRestWebService.class );
+    resources.add( ispyb.ws.rest.saxs.ModelingRestWebService.class );
+    resources.add( ispyb.ws.rest.saxs.SaxsRestWebService.class );
+    resources.add( ispyb.ws.rest.saxs.SpecimenRestWebService.class );
+    resources.add( ispyb.ws.rest.saxs.StatsRestWebService.class );
+    resources.add( ispyb.ws.rest.saxs.StockSolutionRestWebService.class );
+    resources.add( ispyb.ws.rest.saxs.SubtractionRestWebService.class );
 
     // Proposal package classes
-    resources.add(ispyb.ws.rest.proposal.DewarRestWebService.class);
-    resources.add(ispyb.ws.rest.proposal.ProposalRestWebService.class);
-    resources.add(ispyb.ws.rest.proposal.SessionRestWebService.class);
-    resources.add(ispyb.ws.rest.proposal.ShippingRestWebService.class);
+    resources.add( ispyb.ws.rest.proposal.DewarRestWebService.class );
+    resources.add( ispyb.ws.rest.proposal.ProposalRestWebService.class );
+    resources.add( ispyb.ws.rest.proposal.SessionRestWebService.class );
+    resources.add( ispyb.ws.rest.proposal.ShippingRestWebService.class );
 
     // Security package classes
-    resources.add(ispyb.ws.rest.security.AuthenticationRestWebService.class);
+    resources.add( ispyb.ws.rest.security.AuthenticationRestWebService.class );
 
     // Swagger classes
-    resources.add(io.swagger.jaxrs.listing.ApiListingResource.class);
-    resources.add(io.swagger.jaxrs.listing.SwaggerSerializers.class);
+    resources.add( io.swagger.jaxrs.listing.ApiListingResource.class );
+    resources.add( io.swagger.jaxrs.listing.SwaggerSerializers.class );
 
     return resources;
   }
