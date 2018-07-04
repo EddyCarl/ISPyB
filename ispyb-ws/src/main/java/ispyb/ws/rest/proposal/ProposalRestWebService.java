@@ -63,6 +63,8 @@ public class ProposalRestWebService extends MXRestWebService{
 	@GET
 	@Path("{token}/proposal/list")
 	@Produces({ "application/json" })
+	@ApiOperation( value = "Return list of proposals again", httpMethod="GET", authorizations = {@Authorization(value="basicAuth")})
+
 	public Response getProposals(@PathParam("token") String token) throws Exception {
 		String methodName = "getProposals";
 		long id = this.logInit(methodName, logger, token);
