@@ -35,19 +35,18 @@ import ispyb.server.smis.UpdateFromSMIS;
 import ispyb.ws.rest.mx.MXRestWebService;
 
 
+// All endpoints will fall under the Legacy tag unless otherwise specified
 @Api( tags = "Legacy" )
 @Path("/")
 public class ProposalRestWebService extends MXRestWebService
 {
   private final static Logger logger = Logger.getLogger(ProposalRestWebService.class);
 
-  // List of the tags used for the Swagger documentation
+  // The tag that the new endpoints will be places under
   private final static String PROPOSAL_TAG = "Proposals";
 
 
   /**
-   * Defines the "/proposals" endpoint.
-   *
    * Used to retrieve a full list of proposals stored in the database, that are available to the user currently
    * logged into the system.
    *
@@ -75,8 +74,6 @@ public class ProposalRestWebService extends MXRestWebService
 
 
   /**
-   * Defines the "/proposals/{prop-id}" endpoint.
-   *
    * Used to retrieve the information related to a specific proposal stored in the database, based on the input
    * proposal ID in the endpoint (if it is available to the user currently logged into the system.)
    *
@@ -132,6 +129,9 @@ public class ProposalRestWebService extends MXRestWebService
 //  }
 //
 
+  /*
+   * ------ Legacy endpoints below this point ----
+   */
 
   @RolesAllowed({"User", "Manager", "Industrial", "Localcontact"})
   @GET
@@ -153,31 +153,20 @@ public class ProposalRestWebService extends MXRestWebService
   @GET
   @Path("{token}/proposal/{proposal}/info/get")
   @Produces({ "application/json" })
-  public Response getProposaInfos(@PathParam("token") String token, @PathParam("proposal") String proposal)
+  public Response getProposalInfos(@PathParam("token") String token, @PathParam("proposal") String proposal)
         throws Exception {
-    String methodName = "getProposaInfos";
+    String methodName = "getProposalInfos";
     long id = this.logInit(methodName, logger, token, proposal);
-
-    System.out.printf("    *CE* - getProposalInfo called with token[ %s ] and proposal [ %s ]\n", token, proposal);
 
     try {
       ArrayList<HashMap<String, List<?>>> multiple = new ArrayList<HashMap<String, List<?>>>();
       HashMap<String, List<?>> results = new HashMap<String, List<?>>();
 
       if (proposal == null || proposal.isEmpty()) {
-        System.out.printf("    getProposalInfo - Proporsal == null || proposal.isEmpty - Getting results from token\n");
         List<Map<String, Object>> proposals = this.getProposalsFromToken(token);
         results.put("proposal", proposals);
       } else {
-        System.out.printf("      getProposalInfo - Proposal[ %s ]\n", proposal);
-
         int proposalId = this.getProposalId(proposal);
-
-        // This method worked ... Passing in the ID as the parameter (Which is what I'd expect...)
-//        int proposalId = Integer.parseInt(proposal);
-        System.out.printf("      getProposalInfo - Proposal ID[ %d ]\n", proposalId);
-
-
         List<Macromolecule3VO> macromolecules = this.getSaxsProposal3Service().findMacromoleculesByProposalId(proposalId);
         List<Buffer3VO> buffers = this.getSaxsProposal3Service().findBuffersByProposalId(proposalId);
 
@@ -186,8 +175,6 @@ public class ProposalRestWebService extends MXRestWebService
         List<Platetype3VO> plateTypes = this.getPlateType3Service().findAll();
         List<Proposal3VO> proposals = new ArrayList<Proposal3VO>();
         proposals.add(this.getProposal3Service().findProposalById(proposalId));
-
-        System.out.printf("      proposals added by now - Check size: %d\n", proposals.size());
 
         List<Protein3VO> proteins = this.getProtein3Service().findByProposalId(proposalId);
         List<Crystal3VO> crystals = this.getCrystal3Service().findByProposalId(proposalId);
@@ -201,7 +188,6 @@ public class ProposalRestWebService extends MXRestWebService
         results.put("stockSolutions", stockSolutions);
         results.put("labcontacts", labContacts);
         results.put("proteins", proteins);
-
       }
 
       multiple.add(results);
