@@ -86,7 +86,7 @@ public class ProposalRestWebService extends MXRestWebService
    * @return  Response    - Returns a relevant HTTP response
    */
   @GET
-  @Path( "/proposals/{prop-id}" )
+  @Path( "/proposals/{id}" )
   @ApiOperation
   (
     value = "Retrieve the information of a proposal",
@@ -100,8 +100,8 @@ public class ProposalRestWebService extends MXRestWebService
   (
     @ApiImplicitParam
     (
-      name = "prop-id", value = "The ID of the proposal to retrieve",
-      required = true, dataType = "integer", example = "14", paramType = "path"
+      name = "id", value = "The ID of the proposal to retrieve",
+      example = "14", required = true, dataType = "integer", paramType = "path"
     )
   )
   @ApiResponses
@@ -109,9 +109,12 @@ public class ProposalRestWebService extends MXRestWebService
       @ApiResponse( code = 200, message = "Ok" ),
       @ApiResponse( code = 400, message = "Some error" )
   } )
-  public Response retrieveProposalById( @ApiParam( value = "prop-id", hidden = true ) @PathParam( "prop-id" ) int proposalID ) throws Exception
+  public Response retrieveProposalById
+  (
+    @ApiParam( value = "id" ) @PathParam( "id" ) int id
+  ) throws Exception
   {
-    System.out.println("Intput proposalID: " + proposalID );
+    System.out.println("Intput proposalID: " + id );
     return null;
   }
 
