@@ -12,8 +12,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
@@ -96,14 +94,6 @@ public class ProposalRestWebService extends MXRestWebService
     authorizations = @Authorization( "basicAuth" )
   )
   @Produces({ "application/json" })
-  @ApiImplicitParams
-  (
-    @ApiImplicitParam
-    (
-      name = "id", value = "The ID of the proposal to retrieve",
-      example = "14", required = true, dataType = "integer", paramType = "path"
-    )
-  )
   @ApiResponses
   ( {
       @ApiResponse( code = 200, message = "Ok" ),
@@ -111,10 +101,14 @@ public class ProposalRestWebService extends MXRestWebService
   } )
   public Response retrieveProposalById
   (
-    @ApiParam( value = "id" ) @PathParam( "id" ) int id
+
+    @ApiParam
+    (
+      name = "id", value = "The ID of the proposal to retrieve", required = true, example = "131"
+    ) @PathParam( "id" ) int proposalID
+
   ) throws Exception
   {
-    System.out.println("Intput proposalID: " + id );
     return null;
   }
 
