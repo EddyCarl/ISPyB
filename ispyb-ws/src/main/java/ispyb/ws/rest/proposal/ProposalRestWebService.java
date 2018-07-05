@@ -79,7 +79,9 @@ public class ProposalRestWebService extends MXRestWebService
    * Used to retrieve the information related to a specific proposal stored in the database, based on the input
    * proposal ID in the endpoint (if it is available to the user currently logged into the system.)
    *
-   * @return  Response  - Returns a relevant HTTP response
+   * @param   proposalID  - Input proposalID used to retrieve information for
+   *
+   * @return  Response    - Returns a relevant HTTP response
    */
   @GET
   @Path( "/proposals/{prop-id}" )
@@ -88,7 +90,7 @@ public class ProposalRestWebService extends MXRestWebService
     value = "Retrieve the information of a proposal",
     notes = "Obtain the information relating to a specific proposal (based on the input ID) " +
             "if it is available to the user currently logged in.",
-    tags = { PROPOSAL_TAG }, response = Proposal3VO.class, responseContainer = "List",
+    tags = { PROPOSAL_TAG }, response = Proposal3VO.class,
     authorizations = @Authorization( "basicAuth" )
   )
   @Produces({ "application/json" })
@@ -99,7 +101,12 @@ public class ProposalRestWebService extends MXRestWebService
   } )
   public Response retrieveProposalById
   (
-    @ApiParam( name = "Proposal ID", value = "The ID of the proposal to retrieve", required = true ) int proposalID
+
+    @ApiParam
+    (
+      name = "Proposal ID", value = "The ID of the proposal to retrieve", required = true, example = "131"
+    ) @PathParam( "prop-id" ) int proposalID
+
   ) throws Exception
   {
     return null;
