@@ -82,3 +82,6 @@ ispyb-ui/.classpath
 deploy.bat
 deploy10.bat
 
+# IntelliJ IDEA files
+.idea
+*.iml
