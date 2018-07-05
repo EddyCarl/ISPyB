@@ -12,9 +12,11 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
 import org.apache.log4j.Logger;
-
-import com.google.gson.Gson;
 
 import io.swagger.annotations.Api;
 import ispyb.server.biosaxs.vos.assembly.Macromolecule3VO;
@@ -37,23 +39,38 @@ public class ProposalRestWebService extends MXRestWebService{
 
 	private final static Logger logger = Logger.getLogger(ProposalRestWebService.class);
 
+  @GET
+  @Path( "/proposals" )
+  @ApiOperation( value = "Retrieve a list of proposals for this user",
+    notes = "Some long winded descripion about the method above. Just add some dummy text here for now.",
+    tags = "Proposals", response = Proposal3VO.class, responseContainer = "List",
+    authorizations = @Authorization( "basicAuth" ) )
+  @Produces({ "application/json" })
+  @ApiResponses( { @ApiResponse( code = 200, message = "Ok" ), @ApiResponse( code = 400, message = "Some error" ) } )
+  public Response retrieveProposals() throws Exception
+  {
 
-	@RolesAllowed({"User", "Manager", "Industrial", "Localcontact"})
-	@GET
-	@Path("/proposals")
-	@Produces({ "application/json" })
-	public Response getSimpleProposals() throws Exception {
-		String methodName = "getSimpleProposals";
-		long id = this.logInit(methodName, logger);
-		try {
-			List<Map<String, Object>> proposals = this.getProposalsFromTokenNoAuth();
-			this.logFinish(methodName, id, logger);
-			return this.sendResponse(proposals);
-		} catch (Exception e) {
-			return this.logError(methodName, e, id, logger);
-		}
-	}
 
+    return null;
+  }
+
+
+//  @RolesAllowed({"User", "Manager", "Industrial", "Localcontact"})
+//	@GET
+//	@Path("/proposals")
+//	@Produces({ "application/json" })
+//	public Response getSimpleProposals() throws Exception {
+//		String methodName = "getSimpleProposals";
+//		long id = this.logInit(methodName, logger);
+//		try {
+//			List<Map<String, Object>> proposals = this.getProposalsFromTokenNoAuth();
+//			this.logFinish(methodName, id, logger);
+//			return this.sendResponse(proposals);
+//		} catch (Exception e) {
+//			return this.logError(methodName, e, id, logger);
+//		}
+//	}
+//
 
 
 	@RolesAllowed({"User", "Manager", "Industrial", "Localcontact"})
