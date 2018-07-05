@@ -34,7 +34,8 @@ import ispyb.server.mx.vos.sample.Protein3VO;
 import ispyb.server.smis.UpdateFromSMIS;
 import ispyb.ws.rest.mx.MXRestWebService;
 
-@Api
+
+@Api( tags = "Legacy" )
 @Path("/")
 public class ProposalRestWebService extends MXRestWebService
 {
@@ -109,6 +110,7 @@ public class ProposalRestWebService extends MXRestWebService
 
   ) throws Exception
   {
+    System.out.println("The proposalID input is: " + proposalID);
     return null;
   }
 
