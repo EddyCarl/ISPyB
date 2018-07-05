@@ -15,7 +15,6 @@ import javax.ws.rs.core.Response;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
@@ -100,8 +99,8 @@ public class ProposalRestWebService extends MXRestWebService
   (
     @ApiImplicitParam
     (
-      name = "Proposal ID", value = "The ID of the proposal to retrieve", required = true,
-      dataType = "int", example = "14", paramType = "path", defaultValue = "Add some text here to see what this is"
+      name = "prop-id", value = "The ID of the proposal to retrieve",
+      required = true, dataType = "integer", example = "14", paramType = "path"
     )
   )
   @ApiResponses
