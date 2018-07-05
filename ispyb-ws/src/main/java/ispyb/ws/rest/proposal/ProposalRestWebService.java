@@ -15,6 +15,7 @@ import javax.ws.rs.core.Response;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
@@ -108,7 +109,7 @@ public class ProposalRestWebService extends MXRestWebService
       @ApiResponse( code = 200, message = "Ok" ),
       @ApiResponse( code = 400, message = "Some error" )
   } )
-  public Response retrieveProposalById( @PathParam( "prop-id" ) int proposalID ) throws Exception
+  public Response retrieveProposalById( @ApiParam( value = "prop-id", hidden = true ) @PathParam( "prop-id" ) int proposalID ) throws Exception
   {
     System.out.println("Intput proposalID: " + proposalID );
     return null;
