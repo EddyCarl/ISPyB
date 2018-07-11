@@ -22,8 +22,9 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import io.swagger.annotations.Api;
+import utils.SwaggerTagConstants;
 
-@Api
+@Api( tags = SwaggerTagConstants.LEGACY_TAG )
 @Path("/")
 public class ModelingRestWebService extends SaxsRestWebService {
 
