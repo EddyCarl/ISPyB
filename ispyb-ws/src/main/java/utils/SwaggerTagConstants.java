@@ -11,7 +11,7 @@ package utils;
 public class SwaggerTagConstants
 {
   // All endpoints will fall under the Legacy tag unless otherwise specified
-  final public static String LEGACY_TAG = "Z_Legacy Endpoints";
+  final public static String LEGACY_TAG = "Legacy Endpoints";
 
   // The following tags will be used for any newer Synchlink based endpoints
   final public static String PROPOSAL_TAG = "Proposal";
