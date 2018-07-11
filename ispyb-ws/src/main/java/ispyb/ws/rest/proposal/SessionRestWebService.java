@@ -32,7 +32,7 @@ import org.jboss.resteasy.annotations.GZIP;
 import io.swagger.annotations.Api;
 import utils.SwaggerTagConstants;
 
-@Api( tags = { SwaggerTagConstants.SESSION_TAG, SwaggerTagConstants.LEGACY_TAG } )
+@Api( tags = SwaggerTagConstants.LEGACY_TAG )
 @Path("/")
 public class SessionRestWebService extends RestWebService
 {
