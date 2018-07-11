@@ -80,7 +80,7 @@ public class SessionRestWebService extends RestWebService
       value = "Retrieve the information of a session",
       notes = "Obtain the information relating to a specific session (based on the input ID) " +
         "if it is available to the user currently logged in.",
-      tags = { SESSION_TAG }, response = Session3VO.class,
+      tags = { SwaggerTagConstants.SESSION_TAG }, response = Session3VO.class,
       authorizations = @Authorization( "basicAuth" )
     )
   @Produces({ "application/json" })

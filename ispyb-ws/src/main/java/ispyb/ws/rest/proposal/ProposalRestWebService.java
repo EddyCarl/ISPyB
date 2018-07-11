@@ -84,7 +84,7 @@ public class ProposalRestWebService extends MXRestWebService
     value = "Retrieve the information of a proposal",
     notes = "Obtain the information relating to a specific proposal (based on the input ID) " +
             "if it is available to the user currently logged in.",
-    tags = { PROPOSAL_TAG }, response = Proposal3VO.class,
+    tags = { SwaggerTagConstants.PROPOSAL_TAG }, response = Proposal3VO.class,
     authorizations = @Authorization( "basicAuth" )
   )
   @Produces({ "application/json" })
