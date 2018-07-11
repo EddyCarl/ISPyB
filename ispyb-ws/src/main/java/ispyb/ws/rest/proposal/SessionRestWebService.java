@@ -30,16 +30,13 @@ import org.apache.log4j.Logger;
 import org.jboss.resteasy.annotations.GZIP;
 
 import io.swagger.annotations.Api;
+import utils.SwaggerTagConstants;
 
-// All endpoints will fall under the Legacy tag unless otherwise specified
-@Api( tags = "Legacy Endpoints" )
+@Api( tags = SwaggerTagConstants.LEGACY_TAG )
 @Path("/")
 public class SessionRestWebService extends RestWebService
 {
   private final static Logger logger = Logger.getLogger(SessionRestWebService.class);
-
-  // The tag that the new endpoints will be places under
-  private final static String SESSION_TAG = "Session";
 
   /**
    * Used to retrieve a full list of sessions stored in the database, that are available to the user currently
@@ -53,7 +50,7 @@ public class SessionRestWebService extends RestWebService
     (
       value = "Retrieve a list of sessions",
       notes = "Returns a list of sessions that are available to the user currently logged in.",
-      tags = { SESSION_TAG }, response = Session3VO.class, responseContainer = "List",
+      tags = { SwaggerTagConstants.SESSION_TAG }, response = Session3VO.class, responseContainer = "List",
       authorizations = @Authorization( "basicAuth" )
     )
   @Produces({ "application/json" })

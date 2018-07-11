@@ -15,9 +15,9 @@ import ispyb.ws.rest.RestWebService;
 import javax.naming.NamingException;
 
 import io.swagger.annotations.Api;
+import utils.SwaggerTagConstants;
 
-// All endpoints will fall under the Legacy tag unless otherwise specified
-@Api( tags = "Legacy Endpoints" )
+@Api( tags = SwaggerTagConstants.LEGACY_TAG )
 public class SaxsRestWebService extends RestWebService{
 
 	protected SaxsDataCollectionRestWsService getDataCollectionRestWsService() throws NamingException {

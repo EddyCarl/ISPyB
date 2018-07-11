@@ -21,9 +21,9 @@ import javax.ws.rs.core.Response;
 import org.apache.log4j.Logger;
 
 import io.swagger.annotations.Api;
+import utils.SwaggerTagConstants;
 
-// All endpoints will fall under the Legacy tag unless otherwise specified
-@Api( tags = "Legacy Endpoints" )
+@Api( tags = SwaggerTagConstants.LEGACY_TAG )
 @Path("/")
 public class EnergyScanRestWebService extends RestWebService {
 	 private final static Logger logger = Logger.getLogger(EnergyScanRestWebService.class);

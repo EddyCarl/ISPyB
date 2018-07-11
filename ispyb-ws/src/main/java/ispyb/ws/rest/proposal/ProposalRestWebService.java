@@ -33,18 +33,14 @@ import ispyb.server.mx.vos.sample.Crystal3VO;
 import ispyb.server.mx.vos.sample.Protein3VO;
 import ispyb.server.smis.UpdateFromSMIS;
 import ispyb.ws.rest.mx.MXRestWebService;
+import utils.SwaggerTagConstants;
 
 
-// All endpoints will fall under the Legacy tag unless otherwise specified
-@Api( tags = "Legacy" )
+@Api( tags = SwaggerTagConstants.LEGACY_TAG )
 @Path("/")
 public class ProposalRestWebService extends MXRestWebService
 {
   private final static Logger logger = Logger.getLogger(ProposalRestWebService.class);
-
-  // The tag that the new endpoints will be places under
-  private final static String PROPOSAL_TAG = "Proposals";
-
 
   /**
    * Used to retrieve a full list of proposals stored in the database, that are available to the user currently
@@ -58,7 +54,7 @@ public class ProposalRestWebService extends MXRestWebService
   (
     value = "Retrieve a list of proposals",
     notes = "Returns a list of proposals that are available to the user currently logged in.",
-    tags = { PROPOSAL_TAG }, response = Proposal3VO.class, responseContainer = "List",
+    tags = { SwaggerTagConstants.PROPOSAL_TAG }, response = Proposal3VO.class, responseContainer = "List",
     authorizations = @Authorization( "basicAuth" )
   )
   @Produces({ "application/json" })

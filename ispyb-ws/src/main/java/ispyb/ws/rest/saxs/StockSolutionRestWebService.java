@@ -20,9 +20,9 @@ import ispyb.server.biosaxs.services.core.proposal.SaxsProposal3Service;
 import ispyb.server.biosaxs.vos.dataAcquisition.StockSolution3VO;
 import ispyb.server.common.services.proposals.Proposal3Service;
 import ispyb.server.common.vos.proposals.Proposal3VO;
+import utils.SwaggerTagConstants;
 
-// All endpoints will fall under the Legacy tag unless otherwise specified
-@Api( tags = "Legacy Endpoints" )
+@Api( tags = SwaggerTagConstants.LEGACY_TAG )
 @Path("/")
 public class StockSolutionRestWebService extends SaxsRestWebService {
 

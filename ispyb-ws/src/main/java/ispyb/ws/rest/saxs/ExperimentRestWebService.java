@@ -32,9 +32,9 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import io.swagger.annotations.Api;
+import utils.SwaggerTagConstants;
 
-// All endpoints will fall under the Legacy tag unless otherwise specified
-@Api( tags = "Legacy Endpoints" )
+@Api( tags = SwaggerTagConstants.LEGACY_TAG )
 @Path("/")
 public class ExperimentRestWebService extends SaxsRestWebService {
 	private final static Logger logger = Logger.getLogger(BufferRestWebService.class);
