@@ -18,13 +18,14 @@ import org.apache.log4j.Logger;
 
 import io.swagger.annotations.Api;
 
-@Api
+// All endpoints will fall under the Legacy tag unless otherwise specified
+@Api( tags = "Legacy Endpoints" )
 @Path("/")
 public class DataCollectionRestWebService extends SaxsRestWebService {
 
 	private final static Logger logger = Logger.getLogger(DataCollectionRestWebService.class);
 
-	
+
 	@RolesAllowed({"User", "Manager", "Industrial", "LocalContact"})
 	@GET
 	@Path("{token}/proposal/{proposal}/saxs/datacollection/list")
@@ -83,13 +84,13 @@ public class DataCollectionRestWebService extends SaxsRestWebService {
 		}
 
 	}
-	
+
 	@RolesAllowed({"User", "Manager", "Industrial", "LocalContact"})
 	@GET
 	@Path("{token}/proposal/{proposal}/saxs/datacollection/experiment/{experimentId}/list")
 	@Produces({ "application/json" })
 	public Response getDataCollectionByExperimentId(
-			@PathParam("token") String token, 
+			@PathParam("token") String token,
 			@PathParam("proposal") String proposal,
 			@PathParam("experimentId") Integer experimentId) throws Exception {
 
@@ -104,13 +105,13 @@ public class DataCollectionRestWebService extends SaxsRestWebService {
 		}
 
 	}
-	
+
 	@RolesAllowed({"User", "Manager", "Industrial", "LocalContact"})
 	@GET
 	@Path("{token}/proposal/{proposal}/saxs/datacollection/macromolecule/{macromoleculeId}/list")
 	@Produces({ "application/json" })
 	public Response getDataCollectionByMacromoleculeId(
-			@PathParam("token") String token, 
+			@PathParam("token") String token,
 			@PathParam("proposal") String proposal,
 			@PathParam("macromoleculeId") Integer macromoleculeId) throws Exception {
 
@@ -125,13 +126,13 @@ public class DataCollectionRestWebService extends SaxsRestWebService {
 		}
 
 	}
-	
+
 	@RolesAllowed({"User", "Manager", "Industrial", "LocalContact"})
 	@GET
 	@Path("{token}/proposal/{proposal}/saxs/datacollection/session/{sessionId}/list")
 	@Produces({ "application/json" })
 	public Response getDataCollectionBySessionId(
-			@PathParam("token") String token, 
+			@PathParam("token") String token,
 			@PathParam("proposal") String proposal,
 			@PathParam("sessionId") Integer sessionId) throws Exception {
 
@@ -146,14 +147,14 @@ public class DataCollectionRestWebService extends SaxsRestWebService {
 		}
 
 	}
-	
+
 
 	@RolesAllowed({"User", "Manager", "Industrial", "LocalContact"})
 	@GET
 	@Path("{token}/proposal/{proposal}/saxs/datacollection/{datacollectionId}/list")
 	@Produces({ "application/json" })
 	public Response getDataCollectionByDataCollectionId(
-			@PathParam("token") String token, 
+			@PathParam("token") String token,
 			@PathParam("proposal") String proposal,
 			@PathParam("datacollectionId") String datacollectionId) throws Exception {
 
@@ -172,6 +173,6 @@ public class DataCollectionRestWebService extends SaxsRestWebService {
 		}
 
 	}
-	
+
 
 }

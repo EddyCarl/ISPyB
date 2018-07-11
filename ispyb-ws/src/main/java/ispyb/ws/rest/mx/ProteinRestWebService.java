@@ -14,13 +14,14 @@ import org.apache.log4j.Logger;
 import io.swagger.annotations.Api;
 import ispyb.server.mx.vos.sample.Protein3VO;
 
-@Api
+// All endpoints will fall under the Legacy tag unless otherwise specified
+@Api( tags = "Legacy Endpoints" )
 @Path("/")
 public class ProteinRestWebService extends MXRestWebService {
 
 	private final static Logger logger = Logger.getLogger(ProteinRestWebService.class);
 
-	
+
 	@RolesAllowed({ "User", "Manager", "Industrial", "Localcontact" })
 	@GET
 	@Path("{token}/proposal/{proposal}/mx/protein/list")
@@ -37,7 +38,7 @@ public class ProteinRestWebService extends MXRestWebService {
 			return this.logError(methodName, e, start, logger);
 		}
 	}
-	
-		
+
+
 
 }

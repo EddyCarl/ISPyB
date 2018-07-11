@@ -22,7 +22,8 @@ import ispyb.server.mx.vos.autoproc.SpaceGroup3VO;
 import ispyb.server.mx.vos.sample.Crystal3VO;
 import ispyb.server.mx.vos.sample.Protein3VO;
 
-@Api
+// All endpoints will fall under the Legacy tag unless otherwise specified
+@Api( tags = "Legacy Endpoints" )
 @Path("/")
 public class CrystalRestWebService extends MXRestWebService {
 

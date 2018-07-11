@@ -25,7 +25,8 @@ import javax.ws.rs.core.Response;
 import org.apache.log4j.Logger;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 
-@Api
+// All endpoints will fall under the Legacy tag unless otherwise specified
+@Api( tags = "Legacy Endpoints" )
 @Path("/")
 public class MacromoleculeRestWebService extends SaxsRestWebService {
 	private final static Logger logger = Logger.getLogger(MacromoleculeRestWebService.class);

@@ -30,7 +30,8 @@ import ispyb.server.common.vos.shipping.Shipping3VO;
 import ispyb.server.smis.ScientistsFromSMIS;
 import ispyb.ws.rest.mx.MXRestWebService;
 
-@Api
+// All endpoints will fall under the Legacy tag unless otherwise specified
+@Api( tags = "Legacy Endpoints" )
 @Path("/")
 public class ShippingRestWebService extends MXRestWebService {
 

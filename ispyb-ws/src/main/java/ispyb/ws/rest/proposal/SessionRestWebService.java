@@ -31,13 +31,14 @@ import org.jboss.resteasy.annotations.GZIP;
 
 import io.swagger.annotations.Api;
 
-@Api( tags = "Legacy" )
+// All endpoints will fall under the Legacy tag unless otherwise specified
+@Api( tags = "Legacy Endpoints" )
 @Path("/")
 public class SessionRestWebService extends RestWebService
 {
   private final static Logger logger = Logger.getLogger(SessionRestWebService.class);
 
-  //
+  // The tag that the new endpoints will be places under
   private final static String SESSION_TAG = "Session";
 
   /**

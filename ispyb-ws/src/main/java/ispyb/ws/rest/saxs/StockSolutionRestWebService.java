@@ -21,7 +21,8 @@ import ispyb.server.biosaxs.vos.dataAcquisition.StockSolution3VO;
 import ispyb.server.common.services.proposals.Proposal3Service;
 import ispyb.server.common.vos.proposals.Proposal3VO;
 
-@Api
+// All endpoints will fall under the Legacy tag unless otherwise specified
+@Api( tags = "Legacy Endpoints" )
 @Path("/")
 public class StockSolutionRestWebService extends SaxsRestWebService {
 

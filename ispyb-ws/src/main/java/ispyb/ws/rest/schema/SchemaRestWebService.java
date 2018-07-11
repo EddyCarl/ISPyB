@@ -12,7 +12,8 @@ import org.apache.log4j.Logger;
 
 import io.swagger.annotations.Api;
 
-@Api
+// All endpoints will fall under the Legacy tag unless otherwise specified
+@Api( tags = "Legacy Endpoints" )
 @Path("/")
 public class SchemaRestWebService extends RestWebService{
 

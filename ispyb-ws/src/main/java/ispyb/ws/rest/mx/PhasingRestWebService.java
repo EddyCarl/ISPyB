@@ -27,7 +27,8 @@ import org.jboss.resteasy.annotations.GZIP;
 
 import io.swagger.annotations.Api;
 
-@Api
+// All endpoints will fall under the Legacy tag unless otherwise specified
+@Api( tags = "Legacy Endpoints" )
 @Path("/")
 public class PhasingRestWebService extends MXRestWebService {
 
@@ -36,13 +37,13 @@ public class PhasingRestWebService extends MXRestWebService {
 	protected PhasingRestWsService getPhasingWSService() throws NamingException {
 		return (PhasingRestWsService) Ejb3ServiceLocator.getInstance().getLocalService(PhasingRestWsService.class);
 	}
-	
+
 	@RolesAllowed({ "User", "Manager", "Industrial", "Localcontact" })
 	@GET
 	@Path("{token}/proposal/{proposal}/mx/phasing/autoprocintegrationid/{autoprocIntegrationId}/list")
 	@Produces({ "application/json" })
 	public Response getPhasingViewByAutoProcIntegrationId(
-			@PathParam("token") String token, 
+			@PathParam("token") String token,
 			@PathParam("proposal") String proposal,
 			@PathParam("autoprocIntegrationId") String autoprocIntegrationId) {
 
@@ -60,13 +61,13 @@ public class PhasingRestWebService extends MXRestWebService {
 			return this.logError(methodName, e, start, logger);
 		}
 	}
-	
+
 	@RolesAllowed({ "User", "Manager", "Industrial", "Localcontact" })
 	@GET
 	@Path("{token}/proposal/{proposal}/mx/phasing/datacollectionid/{dataCollectionIds}/list")
 	@Produces({ "application/json" })
 	public Response getPhasingViewByDataCollectionId(
-			@PathParam("token") String token, 
+			@PathParam("token") String token,
 			@PathParam("proposal") String proposal,
 			@PathParam("dataCollectionIds") String dataCollectionIds) {
 
@@ -84,13 +85,13 @@ public class PhasingRestWebService extends MXRestWebService {
 			return this.logError(methodName, e, start, logger);
 		}
 	}
-	
+
 	@RolesAllowed({ "User", "Manager", "Industrial", "Localcontact" })
 	@GET
 	@Path("{token}/proposal/{proposal}/mx/phasing/datacollectiongroupid/{dataCollectionGroupIds}/list")
 	@Produces({ "application/json" })
 	public Response getPhasingViewByDataCollectionGroupId(
-			@PathParam("token") String token, 
+			@PathParam("token") String token,
 			@PathParam("proposal") String proposal,
 			@PathParam("dataCollectionGroupIds") String dataCollectionGroupIds) {
 
@@ -108,14 +109,14 @@ public class PhasingRestWebService extends MXRestWebService {
 			return this.logError(methodName, e, start, logger);
 		}
 	}
-	
+
 
 	@RolesAllowed({ "User", "Manager", "Industrial", "Localcontact" })
 	@GET
 	@Path("{token}/proposal/{proposal}/mx/phasing/sampleid/{sampleIds}/list")
 	@Produces({ "application/json" })
 	public Response getPhasingViewBySampleId(
-			@PathParam("token") String token, 
+			@PathParam("token") String token,
 			@PathParam("proposal") String proposal,
 			@PathParam("sampleIds") String sampleIds) {
 
@@ -133,13 +134,13 @@ public class PhasingRestWebService extends MXRestWebService {
 			return this.logError(methodName, e, start, logger);
 		}
 	}
-	
+
 	@RolesAllowed({ "User", "Manager", "Industrial", "Localcontact" })
 	@GET
 	@Path("{token}/proposal/{proposal}/mx/phasing/proteinid/{proteinIds}/list")
 	@Produces({ "application/json" })
 	public Response getPhasingViewByProteinId(
-			@PathParam("token") String token, 
+			@PathParam("token") String token,
 			@PathParam("proposal") String proposal,
 			@PathParam("proteinIds") String proteinIds) {
 
@@ -157,13 +158,13 @@ public class PhasingRestWebService extends MXRestWebService {
 			return this.logError(methodName, e, start, logger);
 		}
 	}
-	
+
 	@RolesAllowed({ "User", "Manager", "Industrial", "Localcontact" })
 	@GET
 	@Path("{token}/proposal/{proposal}/mx/phasing/sessionid/{sessionIds}/list")
 	@Produces({ "application/json" })
 	public Response getPhasingViewBySessionId(
-			@PathParam("token") String token, 
+			@PathParam("token") String token,
 			@PathParam("proposal") String proposal,
 			@PathParam("sessionIds") String sessionIds) {
 
@@ -181,13 +182,13 @@ public class PhasingRestWebService extends MXRestWebService {
 			return this.logError(methodName, e, start, logger);
 		}
 	}
-	
+
 	@RolesAllowed({ "User", "Manager", "Industrial", "Localcontact" })
 	@GET
 	@Path("{token}/proposal/{proposal}/mx/phasing/phasingstepid/{phasingStepIds}/list")
 	@Produces({ "application/json" })
 	public Response getPhasingViewByPhasingStepId(
-			@PathParam("token") String token, 
+			@PathParam("token") String token,
 			@PathParam("proposal") String proposal,
 			@PathParam("phasingStepIds") String phasingStepIds) {
 
@@ -205,14 +206,14 @@ public class PhasingRestWebService extends MXRestWebService {
 			return this.logError(methodName, e, start, logger);
 		}
 	}
-	
-	
+
+
 	@RolesAllowed({ "User", "Manager", "Industrial", "Localcontact" })
 	@GET
 	@Path("{token}/proposal/{proposal}/mx/phasing/phasingstepid/{phasingStepIds}/files")
 	@Produces({ "application/json" })
 	public Response getPhasingFilesByPhasingStepId(
-			@PathParam("token") String token, 
+			@PathParam("token") String token,
 			@PathParam("proposal") String proposal,
 			@PathParam("phasingStepIds") String phasingStepIds) {
 
@@ -230,13 +231,13 @@ public class PhasingRestWebService extends MXRestWebService {
 			return this.logError(methodName, e, start, logger);
 		}
 	}
-	
+
 	@RolesAllowed({ "User", "Manager", "Industrial", "Localcontact" })
 	@GET
 	@Produces("text/plain")
 	@Path("{token}/proposal/{proposal}/mx/phasing/phasingstepid/{phasingStepIds}/download")
 	public Response downloadPhasingFilesByPhasingStepId(
-			@PathParam("token") String token, 
+			@PathParam("token") String token,
 			@PathParam("proposal") String proposal,
 			@PathParam("phasingStepIds") String phasingStepIds) {
 
@@ -245,7 +246,7 @@ public class PhasingRestWebService extends MXRestWebService {
 		try {
 			List<Integer> ids = this.parseToInteger(phasingStepIds);
 			HashMap<String, String> files = new HashMap<String, String>();
-			
+
 			String firstId = "phasing";
 			for (Integer id : ids) {
 				firstId = id.toString();
@@ -267,7 +268,7 @@ public class PhasingRestWebService extends MXRestWebService {
 					}
 				}
 			}
-			
+
 			byte[] bytes = HashMapToZip.doZip(files);
 			this.logFinish(methodName, start, logger);
 			return this.downloadFile(bytes, firstId + ".zip");
@@ -275,15 +276,15 @@ public class PhasingRestWebService extends MXRestWebService {
 			return this.logError(methodName, e, start, logger);
 		}
 	}
-	
-	
-	
+
+
+
 	@RolesAllowed({ "User", "Manager", "Industrial", "Localcontact" })
 	@GET
 	@Path("{token}/proposal/{proposal}/mx/phasing/phasingprogramattachmentid/{phasingProgramAttachmentId}/image")
 	@Produces("image/png")
 	public Response getPhasingFilesByPhasingProgramAttachmentIdAsImage(
-			@PathParam("token") String token, 
+			@PathParam("token") String token,
 			@PathParam("proposal") String proposal,
 			@PathParam("phasingProgramAttachmentId") String phasingProgramAttachmentId) {
 
@@ -295,9 +296,9 @@ public class PhasingRestWebService extends MXRestWebService {
 			for (Integer id : ids) {
 				list.add(this.getPhasingWSService().getPhasingFilesViewByPhasingProgramAttachmentId(id, this.getProposalId(proposal)));
 			}
-			
+
 			System.out.println(this.getGson().toJson(list));
-			
+
 			/** If single file it returns the file otherwise it returns a zip file **/
 			if (list != null){
 				if (list.size() > 0){
@@ -306,9 +307,9 @@ public class PhasingRestWebService extends MXRestWebService {
 						System.out.println("Do zip");
 						for (List<Map<String, Object>> record : list) {
 							System.out.println(record.get(0).get("filePath"));
-							
+
 						}
-						
+
 					}
 					else{
 						/** Returns file **/
@@ -318,21 +319,21 @@ public class PhasingRestWebService extends MXRestWebService {
 					}
 				}
 			}
-			
+
 			this.logFinish(methodName, start, logger);
 			return this.sendResponse(list);
 		} catch (Exception e) {
 			return this.logError(methodName, e, start, logger);
 		}
 	}
-	
-	
+
+
 	@RolesAllowed({ "User", "Manager", "Industrial", "Localcontact" })
 	@GET
 	@Path("{token}/proposal/{proposal}/mx/phasing/phasingprogramattachmentid/{phasingProgramAttachmentId}/download")
 	@Produces({ "application/json" })
 	public Response getPhasingFilesByPhasingProgramAttachmentId(
-			@PathParam("token") String token, 
+			@PathParam("token") String token,
 			@PathParam("proposal") String proposal,
 			@PathParam("phasingProgramAttachmentId") String phasingProgramAttachmentId) {
 
@@ -344,9 +345,9 @@ public class PhasingRestWebService extends MXRestWebService {
 			for (Integer id : ids) {
 				list.add(this.getPhasingWSService().getPhasingFilesViewByPhasingProgramAttachmentId(id, this.getProposalId(proposal)));
 			}
-			
+
 			System.out.println(this.getGson().toJson(list));
-			
+
 			/** If single file it returns the file otherwise it returns a zip file **/
 			if (list != null){
 				if (list.size() > 0){
@@ -355,9 +356,9 @@ public class PhasingRestWebService extends MXRestWebService {
 						System.out.println("Do zip");
 						for (List<Map<String, Object>> record : list) {
 							System.out.println(record.get(0).get("filePath"));
-							
+
 						}
-						
+
 					}
 					else{
 						/** Returns file **/
@@ -367,21 +368,21 @@ public class PhasingRestWebService extends MXRestWebService {
 					}
 				}
 			}
-			
+
 			this.logFinish(methodName, start, logger);
 			return this.sendResponse(list);
 		} catch (Exception e) {
 			return this.logError(methodName, e, start, logger);
 		}
 	}
-	
-	
+
+
 	@RolesAllowed({ "User", "Manager", "Industrial", "Localcontact" })
 	@GET
 	@Path("{token}/proposal/{proposal}/mx/phasing/phasingprogramattachmentid/{phasingProgramAttachmentId}/csv")
  	@Produces("text/plain")
 	public Response getCSVPhasingFileByPhasingProgramAttachmentId(
-			@PathParam("token") String token, 
+			@PathParam("token") String token,
 			@PathParam("proposal") String proposal,
 			@PathParam("phasingProgramAttachmentId") int phasingProgramAttachmentId) {
 
@@ -405,6 +406,6 @@ public class PhasingRestWebService extends MXRestWebService {
 		}
 		return null;
 	}
-	
-	
+
+
 }

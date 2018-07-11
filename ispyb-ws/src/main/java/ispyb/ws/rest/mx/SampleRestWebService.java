@@ -25,7 +25,8 @@ import ispyb.server.mx.services.ws.rest.sample.SampleRestWsService;
 import ispyb.server.mx.vos.sample.BLSample3VO;
 import ispyb.server.mx.vos.sample.SampleInfo;
 
-@Api
+// All endpoints will fall under the Legacy tag unless otherwise specified
+@Api( tags = "Legacy Endpoints" )
 @Path("/")
 public class SampleRestWebService extends MXRestWebService {
 

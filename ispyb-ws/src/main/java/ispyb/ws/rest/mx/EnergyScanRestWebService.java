@@ -22,21 +22,22 @@ import org.apache.log4j.Logger;
 
 import io.swagger.annotations.Api;
 
-@Api
+// All endpoints will fall under the Legacy tag unless otherwise specified
+@Api( tags = "Legacy Endpoints" )
 @Path("/")
 public class EnergyScanRestWebService extends RestWebService {
 	 private final static Logger logger = Logger.getLogger(EnergyScanRestWebService.class);
-	
-	 
+
+
     @Path("{token}/proposal/{proposal}/mx/energyscan/session/{sessionId}/list")
 	@RolesAllowed({"User", "Manager", "Industrial", "Localcontact"})
 	@GET
 	@Produces({ "application/json" })
 	public Response getEnergyScanBySessionId(
-			@PathParam("token") String token, 
+			@PathParam("token") String token,
 			@PathParam("proposal") String proposal,
 			@PathParam("sessionId") int sessionId) throws Exception {
-		
+
 		String methodName = "getEnergyScanBySessionId";
 		long id = this.logInit(methodName, logger, token, proposal, sessionId);
 		try{
@@ -48,7 +49,7 @@ public class EnergyScanRestWebService extends RestWebService {
 			return this.logError(methodName, e, id, logger);
 		}
 	}
-    
+
     private EnergyScan3VO getEnergyById(int energyscanId, String proposal) throws NamingException, Exception{
     	List<Map<String, Object>> result = getEnergyScanService().getViewById(this.getProposalId(proposal), energyscanId);
 		if (result.size() > 0){
@@ -62,10 +63,10 @@ public class EnergyScanRestWebService extends RestWebService {
    	@GET
    	@Produces("text/plain")
    	public Response getScanFileFullPath(
-   			@PathParam("token") String token, 
+   			@PathParam("token") String token,
    			@PathParam("proposal") String proposal,
    			@PathParam("energyscanId") int energyscanId) throws Exception {
-   		
+
    		String methodName = "getScanFileFullPath";
    		long start = this.logInit(methodName, logger, token, proposal, energyscanId);
    		try{
@@ -82,20 +83,20 @@ public class EnergyScanRestWebService extends RestWebService {
    		}
 		return null;
    	}
-    
+
     @Path("{token}/proposal/{proposal}/mx/energyscan/energyscanId/{energyscanId}/chooch")
    	@RolesAllowed({"User", "Manager", "Industrial", "Localcontact"})
    	@GET
 	@Produces("text/plain")
    	public Response getChooch(
-   			@PathParam("token") String token, 
+   			@PathParam("token") String token,
    			@PathParam("proposal") String proposal,
    			@PathParam("energyscanId") int energyscanId) throws Exception {
-   		
+
    		String methodName = "getChooch";
    		long id = this.logInit(methodName, logger, token, proposal, energyscanId);
    		try{
-   			
+
    			EnergyScan3VO energyScan = this.getEnergyById(energyscanId, proposal);
    			if (energyScan != null){
    				if (energyScan.getChoochFileFullPath() != null){
@@ -114,20 +115,20 @@ public class EnergyScanRestWebService extends RestWebService {
    		}
 		return null;
    	}
-    
+
     @Path("{token}/proposal/{proposal}/mx/energyscan/energyscanId/{energyscanId}/jpegchooch")
    	@RolesAllowed({"User", "Manager", "Industrial", "Localcontact"})
    	@GET
    	@Produces("image/png")
    	public Response getjpegchooch(
-   			@PathParam("token") String token, 
+   			@PathParam("token") String token,
    			@PathParam("proposal") String proposal,
    			@PathParam("energyscanId") int energyscanId) throws Exception {
-   		
+
    		String methodName = "getjpegchooch";
    		long id = this.logInit(methodName, logger, token, proposal, energyscanId);
    		try{
-   			
+
    			EnergyScan3VO energyScan = this.getEnergyById(energyscanId, proposal);
    			if (energyScan != null){
    				if (new File(energyScan.getJpegChoochFileFullPath()).exists()){
@@ -145,11 +146,11 @@ public class EnergyScanRestWebService extends RestWebService {
 		return null;
    	}
 
-	
+
 	private EnergyScanRestWsService getEnergyScanService() throws NamingException {
 		return (EnergyScanRestWsService) Ejb3ServiceLocator.getInstance().getLocalService(EnergyScanRestWsService.class);
 	}
-	
 
-	
+
+
 }

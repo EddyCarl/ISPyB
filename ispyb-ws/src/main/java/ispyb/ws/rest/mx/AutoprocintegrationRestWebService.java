@@ -32,7 +32,8 @@ import org.jboss.resteasy.annotations.GZIP;
 
 import io.swagger.annotations.Api;
 
-@Api
+// All endpoints will fall under the Legacy tag unless otherwise specified
+@Api( tags = "Legacy Endpoints" )
 @Path("/")
 public class AutoprocintegrationRestWebService extends MXRestWebService {
 
@@ -76,7 +77,7 @@ public class AutoprocintegrationRestWebService extends MXRestWebService {
 	protected AutoProcessingIntegrationService getAutoprocessingServiceBean() throws NamingException {
 		return (AutoProcessingIntegrationService) Ejb3ServiceLocator.getInstance().getLocalService(AutoProcessingIntegrationService.class);
 	}
-	
+
 	@RolesAllowed({ "User", "Manager", "Industrial", "Localcontact" })
 	@GET
 	@GZIP
@@ -104,7 +105,7 @@ public class AutoprocintegrationRestWebService extends MXRestWebService {
 	 * AutoProcProgramAttachment has not AutoProcProgramId mapped in the EJB object
 	 * so it is necessary to keep separately the possible list of ids in order
 	 * to identify in the client the list of files linked to a sinble autoProcProgram
-	 * 
+	 *
 	 * So, if autoprocattachmentids contains n different ids then the response will be an n-array with the list of files for each id
 	 **/
 	@RolesAllowed({ "User", "Manager", "Industrial", "Localcontact" })
@@ -130,20 +131,20 @@ public class AutoprocintegrationRestWebService extends MXRestWebService {
 			return this.logError(methodName, e, start, logger);
 		}
 	}
-	
-	
-	
-	
+
+
+
+
 	private boolean checkProposalByAutoProcProgramId(int proposalId, int autoProcProgramId) throws NamingException, Exception{
 		return this.getSession3Service().findByAutoProcProgramId(autoProcProgramId).getProposalVOId().equals(proposalId);
 	}
-	
-	
+
+
 	/**
 	 * AutoProcProgramAttachment has not AutoProcProgramId mapped in the EJB object
 	 * so it is necessary to keep separately the possible list of ids in order
 	 * to identify in the client the list of files linked to a sinble autoProcProgram
-	 * 
+	 *
 	 * So, if autoprocattachmentids contains n different ids then the response will be an n-array with the list of files for each id
 	 **/
 	@RolesAllowed({ "User", "Manager", "Industrial", "Localcontact" })
@@ -152,7 +153,7 @@ public class AutoprocintegrationRestWebService extends MXRestWebService {
 	@Produces("text/plain")
 	@Path("{token}/proposal/{proposal}/mx/autoprocintegration/attachment/autoprocprogramid/{autoprocattachmentids}/download")
 	public Response downloadAttachments(
-			@PathParam("token") String token, 
+			@PathParam("token") String token,
 			@PathParam("proposal") String proposal,
 			@PathParam("autoprocattachmentids") String autoprocattachmentids,
 			@QueryParam("forceFilename") String forceFilename) {
@@ -164,19 +165,19 @@ public class AutoprocintegrationRestWebService extends MXRestWebService {
 			List<List<AutoProcProgramAttachment3VO>> list = new ArrayList<List<AutoProcProgramAttachment3VO>>();
 			HashMap<String, String> filePaths = new HashMap<String, String>();
 			String filename = "download.zip";
-			
+
 			for (Integer autoProcProgramId : autoProcProgramIds) {
 				/** Check that id correspond to the proposal **/
 				if (!this.checkProposalByAutoProcProgramId(this.getProposalId(proposal), autoProcProgramId)){
 					throw new Exception(NOT_ALLOWED);
 				}
-			
-				
+
+
 				AutoProcProgram3VO autoProcProgram3VO = this.getAutoProcProgram3Service().findByPk(autoProcProgramId, true);
-				
+
 				/** Prefix for the name of the file and the internal structure if many results are retrieved **/
 				String prefix = String.format("%s_%s", autoProcProgram3VO.getProcessingPrograms(), autoProcProgram3VO.getAutoProcProgramId());
-				
+
 				list.add(autoProcProgram3VO.getAttachmentListVOs());
 				ArrayList<AutoProcProgramAttachment3VO> listAttachments = autoProcProgram3VO.getAttachmentListVOs();
 				for (AutoProcProgramAttachment3VO auto : listAttachments) {
@@ -193,19 +194,19 @@ public class AutoprocintegrationRestWebService extends MXRestWebService {
 						}
 					}
 				}
-				
+
 				/** If it is a single result then filename is the name of the program and the ID **/
-				if (autoProcProgramIds.size() == 1){					
+				if (autoProcProgramIds.size() == 1){
 					filename = prefix + ".zip";
 				}
-				
-				/** If forceFilename is filled then it will be used as filename **/ 
+
+				/** If forceFilename is filled then it will be used as filename **/
 				if (forceFilename != null){
 					if (forceFilename.length() > 0){
-						filename = forceFilename; 
+						filename = forceFilename;
 					}
 				}
-				
+
 			}
 			this.logFinish(methodName, start, logger);
 			return this.downloadFile(HashMapToZip.doZip(filePaths), filename);
@@ -213,8 +214,8 @@ public class AutoprocintegrationRestWebService extends MXRestWebService {
 			return this.logError(methodName, e, start, logger);
 		}
 	}
-	
-	
+
+
 
 	@RolesAllowed({ "User", "Manager", "Industrial", "Localcontact" })
 	@GET
@@ -313,7 +314,7 @@ public class AutoprocintegrationRestWebService extends MXRestWebService {
 			return this.logError(methodName, e, start, logger);
 		}
 	}
-	
+
 	@RolesAllowed({ "User", "Manager", "Industrial", "Localcontact" })
 	@GET
 	@Path("{token}/proposal/{proposal}/mx/autoprocintegration/{autoProcIntegrationListId}/xscale/anomcorr")
@@ -351,11 +352,11 @@ public class AutoprocintegrationRestWebService extends MXRestWebService {
 			return this.logError(methodName, e, start, logger);
 		}
 	}
-	
+
 	private boolean checkProposalByAutoProcProgramAttachmentId(int proposalId, int autoProcProgramAttachmentId) throws NamingException, Exception{
 		return this.getSession3Service().findByAutoProcProgramAttachmentId(autoProcProgramAttachmentId).getProposalVOId().equals(proposalId);
 	}
-	
+
 	@RolesAllowed({ "User", "Manager", "Industrial", "Localcontact" })
 	@GET
 	@Path("{token}/proposal/{proposal}/mx/autoprocintegration/autoprocattachmentid/{autoProcAttachmentId}/download")
@@ -381,7 +382,7 @@ public class AutoprocintegrationRestWebService extends MXRestWebService {
 			return this.logError(methodName, e, start, logger);
 		}
 	}
-	
+
 	@RolesAllowed({ "User", "Manager", "Industrial", "Localcontact" })
 	@GET
 	@Path("{token}/proposal/{proposal}/mx/autoprocintegration/autoprocattachmentid/{autoProcAttachmentId}/get")
@@ -406,6 +407,6 @@ public class AutoprocintegrationRestWebService extends MXRestWebService {
 			return this.logError(methodName, e, start, logger);
 		}
 	}
-	
+
 
 }

@@ -23,21 +23,22 @@ import org.apache.log4j.Logger;
 
 import io.swagger.annotations.Api;
 
-@Api
+// All endpoints will fall under the Legacy tag unless otherwise specified
+@Api( tags = "Legacy Endpoints" )
 @Path("/")
 public class XFEFluorescenceSpectrumRestWebService extends RestWebService {
 	 private final static Logger logger = Logger.getLogger(XFEFluorescenceSpectrumRestWebService.class);
-	
-	 
+
+
     @Path("{token}/proposal/{proposal}/mx/xrfscan/session/{sessionId}/list")
 	@RolesAllowed({"User", "Manager", "Industrial", "Localcontact"})
 	@GET
 	@Produces({ "application/json" })
 	public Response getEnergyScanBySessionId(
-			@PathParam("token") String token, 
+			@PathParam("token") String token,
 			@PathParam("proposal") String proposal,
 			@PathParam("sessionId") int sessionId) throws Exception {
-		
+
 		String methodName = "getEnergyScanBySessionId";
 		long id = this.logInit(methodName, logger, token, proposal, sessionId);
 		try{
@@ -49,17 +50,17 @@ public class XFEFluorescenceSpectrumRestWebService extends RestWebService {
 			return this.logError(methodName, e, id, logger);
 		}
 	}
-	
+
     @Path("{token}/proposal/{proposal}/mx/xrfscan/xrfscanId/{xrfscanId}/image/{imageType}/get")
    	@RolesAllowed({"User", "Manager", "Industrial", "Localcontact"})
    	@GET
    	@Produces("image/png")
    	public Response getImage(
-   			@PathParam("token") String token, 
+   			@PathParam("token") String token,
    			@PathParam("proposal") String proposal,
    			@PathParam("xrfscanId") int xrfscanId,
    			@PathParam("imageType") String imageType) throws Exception {
-   		
+
    		String methodName = "getImage";
    		long id = this.logInit(methodName, logger, token, proposal, xrfscanId);
    		try{
@@ -83,17 +84,17 @@ public class XFEFluorescenceSpectrumRestWebService extends RestWebService {
    		}
    		return null;
    	}
-   	
+
     @Path("{token}/proposal/{proposal}/mx/xrfscan/xrfscanId/{xrfscanId}/file/{imageType}/get")
    	@RolesAllowed({"User", "Manager", "Industrial", "Localcontact"})
    	@GET
    	@Produces("text/plain")
    	public Response getFile(
-   			@PathParam("token") String token, 
+   			@PathParam("token") String token,
    			@PathParam("proposal") String proposal,
    			@PathParam("xrfscanId") int xrfscanId,
    			@PathParam("imageType") String imageType) throws Exception {
-   		
+
    		String methodName = "getFile";
    		long id = this.logInit(methodName, logger, token, proposal, xrfscanId);
    		try{
@@ -117,16 +118,16 @@ public class XFEFluorescenceSpectrumRestWebService extends RestWebService {
    		}
    		return null;
    	}
-    
+
     @Path("{token}/proposal/{proposal}/mx/xrfscan/xrfscanId/{xrfscanId}/csv")
    	@RolesAllowed({"User", "Manager", "Industrial", "Localcontact"})
    	@GET
    	@Produces("text/plain")
    	public Response getCSVFile(
-   			@PathParam("token") String token, 
+   			@PathParam("token") String token,
    			@PathParam("proposal") String proposal,
    			@PathParam("xrfscanId") int xrfscanId) throws Exception {
-   		
+
    		String methodName = "getCSVFile";
    		long id = this.logInit(methodName, logger, token, proposal, xrfscanId);
    		try{
@@ -152,16 +153,16 @@ public class XFEFluorescenceSpectrumRestWebService extends RestWebService {
    		}
    		return null;
    	}
-    
+
     @Path("{token}/proposal/{proposal}/mx/xrfscan/xrfscanId/{xrfscanId}/file/list")
    	@RolesAllowed({"User", "Manager", "Industrial", "Localcontact"})
    	@GET
    	@Produces("text/plain")
    	public Response getFiles(
-   			@PathParam("token") String token, 
+   			@PathParam("token") String token,
    			@PathParam("proposal") String proposal,
    			@PathParam("xrfscanId") int xrfscanId) throws Exception {
-   		
+
    		String methodName = "getFiles";
    		long id = this.logInit(methodName, logger, token, proposal, xrfscanId);
    		try{
@@ -197,11 +198,11 @@ public class XFEFluorescenceSpectrumRestWebService extends RestWebService {
    		}
    		return null;
    	}
-    
+
 	private XFEFluorescenSpectrumRestWsService getXFEFluorescenSpectrumService() throws NamingException {
 		return (XFEFluorescenSpectrumRestWsService) Ejb3ServiceLocator.getInstance().getLocalService(XFEFluorescenSpectrumRestWsService.class);
 	}
-	
 
-	
+
+
 }

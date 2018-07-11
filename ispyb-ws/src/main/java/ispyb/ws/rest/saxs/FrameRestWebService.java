@@ -40,7 +40,8 @@ import org.apache.log4j.Logger;
 
 import io.swagger.annotations.Api;
 
-@Api
+// All endpoints will fall under the Legacy tag unless otherwise specified
+@Api( tags = "Legacy Endpoints" )
 @Path("/")
 public class FrameRestWebService extends SaxsRestWebService {
 	private final static Logger logger = Logger.getLogger(FrameRestWebService.class);
@@ -154,7 +155,7 @@ public class FrameRestWebService extends SaxsRestWebService {
 	@Path("{token}/proposal/{proposal}/saxs/frame/average/{mergeIdList}/list")
 	@Produces({ "application/json" })
 	public Response list(
-			@PathParam("token") String token, 
+			@PathParam("token") String token,
 			@PathParam("proposal") String proposal,
 			@PathParam("mergeIdList") String mergeIdList) {
 
@@ -216,15 +217,15 @@ public class FrameRestWebService extends SaxsRestWebService {
 	@GET
 	@Path("{token}/proposal/{proposal}/saxs/frame/datplot")
 	@Produces("text/plain")
-	public Response datplot(@PathParam("token") String token, 
+	public Response datplot(@PathParam("token") String token,
 			@PathParam("proposal") String proposal,
-			@QueryParam("frame") String frame, 
+			@QueryParam("frame") String frame,
 			@QueryParam("average") String average,
-			@QueryParam("subtracted") String subtracted, 
+			@QueryParam("subtracted") String subtracted,
 			@QueryParam("models") String modelsIdList,
 			@QueryParam("sampleaverage") String sampleaverage,
 			@QueryParam("bufferaverage") String bufferaverage,
-			@QueryParam("operation") String operation) // Operation = "LOG,	LINEAL" 
+			@QueryParam("operation") String operation) // Operation = "LOG,	LINEAL"
 					throws Exception {
 
 		String methodName = "datplot";
@@ -236,9 +237,9 @@ public class FrameRestWebService extends SaxsRestWebService {
 			List<Integer> subtracteds = new ArrayList<Integer>();
 			List<Integer> sampleaverages = new ArrayList<Integer>();
 			List<Integer> bufferaverages = new ArrayList<Integer>();
-			
+
 			List<Integer> models = new ArrayList<Integer>();
-	
+
 			if (frame != null) {
 				frames = parseToInteger(frame);
 			}
@@ -251,27 +252,27 @@ public class FrameRestWebService extends SaxsRestWebService {
 			if (sampleaverage != null) {
 				sampleaverages = parseToInteger(sampleaverage);
 			}
-	
+
 			if (bufferaverage != null) {
 				bufferaverages = parseToInteger(bufferaverage);
 			}
 			if (modelsIdList != null) {
 				models = parseToInteger(modelsIdList);
 			}
-			
-			
+
+
 			List<Integer> subtractions = new ArrayList<Integer>();
 //			List<Integer> models = new ArrayList<Integer>();
 			List<Integer> fits = new ArrayList<Integer>();
 			List<Integer> rigids = new ArrayList<Integer>();
-	
+
 			List<DatFile> files = FactoryProducer.getDatPlot(frames, averages, subtractions, models, fits, rigids, subtracteds, sampleaverages, bufferaverages);
 			logger.info("Files");
 			for (DatFile datFile : files) {
 				logger.info(datFile);
-				
+
 			}
-			
+
 			DatFilePlotter datFilePlotter = null;
 			if (operation != null){
 				if (operation.toUpperCase().equals("LINEAL")){
@@ -284,11 +285,11 @@ public class FrameRestWebService extends SaxsRestWebService {
 			else{
 				datFilePlotter = new DatFilePlotter(files, Operation.LOG);
 			}
-			
+
 			String result = datFilePlotter.getCSV();
 			this.logFinish(methodName, start, logger);
 			return sendResponse(result);
-			
+
 		}catch (Exception e) {
 			return this.logError(methodName, e, start, logger);
 		}
@@ -319,7 +320,7 @@ public class FrameRestWebService extends SaxsRestWebService {
 		long start = this.logInit(methodName, logger, token, proposal, subtracted, from, to, scale);
 		try {
 			List<Integer> subtracteds = new ArrayList<Integer>();
-	
+
 			if (subtracted != null) {
 				subtracteds = parseToInteger(subtracted);
 			}
@@ -329,15 +330,15 @@ public class FrameRestWebService extends SaxsRestWebService {
 			if (from != null) {
 				fromList = parseQueryParam(from);
 			}
-	
+
 			if (to != null) {
 				toList = parseQueryParam(to);
 			}
-	
+
 			if (scale != null) {
 				scaleList = parseQueryParam(scale);
 			}
-	
+
 			List<DatFile> files = FactoryProducer.getDatPlot(subtracteds);
 			MergeDatFilePlotter datFilePlotter = new MergeDatFilePlotter(files, fromList, toList, scaleList);
 			String result = datFilePlotter.getCSV();
@@ -360,7 +361,7 @@ public class FrameRestWebService extends SaxsRestWebService {
 		long start = this.logInit(methodName, logger, token, proposal, subtracted, from, to, scale);
 		try {
 			List<Integer> subtracteds = new ArrayList<Integer>();
-	
+
 			if (subtracted != null) {
 				subtracteds = parseToInteger(subtracted);
 			}
@@ -370,15 +371,15 @@ public class FrameRestWebService extends SaxsRestWebService {
 			if (from != null) {
 				fromList = parseQueryParam(from);
 			}
-	
+
 			if (to != null) {
 				toList = parseQueryParam(to);
 			}
-	
+
 			if (scale != null) {
 				scaleList = parseQueryParam(scale);
 			}
-	
+
 			List<DatFile> files = FactoryProducer.getDatPlot(subtracteds);
 			MergeDatFilePlotter datFilePlotter = new MergeDatFilePlotter(files, fromList, toList, scaleList);
 			String result = datFilePlotter.merge();
@@ -409,7 +410,7 @@ public class FrameRestWebService extends SaxsRestWebService {
 			return this.logError(methodName, e, start, logger);
 		}
 	}
-	
+
 	@RolesAllowed({"User", "Manager", "Industrial", "LocalContact"})
 	@GET
 	@Path("{token}/proposal/{proposal}/saxs/frame/average/{mergeIds}/bean")
@@ -428,8 +429,8 @@ public class FrameRestWebService extends SaxsRestWebService {
 			return this.logError(methodName, e, start, logger);
 		}
 	}
-	
-	
+
+
 	@RolesAllowed({"User", "Manager", "Industrial", "LocalContact"})
 	@GET
 	@Path("{token}/saxs/{proposal}/frame/{frameId}/download")

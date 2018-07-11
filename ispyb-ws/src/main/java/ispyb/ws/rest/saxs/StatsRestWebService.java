@@ -21,12 +21,13 @@ import org.apache.log4j.Logger;
 
 import io.swagger.annotations.Api;
 
-@Api
+// All endpoints will fall under the Legacy tag unless otherwise specified
+@Api( tags = "Legacy Endpoints" )
 @Path("/")
 public class StatsRestWebService extends SaxsRestWebService {
-	
+
 	private final static Logger logger = Logger.getLogger(StatsRestWebService.class);
-	
+
 	private  HashMap<String, Object> getStats(String start, String end) throws NamingException{
 		HashMap<String, Object> record = new HashMap<String, Object>();
 		record.put("STATIC",  getStats3Service().getExperimentsBy("STATIC", (start), (end)));
@@ -37,12 +38,12 @@ public class StatsRestWebService extends SaxsRestWebService {
 		record.put("SESSION",  getStats3Service().getSessionsBy((start), (end)));
 		return record;
 	}
-	
+
 	private  HashMap<String, Object> getStats(Date start, Date end) throws NamingException{
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		return this.getStats(format.format(start), format.format(end));
 	}
-	
+
 	private  ArrayList<HashMap<String, Object>> getStatsByYear(int year) throws NamingException{
 		ArrayList<HashMap<String, Object>> dates = new ArrayList<HashMap<String, Object>>();
 		for (int month = 0; month < 12; month++) {
@@ -55,16 +56,16 @@ public class StatsRestWebService extends SaxsRestWebService {
 		     gc.add(Calendar.DAY_OF_MONTH, -1);
 		     gc.set(Calendar.YEAR, year);
 		     Date monthEnd = gc.getTime();
-		     HashMap<String, Object> entry = new HashMap<String, Object>();   
+		     HashMap<String, Object> entry = new HashMap<String, Object>();
 		     entry.put(new SimpleDateFormat("yyyy-MM").format(monthStart), getStats(monthStart, monthEnd));
 		     dates.add(entry);
 		}
 		return dates;
 	}
-	
+
 	private  String getCSVStatsByYear(int year) throws NamingException{
 		StringBuilder sb = new StringBuilder();
-		
+
 		sb.append("date, static, hplc, calibration, template, sample, frame, session").append("\n");
 		for (int month = 0; month < 12; month++) {
 			 Calendar gc = new GregorianCalendar();
@@ -79,7 +80,7 @@ public class StatsRestWebService extends SaxsRestWebService {
 		     SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		     String start = format.format(monthStart);
 		     String end = format.format(monthEnd);
-		     
+
 		     sb.append(new SimpleDateFormat("yyyy-MM").format(monthStart)).append("\t");
 		     sb.append(getStats3Service().getExperimentsBy("STATIC", (start), (end))).append("\t");
 		     sb.append(getStats3Service().getExperimentsBy("HPLC", (start), (end))).append("\t");
@@ -88,13 +89,13 @@ public class StatsRestWebService extends SaxsRestWebService {
 		     sb.append(getStats3Service().getSamplesBy((start), (end))).append("\t");
 		     sb.append(getStats3Service().getFramesBy((start), (end))).append("\t");
 		     sb.append(getStats3Service().getSessionsBy((start), (end))).append("\t");
-		     
+
 		     sb.append("\n");
-		     
+
 		}
 		return sb.toString().replaceAll("\\[", "").replace("]", "");
 	}
-	
+
 	@PermitAll
 	@GET
 	@Path("stats/experiment/{year}/csv")
@@ -109,7 +110,7 @@ public class StatsRestWebService extends SaxsRestWebService {
 		}
 		return sb.toString();
 	}
-	
+
 	@PermitAll
 	@GET
 	@Path("stats/experiment/{year}/count")
@@ -125,7 +126,7 @@ public class StatsRestWebService extends SaxsRestWebService {
 			return this.logError(methodName, e, id, logger);
 		}
 	}
-	
+
 	@PermitAll
 	@GET
 	@Path("stats/experiment/{start}/{end}/count")
@@ -142,6 +143,6 @@ public class StatsRestWebService extends SaxsRestWebService {
 			return this.logError(methodName, e, id, logger);
 		}
 	}
-	
-		
+
+
 }

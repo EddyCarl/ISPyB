@@ -19,7 +19,8 @@ import org.apache.log4j.Logger;
 
 import io.swagger.annotations.Api;
 
-@Api
+// All endpoints will fall under the Legacy tag unless otherwise specified
+@Api( tags = "Legacy Endpoints" )
 @Path("/")
 public class WorkflowRestWebService extends MXRestWebService {
 
@@ -31,13 +32,13 @@ public class WorkflowRestWebService extends MXRestWebService {
 	@Produces("text/plain")
 	public Response getWorkflowStepByIds(
 			@PathParam("token") String token,
-			@PathParam("proposal") String proposal, 
+			@PathParam("proposal") String proposal,
 			@PathParam("workflowStepIds") String workflowStepIds) {
 
 		String methodName = "getWorkflowStepByIds";
 		long start = this.logInit(methodName, logger, token, proposal, workflowStepIds);
 		try {
-			
+
 			List<Integer> ids = this.parseToInteger(workflowStepIds);
 			List<WorkflowStep3VO> workflowStepList = new ArrayList<WorkflowStep3VO>();
 			for (Integer id : ids) {
@@ -50,15 +51,15 @@ public class WorkflowRestWebService extends MXRestWebService {
 			return this.logError(methodName, e, start, logger);
 		}
 	}
-	
-	
+
+
 	@RolesAllowed({ "User", "Manager", "Industrial", "Localcontact" })
 	@GET
 	@Path("{token}/proposal/{proposal}/mx/workflow/step/{workflowStepId}/image")
 	@Produces("image/png")
 	public Response getWorkflowStepImageById(
 			@PathParam("token") String token,
-			@PathParam("proposal") String proposal, 
+			@PathParam("proposal") String proposal,
 			@PathParam("workflowStepId") int workflowStepId) {
 
 		String methodName = "getWorkflowStepImageById";
@@ -80,14 +81,14 @@ public class WorkflowRestWebService extends MXRestWebService {
 			return this.logError(methodName, e, start, logger);
 		}
 	}
-	
+
 	@RolesAllowed({ "User", "Manager", "Industrial", "Localcontact" })
 	@GET
 	@Path("{token}/proposal/{proposal}/mx/workflow/step/{workflowStepId}/html")
 	@Produces({ "text/html" })
 	public String getWorkflowStepHTMLById(
 			@PathParam("token") String token,
-			@PathParam("proposal") String proposal, 
+			@PathParam("proposal") String proposal,
 			@PathParam("workflowStepId") int workflowStepId) {
 
 		String methodName = "getWorkflowStepHTMLById";
@@ -109,14 +110,14 @@ public class WorkflowRestWebService extends MXRestWebService {
 			return this.logError(methodName, e, start, logger).toString();
 		}
 	}
-	
+
 	@RolesAllowed({ "User", "Manager", "Industrial", "Localcontact" })
 	@GET
 	@Path("{token}/proposal/{proposal}/mx/workflow/step/{workflowStepId}/result")
 	@Produces({ "text/html" })
 	public Response getWorkflowStepResultById(
 			@PathParam("token") String token,
-			@PathParam("proposal") String proposal, 
+			@PathParam("proposal") String proposal,
 			@PathParam("workflowStepId") int workflowStepId) {
 
 		String methodName = "getWorkflowStepResultById";
@@ -139,7 +140,7 @@ public class WorkflowRestWebService extends MXRestWebService {
 			return this.logError(methodName, e, start, logger);
 		}
 	}
-	
-		
+
+
 
 }

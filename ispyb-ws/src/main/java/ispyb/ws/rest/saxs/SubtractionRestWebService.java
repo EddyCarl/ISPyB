@@ -25,7 +25,8 @@ import org.apache.log4j.Logger;
 
 import io.swagger.annotations.Api;
 
-@Api
+// All endpoints will fall under the Legacy tag unless otherwise specified
+@Api( tags = "Legacy Endpoints" )
 @Path("/")
 public class SubtractionRestWebService extends SaxsRestWebService {
 
@@ -67,14 +68,14 @@ public class SubtractionRestWebService extends SaxsRestWebService {
 				this.logFinish(methodName, start, logger);
 				return this.downloadFileAsAttachment(filePath);
 			}
-			
+
 			throw new Exception("Subtraction does not exist");
 		} catch (Exception e) {
 			return this.logError(methodName, e, start, logger);
 		}
 	}
 
-	
+
 
 	@RolesAllowed({"User", "Manager", "Industrial", "LocalContact"})
 	@GET
@@ -149,7 +150,7 @@ public class SubtractionRestWebService extends SaxsRestWebService {
 					subtractions.add(sub);
 				}
 			}
-			
+
 			byte[] bytes = SAXSZipper.zip(new ArrayList<Merge3VO>(), subtractions);
 			this.logFinish(methodName, start, logger);
 			ResponseBuilder response = Response.ok((Object) bytes);
@@ -232,5 +233,5 @@ public class SubtractionRestWebService extends SaxsRestWebService {
 		return Response.status(Response.Status.NOT_FOUND).build();
 	}
 
-	
+
 }
