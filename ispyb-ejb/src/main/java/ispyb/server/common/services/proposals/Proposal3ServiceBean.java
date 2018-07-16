@@ -372,7 +372,7 @@ public class Proposal3ServiceBean implements Proposal3Service, Proposal3ServiceL
 	@Override
 	public List<Proposal3VO> findProposalByLoginName(String loginName, String site) {
 
-    System.out.printf("----- findProposalByLoginName called with loginName[] and site[] ----- ", loginName, site);
+    System.out.printf("----- findProposalByLoginName called with loginName[%s] and site[%s] ----- \n", loginName, site);
 
     String userName = loginName;
 
@@ -437,7 +437,7 @@ public class Proposal3ServiceBean implements Proposal3Service, Proposal3ServiceL
 	@Override
 	public List<String> findProposalNamesByLoginName(String loginName, String site) {
 
-    System.out.printf("----- findProposalNamesByLoginName called with loginName[] and site[] ----", loginName, site);
+    System.out.printf("----- findProposalNamesByLoginName called with loginName[%s] and site[%s] ----\n", loginName, site);
 
 		List<Proposal3VO> proposals = this.findProposalByLoginName(loginName, site);
 		return this.getProposalAccounts(proposals);
