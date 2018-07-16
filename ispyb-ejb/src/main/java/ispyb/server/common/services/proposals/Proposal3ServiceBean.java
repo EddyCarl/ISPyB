@@ -1,19 +1,19 @@
 /*******************************************************************************
  * This file is part of ISPyB.
- * 
+ *
  * ISPyB is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * ISPyB is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with ISPyB.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * Contributors : S. Delageniere, R. Leal, L. Launer, K. Levik, S. Veyrier, P. Brenchereau, M. Bodin, A. De Maria Antolinos
  ******************************************************************************************************************************/
 
@@ -55,11 +55,11 @@ import ispyb.server.common.vos.proposals.ProposalWS3VO;
  * <p>
  * This session bean handles Proposal table.
  * </p>
- * 
+ *
  */
 @Stateless
 public class Proposal3ServiceBean implements Proposal3Service, Proposal3ServiceLocal {
-	
+
 	private static final String FIND_BY_PK(Integer pk, boolean fetchSessions, boolean fetchProteins,
 			boolean fetchShippings) {
 		return "from Proposal3VO vo  " + (fetchSessions ? " left join fetch vo.sessionVOs " : "")
@@ -73,7 +73,7 @@ public class Proposal3ServiceBean implements Proposal3Service, Proposal3ServiceL
 		return "from Proposal3VO vo ";
 	}
 
-	
+
 	private static final String FIND_CODE_NUMBER(String code, String number, boolean fetchSessions,
 			boolean fetchProteins) {
 		return "from Proposal3VO vo" + (fetchSessions ? " left join fetch vo.sessionVOs " : "")
@@ -95,12 +95,12 @@ public class Proposal3ServiceBean implements Proposal3Service, Proposal3ServiceL
 	private final static String UPDATE_PROPOSALID_PROTEINS = " update Protein  set proposalId = :newProposalId "
 			+ " WHERE proposalId = :oldProposalId"; // 2 old value to be replaced
 
-	
+
 	@PersistenceContext(unitName = "ispyb_db")
 	private EntityManager entityManager;
 
 	private final static Logger LOG = Logger.getLogger(Proposal3ServiceBean.class);
-	
+
 	@EJB
 	private AuthorisationServiceLocal autService;
 
@@ -112,7 +112,7 @@ public class Proposal3ServiceBean implements Proposal3Service, Proposal3ServiceL
 
 	/**
 	 * Create new Proposal.
-	 * 
+	 *
 	 * @param vo
 	 *            the entity to persist.
 	 * @return the persisted entity.
@@ -124,7 +124,7 @@ public class Proposal3ServiceBean implements Proposal3Service, Proposal3ServiceL
 
 	/**
 	 * Update the Proposal data.
-	 * 
+	 *
 	 * @param vo
 	 *            the entity data to update.
 	 * @return the updated entity.
@@ -138,7 +138,7 @@ public class Proposal3ServiceBean implements Proposal3Service, Proposal3ServiceL
 
 	/**
 	 * Remove the Proposal from its pk
-	 * 
+	 *
 	 * @param vo
 	 *            the entity to remove.
 	 */
@@ -150,7 +150,7 @@ public class Proposal3ServiceBean implements Proposal3Service, Proposal3ServiceL
 
 	/**
 	 * Remove the Proposal
-	 * 
+	 *
 	 * @param vo
 	 *            the entity to remove.
 	 */
@@ -161,7 +161,7 @@ public class Proposal3ServiceBean implements Proposal3Service, Proposal3ServiceL
 
 	/**
 	 * Finds a Scientist entity by its primary key and set linked value objects if necessary
-	 * 
+	 *
 	 * @param pk
 	 *            the primary key
 	 * @param withLink1
@@ -176,14 +176,14 @@ public class Proposal3ServiceBean implements Proposal3Service, Proposal3ServiceL
 		List listVOs = query.getResultList();
 		if (listVOs == null || listVOs.isEmpty())
 			return null;
-		
+
 		checkChangeRemoveAccess( (Proposal3VO) listVOs.toArray()[0]);
 		return (Proposal3VO) listVOs.toArray()[0];
 	}
 
 	/**
 	 * Finds a Scientist entity by its primary key and set linked value objects if necessary
-	 * 
+	 *
 	 * @param pk
 	 *            the primary key
 	 * @param withLink1
@@ -199,7 +199,7 @@ public class Proposal3ServiceBean implements Proposal3Service, Proposal3ServiceL
 		List listVOs = query.getResultList();
 		if (listVOs == null || listVOs.isEmpty())
 			return null;
-		
+
 		checkChangeRemoveAccess( (Proposal3VO) listVOs.toArray()[0]);
 		return (Proposal3VO) listVOs.toArray()[0];
 	}
@@ -225,7 +225,7 @@ public class Proposal3ServiceBean implements Proposal3Service, Proposal3ServiceL
 		return vos;
 
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@WebMethod
 	public List<Proposal3VO> findByLoginName(final String loginName) throws Exception {
@@ -284,7 +284,7 @@ public class Proposal3ServiceBean implements Proposal3Service, Proposal3ServiceL
 
 	/**
 	 * Find all Scientists and set linked value objects if necessary
-	 * 
+	 *
 	 */
 	@SuppressWarnings("unchecked")
 	@WebMethod
@@ -303,7 +303,7 @@ public class Proposal3ServiceBean implements Proposal3Service, Proposal3ServiceL
 
 	/**
 	 * Finds a Proposal by its code and number and title (if title is null only search by code and number).
-	 * 
+	 *
 	 * @param code
 	 * @param number
 	 * @param title
@@ -362,41 +362,63 @@ public class Proposal3ServiceBean implements Proposal3Service, Proposal3ServiceL
 		return this.updateProposalFromIds(newPropId, oldPropId);
 
 	}
-	
-	
+
+
 	@Override
 	public Proposal3VO findProposalById(int proposalId) {
 		return entityManager.find(Proposal3VO.class, proposalId);
 	}
-	
+
 	@Override
 	public List<Proposal3VO> findProposalByLoginName(String loginName, String site) {
 
-		String userName = loginName;
-		if (site != null){
-			if (site.equals(Constants.SITE_ESRF) || site.equals(Constants.SITE_MAXIV)) {
-				/**
-				 * Contains a number then we assume is a proposal and for ESRF if the login name is "IFX xxx" then the username should be
-				 * "fx xxx"
-				 */
+    System.out.printf("----- findProposalByLoginName called with loginName[] and site[] ----- ", loginName, site);
+
+    String userName = loginName;
+
+		if (site != null)
+		{
+      System.out.println("--- Site is not null! ----- ");
+
+			if (site.equals(Constants.SITE_ESRF) || site.equals(Constants.SITE_MAXIV))
+			{
+        System.out.println("--- Site was ESRF or MAXIV! ----- ");
+
+
+        /**
+         * Contains a number then we assume is a proposal and for ESRF if the login name is "IFX xxx" then the username should be
+         * "fx xxx"
+         */
 				if (loginName.matches("(.*)[0-9](.*)")) {
 					ArrayList<String> authentitionInfo;
 					authentitionInfo = StringUtils.GetProposalNumberAndCode(loginName);
 					userName = authentitionInfo.get(0) + authentitionInfo.get(2);
 				}
 			}
+			else
+      {
+        System.out.println("--- Site was not ESRF or MAXIV! ----- ");
+      }
 		}
+		else
+    {
+      System.out.println("--- Site was null! ----- ");
+    }
 
 		List<Proposal3VO> proposals = new ArrayList<Proposal3VO>();
+
+
 		/**
 		 * If user is a proposal it is linked by proposalCode and proposalNumber in the proposal table
 		 */
+    System.out.println(" --- Add all - findProposalsByCodeAndNum (username)");
 		proposals.addAll(this.findProposalByCodeAndNumber(userName));
 
 		/**
 		 * In case login name is a user we look for it on Persons though proposalHasPerson
 		 */
-		proposals.addAll(this.findProposalByPerson(loginName));
+    System.out.println(" --- Add all - findProposalsByCodeAndNum (username)");
+    proposals.addAll(this.findProposalByPerson(loginName));
 
 		/**
 		 * Removing duplicated proposals
@@ -408,19 +430,29 @@ public class Proposal3ServiceBean implements Proposal3Service, Proposal3ServiceL
 				result.add(proposal);
 				proposalsId.add(proposal.getProposalId());
 			}
-		}		
+		}
 		return result;
 	}
 
 	@Override
 	public List<String> findProposalNamesByLoginName(String loginName, String site) {
+
+    System.out.printf("----- findProposalNamesByLoginName called with loginName[] and site[] ----", loginName, site);
+
 		List<Proposal3VO> proposals = this.findProposalByLoginName(loginName, site);
 		return this.getProposalAccounts(proposals);
 	}
 
 	@SuppressWarnings("unchecked")
 	private List<Proposal3VO> findProposalByCodeAndNumber(String loginName) {
+
+    System.out.println("---- calling findProposalByCodeAndNumber with loginName: " + loginName);
+
 		String query = "SELECT proposal FROM Proposal3VO proposal WHERE concat(proposalCode, proposalNumber)=:loginName";
+
+    System.out.println("---- SQL Query: " + query + " where loginname == " + loginName);
+
+
 		Query EJBQuery = this.entityManager.createQuery(query);
 		EJBQuery.setParameter("loginName", loginName);
 		return EJBQuery.getResultList();
@@ -428,8 +460,16 @@ public class Proposal3ServiceBean implements Proposal3Service, Proposal3ServiceL
 
 	@SuppressWarnings("unchecked")
 	private List<Proposal3VO> findProposalByPerson(String loginName) {
-		String queryPerson = "SELECT person FROM Person3VO person WHERE login=:loginName";
-		Query EJBQueryPerson = this.entityManager.createQuery(queryPerson);
+
+    System.out.println("---- calling findProposalByPerson with loginName: " + loginName);
+
+
+    String queryPerson = "SELECT person FROM Person3VO person WHERE login=:loginName";
+
+    System.out.println("---- SQL Query: " + queryPerson + " where loginname == " + loginName);
+
+
+    Query EJBQueryPerson = this.entityManager.createQuery(queryPerson);
 		EJBQueryPerson.setParameter("loginName", loginName);
 		@SuppressWarnings("unchecked")
 		List<Person3VO> persons = EJBQueryPerson.getResultList();
@@ -452,8 +492,8 @@ public class Proposal3ServiceBean implements Proposal3Service, Proposal3ServiceL
 	}
 
 	/*    coming from SaxsProposalService  */
-	
-	
+
+
 	/**
 	 * It looks for proposal based on the login name It looks for proposal in: - Proposal table concatenating proposalCode and
 	 * proposalNumber - Person table y the column login Then both systems, by proposal and by user are allowed
@@ -469,7 +509,7 @@ public class Proposal3ServiceBean implements Proposal3Service, Proposal3ServiceL
 		Query EJBQuery = this.entityManager.createQuery(query);
 		return EJBQuery.getResultList();
 	}
-	
+
 	@Override
 	public List<Map<String, Object>> findProposals() {
 		Session session = (Session) this.entityManager.getDelegate();
@@ -479,7 +519,7 @@ public class Proposal3ServiceBean implements Proposal3Service, Proposal3ServiceL
 		List<Map<String,Object>> aliasToValueMapList= query.list();
 		return 	aliasToValueMapList;
 	}
-	
+
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -491,7 +531,7 @@ public class Proposal3ServiceBean implements Proposal3Service, Proposal3ServiceL
 		}
 		return 	result;
 	}
-		
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Map<String, Object>> findProposalById(Integer proposalId) {
@@ -499,8 +539,8 @@ public class Proposal3ServiceBean implements Proposal3Service, Proposal3ServiceL
 		result.addAll(findProposalByProposalId(proposalId));
 		return 	result;
 	}
-	
-	private List<String> getProposalAccounts(List<Proposal3VO> proposals) {		
+
+	private List<String> getProposalAccounts(List<Proposal3VO> proposals) {
 		List<String> proposalsStr = new ArrayList<String>();
 		if (proposals != null) {
 			for (Iterator<Proposal3VO> iterator = proposals.iterator(); iterator.hasNext();) {
@@ -511,7 +551,7 @@ public class Proposal3ServiceBean implements Proposal3Service, Proposal3ServiceL
 		return proposalsStr;
 	}
 
-	
+
 	private List findProposalByProposalId(Integer proposalId){
 		Session session = (Session) this.entityManager.getDelegate();
 		SQLQuery query = session.createSQLQuery("select " + SqlTableMapper.getProposalTable() + " from Proposal where proposalId= :proposalId");
@@ -519,13 +559,13 @@ public class Proposal3ServiceBean implements Proposal3Service, Proposal3ServiceL
 		query.setResultTransformer(AliasToEntityMapResultTransformer.INSTANCE);
 		return query.list();
 	}
-	
-	/*    end of coming from SaxsProposalService  */	
-	
+
+	/*    end of coming from SaxsProposalService  */
+
 
 	/**
 	 * Get all entity VOs from a collection of local entities.
-	 * 
+	 *
 	 * @param localEntities
 	 * @return
 	 */
@@ -540,7 +580,7 @@ public class Proposal3ServiceBean implements Proposal3Service, Proposal3ServiceL
 
 	/**
 	 * Get all lights entities
-	 * 
+	 *
 	 * @param localEntities
 	 * @return
 	 * @throws CloneNotSupportedException
@@ -556,7 +596,7 @@ public class Proposal3ServiceBean implements Proposal3Service, Proposal3ServiceL
 
 	/**
 	 * Get all lights entities
-	 * 
+	 *
 	 * @param localEntities
 	 * @return
 	 * @throws CloneNotSupportedException
@@ -575,12 +615,12 @@ public class Proposal3ServiceBean implements Proposal3Service, Proposal3ServiceL
 	/**
 	 * Check if user has access rights to change and remove Proposal3 entities. If not set throw
 	 * AccessDeniedException
-	 * 
+	 *
 	 * @throws AccessDeniedException
 	 */
 	private void checkChangeRemoveAccess(Proposal3VO vo) throws AccessDeniedException {
 		if (vo == null) return;
-		autService.checkUserRightToAccessProposal(vo);				
+		autService.checkUserRightToAccessProposal(vo);
 	}
 
 

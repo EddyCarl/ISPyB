@@ -151,9 +151,20 @@ public class AuthenticationRestWebService extends RestWebService {
 				login3vo.setSiteId(siteId);
 
 				/** Retrieving the proposals attached to a User **/
-				List<String> proposalsAuthorized =  this.getProposal3Service().findProposalNamesByLoginName(login, site);
+        System.out.println(" ---------- START debugging findProposal stuff here --------" );
 
-				System.out.println("Proposals attached to this user: " + proposalsAuthorized.toString());
+        if( this.getProposal3Service() != null )
+        {
+          System.out.println("Proposal3Service obtained successfully");
+        }
+        else
+        {
+          System.out.println("Could not obtain Proposal3Service");
+        }
+
+				List<String> proposalsAuthorized =  this.getProposal3Service().findProposalNamesByLoginName(login, site);
+        System.out.println(" ---------- END debugging findProposal stuff here --------" );
+
 				login3vo.setAuthorized(proposalsAuthorized.toString());
 
 				/** Calculating expiration time **/
