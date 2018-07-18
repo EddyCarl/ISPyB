@@ -1,5 +1,10 @@
 package ispyb.ws.rest.mx;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
 import ispyb.server.common.util.ejb.Ejb3ServiceLocator;
 import ispyb.server.mx.services.collections.EnergyScan3Service;
 import ispyb.server.mx.services.ws.rest.energyscan.EnergyScanRestWsService;
@@ -28,6 +33,47 @@ import utils.SwaggerTagConstants;
 public class EnergyScanRestWebService extends RestWebService {
 	 private final static Logger logger = Logger.getLogger(EnergyScanRestWebService.class);
 
+
+
+  /**
+   * Used to retrieve Energy Scan information for any records relating to the users session.
+   *
+   * @return  Response  - Returns a relevant HTTP response
+   */
+  @GET
+  @Path( "/sessions/{id}/energy-scans" )
+  @ApiOperation
+    (
+      value = "Retrieves a list of Energy Scan entries",
+      notes = "Returns a list of Energy Scan entries for the current logged in user",
+      tags = { SwaggerTagConstants.ENERGY_SCAN_TAG }, response = EnergyScan3VO.class, responseContainer = "List",
+      authorizations = @Authorization( "basicAuth" )
+    )
+  @Produces({ "application/json" })
+  @ApiResponses
+    ( {
+      @ApiResponse( code = 200, message = "Ok" ),
+      @ApiResponse( code = 400, message = "Some error" )
+    } )
+  public Response retrieveEnergyScanData
+  (
+
+    @ApiParam
+      (
+        name = "id", required = true, example = "12", value = "The ID of the session to retrieve"
+      ) @PathParam( "id" ) int sessionID
+
+  ) throws Exception
+  {
+    return null;
+  }
+
+
+
+
+  /*
+   * ---- Legacy endpoints below this point ----
+   */
 
     @Path("{token}/proposal/{proposal}/mx/energyscan/session/{sessionId}/list")
 	@RolesAllowed({"User", "Manager", "Industrial", "Localcontact"})

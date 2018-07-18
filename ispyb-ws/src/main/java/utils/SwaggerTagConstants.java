@@ -21,4 +21,8 @@ public class SwaggerTagConstants
   final public static String DATA_COLLECTION_TAG = "Data Collection";
 
   final public static String ENERGY_SCAN_TAG = "Energy Scan";
+
+  final public static String AUTO_PROC_TAG = "Auto Processing";
+
+  final public static String FLUORESCENCE_SPEC_TAG = "XFE Fluorescence Spectrum";
 }

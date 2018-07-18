@@ -1,5 +1,10 @@
 package ispyb.ws.rest.mx;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
 import ispyb.common.util.HashMapToZip;
 import ispyb.server.common.test.services.ZipperTest;
 import ispyb.server.common.util.ejb.Ejb3ServiceLocator;
@@ -8,7 +13,9 @@ import ispyb.server.mx.services.ws.rest.autoprocessingintegration.AutoProcessing
 import ispyb.server.mx.vos.autoproc.AutoProcIntegration3VO;
 import ispyb.server.mx.vos.autoproc.AutoProcProgram3VO;
 import ispyb.server.mx.vos.autoproc.AutoProcProgramAttachment3VO;
+import ispyb.server.mx.vos.autoproc.AutoProcScaling3VO;
 import ispyb.server.mx.vos.collections.DataCollection3VO;
+import ispyb.server.mx.vos.collections.EnergyScan3VO;
 import ispyb.server.mx.vos.collections.Session3VO;
 
 import java.io.File;
@@ -40,7 +47,119 @@ public class AutoprocintegrationRestWebService extends MXRestWebService {
 	private final static Logger logger = Logger.getLogger(AutoprocintegrationRestWebService.class);
 	private static final String NOT_ALLOWED = "You don't have access to this resource";
 
-	@RolesAllowed({ "User", "Manager", "Industrial", "Localcontact" })
+
+
+  /**
+   * Used to retrieve the auto processing results from the Auto Proc Integration tables for a particular
+   * data collection (input by data-collection id).
+   *
+   * @return  Response  - Returns a relevant HTTP response
+   */
+  @GET
+  @Path( "/data-collections/{id}/auto-processing-results" )
+  @ApiOperation
+    (
+      value = "Retrieves auto processing results",
+      notes = "Returns a list of auto processing results for a particular data collection",
+      tags = { SwaggerTagConstants.AUTO_PROC_TAG }, response = AutoProcIntegration3VO.class,
+      responseContainer = "List", authorizations = @Authorization( "basicAuth" )
+    )
+  @Produces({ "application/json" })
+  @ApiResponses
+    ( {
+      @ApiResponse( code = 200, message = "Ok" ),
+      @ApiResponse( code = 400, message = "Some error" )
+    } )
+  public Response retrieveAutoProcessingResults
+  (
+
+    @ApiParam
+      (
+        name = "id", required = true, example = "12", value = "The ID of the data-collection to retrieve"
+      ) @PathParam( "id" ) int dataCollectionId
+
+  ) throws Exception
+  {
+    return null;
+  }
+
+
+
+
+  /**
+   * Used to retrieve a particular auto-proc-integration based on the input ID.
+   *
+   * @return  Response  - Returns a relevant HTTP response
+   */
+  @GET
+  @Path( "/auto-proc-integrations/{id}/" )
+  @ApiOperation
+    (
+      value = "Retrieves auto proc integration results based on the input ID",
+      notes = "Returns an auto proc integration based on the input ID",
+      tags = { SwaggerTagConstants.AUTO_PROC_TAG }, response = AutoProcIntegration3VO.class,
+      responseContainer = "List", authorizations = @Authorization( "basicAuth" )
+    )
+  @Produces({ "application/json" })
+  @ApiResponses
+    ( {
+      @ApiResponse( code = 200, message = "Ok" ),
+      @ApiResponse( code = 400, message = "Some error" )
+    } )
+  public Response retrieveAutoProcIndexScalingSuccess
+  (
+
+    @ApiParam
+      (
+        name = "id", required = true, example = "12", value = "The ID of the auto-proc-integration to retrieve"
+      ) @PathParam( "id" ) int autoProcIntId
+
+  ) throws Exception
+  {
+    return null;
+  }
+
+
+  /**
+   * Used to retrieve a set of MX MR Run results based on an input auto-proc-scaling ID.
+   *
+   * @return  Response  - Returns a relevant HTTP response
+   */
+  @GET
+  @Path( "/auto-proc-scalings/{id}/mx-mr-runs" )
+  @ApiOperation
+    (
+      value = "Retrieves MX MR Run results",
+      notes = "Retrieves MX MR Run results based on the input Auto Proc Scaling ID",
+      tags = { SwaggerTagConstants.AUTO_PROC_TAG },
+      responseContainer = "List", authorizations = @Authorization( "basicAuth" )
+    )
+  @Produces({ "application/json" })
+  @ApiResponses
+    ( {
+      @ApiResponse( code = 200, message = "Ok" ),
+      @ApiResponse( code = 400, message = "Some error" )
+    } )
+  public Response retrieveMxMrRuns
+  (
+
+    @ApiParam
+      (
+        name = "id", required = true, example = "12", value = "The ID of the auto-proc-scaling to retrieve"
+      ) @PathParam( "id" ) int autoProcScalingId
+
+  ) throws Exception
+  {
+    return null;
+  }
+
+
+
+  /*
+   * ---- Legacy endpoints below this point ----
+   */
+
+  @RolesAllowed({ "User", "Manager", "Industrial", "Localcontact" })
 	@GET
 	@GZIP
 	@Path("{token}/proposal/{proposal}/mx/autoprocintegration/{autoProcIntegrationListId}/xscale/plot")

@@ -18,6 +18,12 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
+import ispyb.server.mx.vos.collections.EnergyScan3VO;
 import org.apache.log4j.Logger;
 import org.jboss.resteasy.annotations.GZIP;
 
@@ -33,7 +39,71 @@ public class DataCollectionRestWebService extends MXRestWebService {
 
 	private final static Logger logger = Logger.getLogger(DataCollectionRestWebService.class);
 
-	@RolesAllowed({ "User", "Manager", "Industrial", "Localcontact" })
+
+  /**
+   * Used to retrieve a list of Data Collection entries stored in the database where the number of images column
+   * in the record has a value larger than that of the set "threshold" value input via the app.
+   *
+   * @return  Response  - Returns a relevant HTTP response
+   */
+  @GET
+  @Path( "/sessions/{id}/data-collections" )
+  @ApiOperation
+    (
+      value = "Retrieves a list of Data Collection entries",
+      notes = "Returns a list of Data Collection entries that are available to the user currently logged in. The " +
+        "returned list will only contain entries that have a number of images greater than the input " +
+        "\"threshold\" query parameter.",
+      tags = { SwaggerTagConstants.DATA_COLLECTION_TAG }, response = DataCollection3VO.class, responseContainer = "List",
+      authorizations = @Authorization( "basicAuth" )
+    )
+  @Produces({ "application/json" })
+  @ApiResponses
+    ( {
+      @ApiResponse( code = 200, message = "Ok" ),
+      @ApiResponse( code = 400, message = "Some error" )
+    } )
+  public Response retrieveDataCollectionList
+  (
+
+    @ApiParam
+      (
+        name = "id", required = true, example = "12", value = "The ID of the session to retrieve"
+      ) @PathParam( "id" ) int sessionID,
+    @ApiParam
+      (
+        name = "threshold", example = "10",
+        value = "Can be used to filter returned results so that only records numOfImages, over the threshold, are shown"
+      ) @QueryParam( "threshold" ) int threshold
+
+  ) throws Exception
+  {
+    return null;
+  }
+
+
+  /*
+   *  **** NOTE ****
+   *  The data collection method above is currently in place to serve the "Find Data Collection" SQL query which
+   *  simply returns a single row (Limit of 1) that contains just the Data Collection ID and the numOfImages based
+   *  upon the threshold value input via query param.
+   *
+   *  The SQL query after this, "Get Data Collection Params for a given session" can use the same endpoint "technically",
+   *  however, this query is limited to 100 rows. This query also returns a lot more fields than the previous SQL query,
+   *  however, the numOfImages field is still one of them. So if we can ignore the row limit somehow, the same endpoint
+   *  and method can be used for both SQL statements with just the optional additional "threshold" parameter being
+   *  added if the user wishes to limit the returned rows by the numOfImages.
+   */
+
+
+
+
+
+  /*
+   * ---- Legacy endpoints below this point ----
+   */
+
+  @RolesAllowed({ "User", "Manager", "Industrial", "Localcontact" })
 	@GET
 	@GZIP
 	@Path("{token}/proposal/{proposal}/mx/datacollection/{dataCollectionIdList}/list")

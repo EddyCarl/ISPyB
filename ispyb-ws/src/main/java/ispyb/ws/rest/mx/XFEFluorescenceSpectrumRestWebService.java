@@ -1,7 +1,14 @@
 package ispyb.ws.rest.mx;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
 import ispyb.server.common.util.ejb.Ejb3ServiceLocator;
 import ispyb.server.mx.services.ws.rest.xfefluorescencespectrum.XFEFluorescenSpectrumRestWsService;
+import ispyb.server.mx.vos.autoproc.AutoProcIntegration3VO;
+import ispyb.server.mx.vos.collections.XFEFluorescenceSpectrum3VO;
 import ispyb.ws.rest.RestWebService;
 
 import java.io.File;
@@ -30,7 +37,49 @@ public class XFEFluorescenceSpectrumRestWebService extends RestWebService {
 	 private final static Logger logger = Logger.getLogger(XFEFluorescenceSpectrumRestWebService.class);
 
 
-    @Path("{token}/proposal/{proposal}/mx/xrfscan/session/{sessionId}/list")
+
+  /**
+   * Used to retrieve the fluorescence spectrum data for a particular user's session.
+   *
+   * @return  Response  - Returns a relevant HTTP response
+   */
+  @GET
+  @Path( "/sessions/{id}/fluorescence-spectrum" )
+  @ApiOperation
+    (
+      value = "Retrieves fluorescence spectrum data",
+      notes = "Returns a list of fluorescence spectrum data for a particular session",
+      tags = { SwaggerTagConstants.FLUORESCENCE_SPEC_TAG }, response = XFEFluorescenceSpectrum3VO.class,
+      responseContainer = "List", authorizations = @Authorization( "basicAuth" )
+    )
+  @Produces({ "application/json" })
+  @ApiResponses
+    ( {
+      @ApiResponse( code = 200, message = "Ok" ),
+      @ApiResponse( code = 400, message = "Some error" )
+    } )
+  public Response retrieveFluorescenceSpectrumData
+  (
+
+    @ApiParam
+      (
+        name = "id", required = true, example = "12", value = "The ID of the session to retrieve"
+      ) @PathParam( "id" ) int sessionId
+
+  ) throws Exception
+  {
+    return null;
+  }
+
+
+
+
+
+  /*
+   * ---- Legacy endpoints below this point ----
+   */
+
+  @Path("{token}/proposal/{proposal}/mx/xrfscan/session/{sessionId}/list")
 	@RolesAllowed({"User", "Manager", "Industrial", "Localcontact"})
 	@GET
 	@Produces({ "application/json" })
