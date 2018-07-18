@@ -8,6 +8,8 @@ import io.swagger.annotations.Authorization;
 import ispyb.server.common.services.ws.rest.session.SessionService;
 import ispyb.server.common.util.ejb.Ejb3ServiceLocator;
 import ispyb.server.common.vos.login.Login3VO;
+import ispyb.server.mx.vos.collections.DataCollection3VO;
+import ispyb.server.mx.vos.collections.EnergyScan3VO;
 import ispyb.server.mx.vos.collections.Session3VO;
 import ispyb.ws.rest.RestWebService;
 
@@ -24,6 +26,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
@@ -94,7 +97,7 @@ public class SessionRestWebService extends RestWebService
 
     @ApiParam
     (
-      name = "id", value = "The ID of the session to retrieve", required = true, example = "12"
+      name = "id", required = true, example = "12", value = "The ID of the session to retrieve"
     ) @PathParam( "id" ) int sessionID
 
   ) throws Exception
@@ -102,6 +105,105 @@ public class SessionRestWebService extends RestWebService
     System.out.println("The input session ID is: " );
     return null;
   }
+
+
+  /**
+   * Used to retrieve a list of Data Collection entries stored in the database where the number of images column
+   * in the record has a value larger than that of the set "threshold" value input via the app.
+   *
+   * @return  Response  - Returns a relevant HTTP response
+   */
+  @GET
+  @Path( "/sessions/{id}/datacollections" )
+  @ApiOperation
+    (
+      value = "Retrieves a list of Data Collection entries",
+      notes = "Returns a list of Data Collection entries that are available to the user currently logged in. The " +
+              "returned list will only contain entries that have a number of images greater than the input " +
+              "\"threshold\" query parameter.",
+      tags = { SwaggerTagConstants.DATA_COLLECTION_TAG }, response = DataCollection3VO.class, responseContainer = "List",
+      authorizations = @Authorization( "basicAuth" )
+    )
+  @Produces({ "application/json" })
+  @ApiResponses
+    ( {
+      @ApiResponse( code = 200, message = "Ok" ),
+      @ApiResponse( code = 400, message = "Some error" )
+    } )
+  public Response retrieveDataCollectionList
+  (
+
+    @ApiParam
+    (
+      name = "id", required = true, example = "12", value = "The ID of the session to retrieve"
+    ) @PathParam( "id" ) int sessionID,
+    @ApiParam
+      (
+        name = "threshold", example = "10",
+        value = "Can be used to filter returned results so that only records with over <threshold> images are shown"
+      ) @QueryParam( "threshold" ) int threshold
+
+  ) throws Exception
+  {
+    return null;
+  }
+
+
+  /*
+   *  **** NOTE ****
+   *  The data collection method above is currently in place to serve the "Find Data Collection" SQL query which
+   *  simply returns a single row (Limit of 1) that contains just the Data Collection ID and the numOfImages based
+   *  upon the threshold value input via query param.
+   *
+   *  The SQL query after this, "Get Data Collection Params for a given session" can use the same endpoint "technically",
+   *  however, this query is limited to 100 rows. This query also returns a lot more fields than the previous SQL query,
+   *  however, the numOfImages field is still one of them. So if we can ignore the row limit somehow, the same endpoint
+   *  and method can be used for both SQL statements with just the optional additional "threshold" parameter being
+   *  added if the user wishes to limit the returned rows by the numOfImages.
+   */
+
+
+  /**
+   * Used to retrieve Energy Scan information for any records relating to the users session.
+   *
+   * @return  Response  - Returns a relevant HTTP response
+   */
+  @GET
+  @Path( "/sessions/{id}/energy-scans" )
+  @ApiOperation
+    (
+      value = "Retrieves a list of Energy Scan entries",
+      notes = "Returns a list of Energy Scan entries for the current logged in user",
+      tags = { SwaggerTagConstants.ENERGY_SCAN_TAG }, response = EnergyScan3VO.class, responseContainer = "List",
+      authorizations = @Authorization( "basicAuth" )
+    )
+  @Produces({ "application/json" })
+  @ApiResponses
+    ( {
+      @ApiResponse( code = 200, message = "Ok" ),
+      @ApiResponse( code = 400, message = "Some error" )
+    } )
+  public Response retrieveEnergyScanData
+  (
+
+    @ApiParam
+      (
+        name = "id", required = true, example = "12", value = "The ID of the session to retrieve"
+      ) @PathParam( "id" ) int sessionID
+
+  ) throws Exception
+  {
+    return null;
+  }
+
+
+
+
+
+
+
+
+
 
 
 

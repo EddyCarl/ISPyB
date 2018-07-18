@@ -17,4 +17,8 @@ public class SwaggerTagConstants
   final public static String PROPOSAL_TAG = "Proposal";
 
   final public static String SESSION_TAG = "Session";
+
+  final public static String DATA_COLLECTION_TAG = "Data Collection";
+
+  final public static String ENERGY_SCAN_TAG = "Energy Scan";
 }

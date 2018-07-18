@@ -98,7 +98,7 @@ public class ProposalRestWebService extends MXRestWebService
 
     @ApiParam
     (
-      name = "id", value = "The ID of the proposal to retrieve", required = true, example = "131"
+      name = "id", required = true, example = "131", value = "The ID of the proposal to retrieve"
     ) @PathParam( "id" ) int proposalID
 
   ) throws Exception
