@@ -47,7 +47,7 @@ public class CrystalRestWebService extends MXRestWebService {
     (
       value = "Retrieve the crystal snapshot image paths.",
       notes = "Retrieve the crystal snapshot image paths for a particular data-collection specified by the input ID.",
-      tags = { SwaggerTagConstants.SAMPLE_TAG }, response = Crystal3VO.class,
+      tags = { SwaggerTagConstants.CRYSTAL_SNAPSHOT_TAG }, response = Crystal3VO.class,
       responseContainer = "List", authorizations = @Authorization( "basicAuth" )
     )
   @Produces({ "application/json" })
@@ -83,7 +83,7 @@ public class CrystalRestWebService extends MXRestWebService {
     (
       value = "Retrieve the crystal snapshot images.",
       notes = "Retrieve the crystal snapshot images for a particular data-collection specified by the input ID.",
-      tags = { SwaggerTagConstants.SAMPLE_TAG }, response = Crystal3VO.class,
+      tags = { SwaggerTagConstants.CRYSTAL_SNAPSHOT_TAG }, response = Crystal3VO.class,
       responseContainer = "List", authorizations = @Authorization( "basicAuth" )
     )
   @Produces({ "application/json" })
