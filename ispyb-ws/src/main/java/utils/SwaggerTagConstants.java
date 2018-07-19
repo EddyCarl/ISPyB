@@ -14,6 +14,8 @@ public class SwaggerTagConstants
   final public static String LEGACY_TAG = "Legacy Endpoints";
 
   // The following tags will be used for any newer Synchlink based endpoints
+  final public static String AUTHENTICATION_TAG = "Authentication Endpoints";
+
   final public static String PROPOSAL_TAG = "Proposal Endpoints";
 
   final public static String SESSION_TAG = "Session Endpoints";

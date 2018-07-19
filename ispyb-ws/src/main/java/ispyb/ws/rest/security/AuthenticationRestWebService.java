@@ -1,11 +1,14 @@
 package ispyb.ws.rest.security;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.Authorization;
 import io.swagger.annotations.Contact;
 import io.swagger.annotations.Info;
 import io.swagger.annotations.SwaggerDefinition;
 import io.swagger.annotations.Tag;
 import ispyb.server.common.util.LoggerFormatter;
 import ispyb.server.common.vos.login.Login3VO;
+import ispyb.server.mx.vos.collections.Session3VO;
 import ispyb.server.security.LdapConnection;
 import ispyb.ws.rest.RestWebService;
 import ispyb.ws.rest.security.login.EMBLLoginModule;
@@ -73,7 +76,14 @@ public class AuthenticationRestWebService extends RestWebService {
 	@POST
 	@Path("/authenticate")
 	@Produces({ "application/json" })
-	public Response authenticate(
+  @ApiOperation
+  (
+    value = "Authenticate with the web service",
+    notes = "Allows a user to input a login name and password (along with the site they are logging in from). " +
+            "If the user credentials are validated, then an authentication token is returned which can be used " +
+            "as a header parameter for further usage of the service.", tags = { SwaggerTagConstants.AUTHENTICATION_TAG }
+  )
+  public Response authenticate(
 			@FormParam("login") String login,
 			@FormParam("password") String password,
 			@QueryParam("site") String site) throws Exception {
