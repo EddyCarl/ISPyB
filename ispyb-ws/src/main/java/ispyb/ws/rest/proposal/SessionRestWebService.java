@@ -27,6 +27,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
@@ -52,6 +53,24 @@ public class SessionRestWebService extends RestWebService {
 	{
 		String methodName = "getSessions";
 		long id = this.logInit(methodName, logger, sessionIDs);
+
+    System.out.println( "headers: " + headers.getRequestHeaders().size() );
+
+    for( Map.Entry<String, List<String>> mvm : headers.getRequestHeaders().entrySet() )
+    {
+      String headerKey = mvm.getKey();
+      List<String> headerVals = mvm.getValue();
+
+      System.out.println( "Header key: " + headerKey );
+      System.out.println("Header vals size: "+ headerVals.size());
+
+      for( String val : headerVals )
+      {
+        System.out.println( "   Header val: " + val );
+      }
+    }
+
+
 
     System.out.println("Input API Token: " + authToken);
 
