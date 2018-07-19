@@ -43,15 +43,17 @@ public class SessionRestWebService extends RestWebService {
 	@Path("sessions")
 	@Produces({ "application/json" })
 	@ApiOperation( value = "Retrieve a list of sessions from the database",
-							   authorizations = @Authorization( value = "basic")
+							   authorizations = @Authorization( value = "apiKeyAuth")
 	)
 	public Response getSessions(@QueryParam("id") List<Integer> sessionIDs,
 																				@Context HttpHeaders headers,
 																				@ApiParam(value = "Authorisation token for the session", required = true)
-																					@HeaderParam("X-API-KEY") String authToken )
+																				@HeaderParam("api_token") String authToken )
 	{
 		String methodName = "getSessions";
 		long id = this.logInit(methodName, logger, sessionIDs);
+
+    System.out.println("Input API Token: " + authToken);
 
 		// Check the input X-API-Key auth token by attempting to retrieve a session from the DB
     try
