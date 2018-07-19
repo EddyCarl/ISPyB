@@ -47,9 +47,7 @@ public class SessionRestWebService extends RestWebService {
 							   authorizations = @Authorization( value = "apiKeyAuth")
 	)
 	public Response getSessions(@QueryParam("id") List<Integer> sessionIDs,
-																				@Context HttpHeaders headers,
-																				@ApiParam(value = "Authorisation token for the session", required = true)
-																				@HeaderParam("api_token") String authToken )
+																				@Context HttpHeaders headers )
 	{
 		String methodName = "getSessions";
 		long id = this.logInit(methodName, logger, sessionIDs);
@@ -71,6 +69,11 @@ public class SessionRestWebService extends RestWebService {
     }
 
 
+    List<String> authHeader = headers.getRequestHeader( "api_token" );
+
+    System.out.println("API TOKEN IN HEADER: " + authHeader.get( 0 ));
+
+    String authToken = authHeader.get( 0 );
 
     System.out.println("Input API Token: " + authToken);
 
