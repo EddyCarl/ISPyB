@@ -14,15 +14,21 @@ public class SwaggerTagConstants
   final public static String LEGACY_TAG = "Legacy Endpoints";
 
   // The following tags will be used for any newer Synchlink based endpoints
-  final public static String PROPOSAL_TAG = "Proposal";
+  final public static String PROPOSAL_TAG = "Proposal Endpoints";
 
-  final public static String SESSION_TAG = "Session";
+  final public static String SESSION_TAG = "Session Endpoints";
 
-  final public static String DATA_COLLECTION_TAG = "Data Collection";
+  final public static String DATA_COLLECTION_TAG = "Data Collection Endpoints";
 
-  final public static String ENERGY_SCAN_TAG = "Energy Scan";
+  final public static String ENERGY_SCAN_TAG = "Energy Scan Endpoints";
 
-  final public static String AUTO_PROC_TAG = "Auto Processing";
+  final public static String AUTO_PROC_TAG = "Auto Processing Endpoints";
 
-  final public static String FLUORESCENCE_SPEC_TAG = "XFE Fluorescence Spectrum";
+  final public static String FLUORESCENCE_SPEC_TAG = "XFE Fluorescence Spectrum Endpoints";
+
+  final public static String SCREENING_TAG = "Screening Endpoints";
+
+  final public static String CRYSTAL_SNAPSHOT_TAG = "Crystal Snapshot Endpoints";
+
+  final public static String SAMPLE_TAG = "Beam Line Sample Endpoints";
 }

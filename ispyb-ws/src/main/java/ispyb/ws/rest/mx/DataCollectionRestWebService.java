@@ -24,6 +24,11 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
 import ispyb.server.mx.vos.collections.EnergyScan3VO;
+import ispyb.server.mx.vos.screening.Screening3VO;
+import ispyb.server.mx.vos.screening.ScreeningOutput3VO;
+import ispyb.server.mx.vos.screening.ScreeningOutputLattice3VO;
+import ispyb.server.mx.vos.screening.ScreeningStrategy3VO;
+import ispyb.server.mx.vos.screening.ScreeningStrategyWedge3VO;
 import org.apache.log4j.Logger;
 import org.jboss.resteasy.annotations.GZIP;
 
@@ -94,6 +99,163 @@ public class DataCollectionRestWebService extends MXRestWebService {
    *  and method can be used for both SQL statements with just the optional additional "threshold" parameter being
    *  added if the user wishes to limit the returned rows by the numOfImages.
    */
+
+
+
+  /**
+   * Used to retrieve a screening output lattice for a particular data collection ID and screening output ID.
+   *
+   * @return  Response  - Returns a relevant HTTP response
+   */
+  @GET
+  @Path( "/data-collections/{dcId}/screening-output-lattice/{solId}" )
+  @ApiOperation
+    (
+      value = "Retrieves a screening output lattice for a particular data collection",
+      notes = "Retrieves a screening output lattice for a particular data collection",
+      tags = { SwaggerTagConstants.SCREENING_TAG }, response = ScreeningOutputLattice3VO.class,
+      responseContainer = "List", authorizations = @Authorization( "basicAuth" )
+    )
+  @Produces({ "application/json" })
+  @ApiResponses
+    ( {
+      @ApiResponse( code = 200, message = "Ok" ),
+      @ApiResponse( code = 400, message = "Some error" )
+    } )
+  public Response retrieveScreeningOutputLattice
+  (
+
+    @ApiParam
+      (
+        name = "dcId", required = true, example = "12", value = "The ID of the data collection to retrieve"
+      ) @PathParam( "dcId" ) int dataCollectionId,
+
+    @ApiParam
+      (
+        name = "solId", required = true, example = "5", value = "The ID of the screening output lattice to retrieve"
+      ) @PathParam( "solId" ) int screenOutputLatticeId
+
+  ) throws Exception
+  {
+    return null;
+  }
+
+
+
+  /**
+   * Used to retrieve a screening strategy wedge for a particular data collection ID and screening strategy ID.
+   *
+   * @return  Response  - Returns a relevant HTTP response
+   */
+  @GET
+  @Path( "/data-collections/{dcId}/screening-strategy-wedge/{sswId}" )
+  @ApiOperation
+    (
+      value = "Retrieves a screening strategy wedge for a particular data collection",
+      notes = "Retrieves a screening strategy wedge for a particular data collection",
+      tags = { SwaggerTagConstants.SCREENING_TAG }, response = ScreeningStrategyWedge3VO.class,
+      responseContainer = "List", authorizations = @Authorization( "basicAuth" )
+    )
+  @Produces({ "application/json" })
+  @ApiResponses
+    ( {
+      @ApiResponse( code = 200, message = "Ok" ),
+      @ApiResponse( code = 400, message = "Some error" )
+    } )
+  public Response retrieveScreeningStrategyWedge
+  (
+
+    @ApiParam
+      (
+        name = "dcId", required = true, example = "12", value = "The ID of the data collection to retrieve"
+      ) @PathParam( "dcId" ) int dataCollectionId,
+
+    @ApiParam
+      (
+        name = "sswId", required = true, example = "5", value = "The ID of the screening strategy wedge to retrieve"
+      ) @PathParam( "sswId" ) int screenStratWedgeId
+
+  ) throws Exception
+  {
+    return null;
+  }
+
+
+
+  /**
+   * Used to retrieve a screening strategy for a particular data collection ID.
+   *
+   * @return  Response  - Returns a relevant HTTP response
+   */
+  @GET
+  @Path( "/data-collections/{dcId}/screening-strategy/{ssId}" )
+  @ApiOperation
+    (
+      value = "Retrieves a screening strategy for a particular data collection",
+      notes = "Retrieves a screening strategy that is associated with the input data collection ID",
+      tags = { SwaggerTagConstants.SCREENING_TAG }, response = ScreeningStrategy3VO.class, responseContainer = "List",
+      authorizations = @Authorization( "basicAuth" )
+    )
+  @Produces({ "application/json" })
+  @ApiResponses
+    ( {
+      @ApiResponse( code = 200, message = "Ok" ),
+      @ApiResponse( code = 400, message = "Some error" )
+    } )
+  public Response retrieveScreeningStrategy
+  (
+
+    @ApiParam
+      (
+        name = "dcId", required = true, example = "12", value = "The ID of the data collection to retrieve"
+      ) @PathParam( "dcId" ) int dataCollectionId,
+
+    @ApiParam
+      (
+        name = "ssId", required = true, example = "5", value = "The ID of the screening strategy to retrieve"
+      ) @PathParam( "ssId" ) int screenStratId
+
+    ) throws Exception
+  {
+    return null;
+  }
+
+
+
+
+  /**
+   * Used to retrieve a the comments on screenings for a particular data-collection ID.
+   *
+   * @return  Response  - Returns a relevant HTTP response
+   */
+  @GET
+  @Path( "/data-collections/{id}/screening-comments" )
+  @ApiOperation
+    (
+      value = "Retrieves all comments on screenings for a particular data collection",
+      notes = "Retrieves the short and long comments that have been added to all screenings that are associated with " +
+              "the input data collection ID",
+      tags = { SwaggerTagConstants.SCREENING_TAG }, response = Screening3VO.class, responseContainer = "List",
+      authorizations = @Authorization( "basicAuth" )
+    )
+  @Produces({ "application/json" })
+  @ApiResponses
+    ( {
+      @ApiResponse( code = 200, message = "Ok" ),
+      @ApiResponse( code = 400, message = "Some error" )
+    } )
+  public Response retrieveScreeningComments
+  (
+
+    @ApiParam
+      (
+        name = "id", required = true, example = "12", value = "The ID of the data collection to retrieve"
+      ) @PathParam( "id" ) int sessionID
+
+  ) throws Exception
+  {
+    return null;
+  }
 
 
 

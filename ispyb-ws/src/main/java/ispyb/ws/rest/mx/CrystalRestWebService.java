@@ -13,6 +13,12 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.core.Response;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
+import ispyb.server.mx.vos.sample.BLSample3VO;
 import org.apache.log4j.Logger;
 import org.apache.poi.util.StringUtil;
 
@@ -28,6 +34,82 @@ import utils.SwaggerTagConstants;
 public class CrystalRestWebService extends MXRestWebService {
 
 	private final static Logger logger = Logger.getLogger(CrystalRestWebService.class);
+
+
+  /**
+   * Used to retrieve the crystal snapshot image paths for a given data collection ID.
+   *
+   * @return  Response  - Returns a relevant HTTP response
+   */
+  @GET
+  @Path( "/data-collections/{id}/crystal-snapshot-paths" )
+  @ApiOperation
+    (
+      value = "Retrieve the crystal snapshot image paths.",
+      notes = "Retrieve the crystal snapshot image paths for a particular data-collection specified by the input ID.",
+      tags = { SwaggerTagConstants.SAMPLE_TAG }, response = Crystal3VO.class,
+      responseContainer = "List", authorizations = @Authorization( "basicAuth" )
+    )
+  @Produces({ "application/json" })
+  @ApiResponses
+    ( {
+      @ApiResponse( code = 200, message = "Ok" ),
+      @ApiResponse( code = 400, message = "Some error" )
+    } )
+  public Response retrieveCrystalSnapshotPaths
+  (
+
+    @ApiParam
+      (
+        name = "id", required = true, example = "12", value = "The ID of the data-collection to retrieve"
+      ) @PathParam( "id" ) int dataCollectionId
+
+  ) throws Exception
+  {
+    return null;
+  }
+
+
+
+
+  /**
+   * Used to retrieve the crystal snapshot images for a given data collection ID.
+   *
+   * @return  Response  - Returns a relevant HTTP response
+   */
+  @GET
+  @Path( "/data-collections/{id}/crystal-snapshot-images" )
+  @ApiOperation
+    (
+      value = "Retrieve the crystal snapshot images.",
+      notes = "Retrieve the crystal snapshot images for a particular data-collection specified by the input ID.",
+      tags = { SwaggerTagConstants.SAMPLE_TAG }, response = Crystal3VO.class,
+      responseContainer = "List", authorizations = @Authorization( "basicAuth" )
+    )
+  @Produces({ "application/json" })
+  @ApiResponses
+    ( {
+      @ApiResponse( code = 200, message = "Ok" ),
+      @ApiResponse( code = 400, message = "Some error" )
+    } )
+  public Response retrieveCrystalSnapshotImages
+  (
+
+    @ApiParam
+      (
+        name = "id", required = true, example = "12", value = "The ID of the data-collection to retrieve"
+      ) @PathParam( "id" ) int dataCollectionId
+
+  ) throws Exception
+  {
+    return null;
+  }
+
+
+
+  /*
+   * ---- Legacy endpoints below this point ----
+   */
 
 	@RolesAllowed({ "User", "Manager", "Industrial", "Localcontact" })
 	@GET

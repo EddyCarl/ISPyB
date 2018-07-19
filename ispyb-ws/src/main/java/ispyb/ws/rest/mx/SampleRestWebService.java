@@ -15,6 +15,12 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
+import ispyb.server.mx.vos.autoproc.AutoProcIntegration3VO;
 import org.apache.log4j.Logger;
 
 import io.swagger.annotations.Api;
@@ -32,7 +38,47 @@ public class SampleRestWebService extends MXRestWebService {
 
 	private final static Logger logger = Logger.getLogger(SampleRestWebService.class);
 
-	@RolesAllowed({ "User", "Manager", "Industrial", "Localcontact" })
+
+  /**
+   * Used to retrieve the information for a beam line sample specified by the input ID.
+   *
+   * @return  Response  - Returns a relevant HTTP response
+   */
+  @GET
+  @Path( "/beamline-samples/{id}" )
+  @ApiOperation
+    (
+      value = "Retrieve the information for a particular beamline sample.",
+      notes = "Retrieve the information for a particular beamline sample specified by the input ID.",
+      tags = { SwaggerTagConstants.SAMPLE_TAG }, response = BLSample3VO.class,
+      responseContainer = "List", authorizations = @Authorization( "basicAuth" )
+    )
+  @Produces({ "application/json" })
+  @ApiResponses
+    ( {
+      @ApiResponse( code = 200, message = "Ok" ),
+      @ApiResponse( code = 400, message = "Some error" )
+    } )
+  public Response retrieveBeamLineSampleInfo
+  (
+
+    @ApiParam
+      (
+        name = "id", required = true, example = "12", value = "The ID of the beam line sample to retrieve"
+      ) @PathParam( "id" ) int beamLineSampleId
+
+  ) throws Exception
+  {
+    return null;
+  }
+
+
+
+  /*
+   * ---- Legacy endpoints below this point ----
+   */
+
+  @RolesAllowed({ "User", "Manager", "Industrial", "Localcontact" })
 	@GET
 	@Path("{token}/proposal/{proposal}/mx/sample/crystalId/{crystalId}/list")
 	@Produces({ "application/json" })

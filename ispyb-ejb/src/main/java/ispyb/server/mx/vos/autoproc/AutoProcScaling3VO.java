@@ -1,19 +1,19 @@
 /*************************************************************************************************
  * This file is part of ISPyB.
- * 
+ *
  * ISPyB is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * ISPyB is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with ISPyB.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * Contributors : S. Delageniere, R. Leal, L. Launer, K. Levik, S. Veyrier, P. Brenchereau, M. Bodin, A. De Maria Antolinos
  ****************************************************************************************************/
 
@@ -35,7 +35,7 @@ import org.apache.log4j.Logger;
 
 /**
  * AutoProcScaling3 value object mapping table AutoProcScaling
- * 
+ *
  */
 @Entity
 @Table(name = "AutoProcScaling")
@@ -51,20 +51,20 @@ public class AutoProcScaling3VO extends ISPyBValueObject implements Cloneable {
 	@GeneratedValue
 	@Column(name = "autoProcScalingId")
 	protected Integer autoProcScalingId;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "autoProcId")
 	private AutoProc3VO autoProcVO;
-	
+
 	@Column(name = "recordTimeStamp")
 	protected Date recordTimeStamp;
-	
+
 
 	public AutoProcScaling3VO(){
 		super();
 	}
-	
-	
+
+
 	public AutoProcScaling3VO(Integer autoProcScalingId,
 			AutoProc3VO autoProcVO, Date recordTimeStamp) {
 		super();
@@ -72,14 +72,14 @@ public class AutoProcScaling3VO extends ISPyBValueObject implements Cloneable {
 		this.autoProcVO = autoProcVO;
 		this.recordTimeStamp = recordTimeStamp;
 	}
-	
+
 	public AutoProcScaling3VO(AutoProcScaling3VO vo) {
 		super();
 		this.autoProcScalingId = vo.getAutoProcScalingId();
 		this.autoProcVO = vo.getAutoProcVO();
 		this.recordTimeStamp = vo.getRecordTimeStamp();
 	}
-	
+
 	public void fillVOFromWS(AutoProcScalingWS3VO vo) {
 		this.autoProcScalingId = vo.getAutoProcScalingId();
 		this.autoProcVO = null;
@@ -107,7 +107,7 @@ public class AutoProcScaling3VO extends ISPyBValueObject implements Cloneable {
 		this.autoProcScalingId = autoProcScalingId;
 	}
 
-	
+
 
 	public AutoProc3VO getAutoProcVO() {
 		return autoProcVO;
@@ -143,16 +143,16 @@ public class AutoProcScaling3VO extends ISPyBValueObject implements Cloneable {
 	public void checkValues(boolean create) throws Exception {
 		//TODO
 	}
-	
+
 	public String toWSString(){
 		String s = "autoProcScalingId="+this.autoProcScalingId +", "+
 		"recordTimeStamp="+this.recordTimeStamp;
-		
+
 		return s;
 	}
-	
-	
-	
+
+
+
 
 }
 

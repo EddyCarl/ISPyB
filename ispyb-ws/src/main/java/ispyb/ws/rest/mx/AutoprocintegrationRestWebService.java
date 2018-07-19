@@ -120,38 +120,8 @@ public class AutoprocintegrationRestWebService extends MXRestWebService {
   }
 
 
-  /**
-   * Used to retrieve a set of MX MR Run results based on an input auto-proc-scaling ID.
-   *
-   * @return  Response  - Returns a relevant HTTP response
-   */
-  @GET
-  @Path( "/auto-proc-scalings/{id}/mx-mr-runs" )
-  @ApiOperation
-    (
-      value = "Retrieves MX MR Run results",
-      notes = "Retrieves MX MR Run results based on the input Auto Proc Scaling ID",
-      tags = { SwaggerTagConstants.AUTO_PROC_TAG },
-      responseContainer = "List", authorizations = @Authorization( "basicAuth" )
-    )
-  @Produces({ "application/json" })
-  @ApiResponses
-    ( {
-      @ApiResponse( code = 200, message = "Ok" ),
-      @ApiResponse( code = 400, message = "Some error" )
-    } )
-  public Response retrieveMxMrRuns
-  (
 
-    @ApiParam
-      (
-        name = "id", required = true, example = "12", value = "The ID of the auto-proc-scaling to retrieve"
-      ) @PathParam( "id" ) int autoProcScalingId
 
-  ) throws Exception
-  {
-    return null;
-  }
 
 
 
