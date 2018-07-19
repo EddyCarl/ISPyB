@@ -50,7 +50,7 @@ public class XFEFluorescenceSpectrumRestWebService extends RestWebService {
       value = "Retrieves fluorescence spectrum data",
       notes = "Returns a list of fluorescence spectrum data for a particular session",
       tags = { SwaggerTagConstants.FLUORESCENCE_SPEC_TAG }, response = XFEFluorescenceSpectrum3VO.class,
-      responseContainer = "List", authorizations = @Authorization( "basicAuth" )
+      responseContainer = "List", authorizations = @Authorization( "apiKeyAuth" )
     )
   @Produces({ "application/json" })
   @ApiResponses

@@ -47,7 +47,7 @@ public class EnergyScanRestWebService extends RestWebService {
       value = "Retrieves a list of Energy Scan entries",
       notes = "Returns a list of Energy Scan entries for the current logged in user",
       tags = { SwaggerTagConstants.ENERGY_SCAN_TAG }, response = EnergyScan3VO.class, responseContainer = "List",
-      authorizations = @Authorization( "basicAuth" )
+      authorizations = @Authorization( "apiKeyAuth" )
     )
   @Produces({ "application/json" })
   @ApiResponses

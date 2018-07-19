@@ -51,7 +51,7 @@ public class SampleRestWebService extends MXRestWebService {
       value = "Retrieve the information for a particular beamline sample.",
       notes = "Retrieve the information for a particular beamline sample specified by the input ID.",
       tags = { SwaggerTagConstants.SAMPLE_TAG }, response = BLSample3VO.class,
-      responseContainer = "List", authorizations = @Authorization( "basicAuth" )
+      responseContainer = "List", authorizations = @Authorization( "apiKeyAuth" )
     )
   @Produces({ "application/json" })
   @ApiResponses

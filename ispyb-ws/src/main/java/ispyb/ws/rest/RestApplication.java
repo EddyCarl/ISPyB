@@ -23,11 +23,9 @@ import io.swagger.jaxrs.config.BeanConfig;
 import io.swagger.jaxrs.config.ReaderListener;
 
 import io.swagger.models.auth.ApiKeyAuthDefinition;
-import io.swagger.models.auth.BasicAuthDefinition;
 
 import io.swagger.models.Swagger;
 import io.swagger.models.auth.In;
-import io.swagger.models.auth.OAuth2Definition;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
@@ -157,15 +155,8 @@ public class RestApplication extends Application implements ReaderListener
   @Override
   public void afterScan( Reader reader, Swagger swagger )
   {
-    // Set up the authentication scheme (basic authentication)
+    // Set up the authentication scheme (API Key authentication)
     ApiKeyAuthDefinition apiKeyAuthDefinition = new ApiKeyAuthDefinition( "api_token", In.HEADER );
     swagger.addSecurityDefinition( "apiKeyAuth", apiKeyAuthDefinition );
-
-    BasicAuthDefinition basicAuthDefinition = new BasicAuthDefinition();
-    swagger.addSecurityDefinition( "basicAuth", basicAuthDefinition);
-
-    OAuth2Definition oAuth2Definition = new OAuth2Definition();
-    oAuth2Definition.setAuthorizationUrl( "http://192.168.30.200:8080/ispyb/ispyb-ws/rest/authenticate?site=DLS" );
-    swagger.addSecurityDefinition( "oAuth", oAuth2Definition );
   }
 }

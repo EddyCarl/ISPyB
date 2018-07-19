@@ -110,7 +110,7 @@ public class SessionRestWebService extends RestWebService
       value = "Retrieve a list of sessions",
       notes = "Returns a list of sessions that are available to the user currently logged in.",
       tags = { SwaggerTagConstants.SESSION_TAG }, response = Session3VO.class, responseContainer = "List",
-      authorizations = @Authorization( "basicAuth" )
+      authorizations = @Authorization( "apiKeyAuth" )
     )
   @Produces({ "application/json" })
   @ApiResponses
@@ -140,7 +140,7 @@ public class SessionRestWebService extends RestWebService
       notes = "Obtain the information relating to a specific session (based on the input ID) " +
         "if it is available to the user currently logged in.",
       tags = { SwaggerTagConstants.SESSION_TAG }, response = Session3VO.class,
-      authorizations = @Authorization( "basicAuth" )
+      authorizations = @Authorization( "apiKeyAuth" )
     )
   @Produces({ "application/json" })
   @ApiResponses

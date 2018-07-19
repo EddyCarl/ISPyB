@@ -64,7 +64,7 @@ public class ProposalRestWebService extends MXRestWebService
     value = "Retrieve a list of proposals",
     notes = "Returns a list of proposals that are available to the user currently logged in.",
     tags = { SwaggerTagConstants.PROPOSAL_TAG }, response = Proposal3VO.class, responseContainer = "List",
-    authorizations = @Authorization( "basicAuth" )
+    authorizations = @Authorization( "apiKeyAuth" )
   )
   @Produces({ "application/json" })
   @ApiResponses
@@ -94,7 +94,7 @@ public class ProposalRestWebService extends MXRestWebService
     notes = "Obtain the information relating to a specific proposal (based on the input ID) " +
             "if it is available to the user currently logged in.",
     tags = { SwaggerTagConstants.PROPOSAL_TAG }, response = Proposal3VO.class,
-    authorizations = @Authorization( "basicAuth" )
+    authorizations = @Authorization( "apiKeyAuth" )
   )
   @Produces({ "application/json" })
   @ApiResponses
@@ -122,7 +122,7 @@ public class ProposalRestWebService extends MXRestWebService
   @Path("/simple-proposals")
   @Produces({ "application/json" })
   @ApiOperation( value = "Return list of proposals", httpMethod="GET",
-    authorizations = {@Authorization(value="basicAuth" ), @Authorization( value = "apiKeyAuth" ), @Authorization( value = "oAuth")} )
+    authorizations = {@Authorization(value="apiKeyAuth" ) } )
   public Response getSimpleProposals() throws Exception {
     String methodName = "getSimpleProposals";
     long id = this.logInit(methodName, logger);
