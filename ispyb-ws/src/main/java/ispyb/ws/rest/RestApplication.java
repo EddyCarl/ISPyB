@@ -22,9 +22,11 @@ import io.swagger.jaxrs.Reader;
 import io.swagger.jaxrs.config.BeanConfig;
 import io.swagger.jaxrs.config.ReaderListener;
 
+import io.swagger.models.auth.ApiKeyAuthDefinition;
 import io.swagger.models.auth.BasicAuthDefinition;
 
 import io.swagger.models.Swagger;
+import io.swagger.models.auth.In;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
@@ -155,6 +157,9 @@ public class RestApplication extends Application implements ReaderListener
   public void afterScan( Reader reader, Swagger swagger )
   {
     // Set up the authentication scheme (basic authentication)
+    ApiKeyAuthDefinition apiKeyAuthDefinition = new ApiKeyAuthDefinition( "api_token", In.HEADER );
+    swagger.addSecurityDefinition( "apiKeyAuth", apiKeyAuthDefinition );
+
     BasicAuthDefinition basicAuthDefinition = new BasicAuthDefinition();
     swagger.addSecurityDefinition( "basicAuth", basicAuthDefinition);
   }
