@@ -1,5 +1,10 @@
 package ispyb.ws.rest.proposal;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
 import ispyb.server.common.services.ws.rest.session.SessionService;
 import ispyb.server.common.util.ejb.Ejb3ServiceLocator;
 import ispyb.server.common.vos.login.Login3VO;
