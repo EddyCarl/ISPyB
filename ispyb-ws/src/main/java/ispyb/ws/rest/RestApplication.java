@@ -22,6 +22,7 @@ import ispyb.server.common.services.ws.rest.session.SessionServiceBean;
 import ispyb.ws.rest.em.CTFRestWebService;
 import ispyb.ws.rest.em.MotionCorrectionRestWebService;
 import ispyb.ws.rest.em.MovieRestWebService;
+import ispyb.ws.rest.mx.AutoProcScalingRestWebService;
 import ispyb.ws.rest.mx.AutoprocintegrationRestWebService;
 import ispyb.ws.rest.mx.CrystalRestWebService;
 import ispyb.ws.rest.mx.DataCollectionGroupRestWebService;
@@ -91,8 +92,9 @@ public class RestApplication extends Application {
 
         /** MX **/
         resources.add(AutoprocintegrationRestWebService.class);
+        resources.add(AutoProcScalingRestWebService.class);
         resources.add(CrystalRestWebService.class);
-        resources.add(DataCollectionRestWebService.class);
+        resources.add(ispyb.ws.rest.mx.DataCollectionRestWebService.class);
         resources.add(EnergyScanRestWebService.class);
         resources.add(ImageWebService.class);
         resources.add(PhasingRestWebService.class);
@@ -105,7 +107,7 @@ public class RestApplication extends Application {
 
         /** SAXS **/
         resources.add(BufferRestWebService.class);
-        resources.add(DataCollectionRestWebService.class);
+        resources.add(ispyb.ws.rest.saxs.DataCollectionRestWebService.class);
         resources.add(ExperimentRestWebService.class);
         resources.add(FrameRestWebService.class);
         resources.add(MacromoleculeRestWebService.class);
