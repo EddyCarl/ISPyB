@@ -40,22 +40,6 @@ import utils.SwaggerTagConstants;
 
 @Api( tags = SwaggerTagConstants.LEGACY_TAG )
 @Path("/")
-@SwaggerDefinition(
-	info = @Info(
-		description = "Another bloody test",
-		version = "1.0",
-		title = "Another bloody test title!!!!!!!!!",
-		contact = @Contact(
-			name = "Carl Edmunds",
-			email = "this.is.an.email@address.com",
-			url = "www.thisisurl.com"
-		)),
-	schemes = {SwaggerDefinition.Scheme.HTTP},
-	tags = {
-		@Tag( name = "TAG ONE" , description = "THIS IS TAG ONE"),
-		@Tag( name = "TAG 2" , description = "THIS IS TAG 2")
-	}
-)
 public class AuthenticationRestWebService extends RestWebService {
 	private final static Logger logger = Logger.getLogger(AuthenticationRestWebService.class);
 
