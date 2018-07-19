@@ -7,12 +7,17 @@ import java.util.Map;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.Authorization;
 import org.apache.log4j.Logger;
 
@@ -40,11 +45,21 @@ public class ProposalRestWebService extends MXRestWebService{
 	private final static Logger logger = Logger.getLogger(ProposalRestWebService.class);
 
 
-	@RolesAllowed({"User", "Manager", "Industrial", "Localcontact"})
+//  @ApiOperation( value = "Retrieve a list of sessions from the database",
+//    authorizations = @Authorization( value = "apiKeyAuth")
+//  )
+//  public Response getSessions(@QueryParam("id") List<Integer> sessionIDs,
+//                              @Context HttpHeaders headers,
+//                              @ApiParam(value = "Authorisation token for the session", required = true)
+//                              @HeaderParam("api_token") String authToken )
+//  {
+
+  @RolesAllowed({"User", "Manager", "Industrial", "Localcontact"})
 	@GET
 	@Path("/proposals")
 	@Produces({ "application/json" })
-	@ApiOperation( value = "Return list of proposals", httpMethod="GET", authorizations = {@Authorization(value="basicAuth")})
+	@ApiOperation( value = "Return list of proposals", httpMethod="GET",
+    authorizations = {@Authorization(value="basicAuth" ), @Authorization( value = "apiKeyAuth" ), @Authorization( value = "oAuth")} )
 	public Response getSimpleProposals() throws Exception {
 		String methodName = "getSimpleProposals";
 		long id = this.logInit(methodName, logger);
