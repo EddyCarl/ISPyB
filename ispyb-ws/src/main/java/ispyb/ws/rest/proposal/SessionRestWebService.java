@@ -52,30 +52,8 @@ public class SessionRestWebService extends RestWebService {
 		String methodName = "getSessions";
 		long id = this.logInit(methodName, logger, sessionIDs);
 
-    System.out.println( "headers: " + headers.getRequestHeaders().size() );
-
-    for( Map.Entry<String, List<String>> mvm : headers.getRequestHeaders().entrySet() )
-    {
-      String headerKey = mvm.getKey();
-      List<String> headerVals = mvm.getValue();
-
-      System.out.println( "Header key: " + headerKey );
-      System.out.println("Header vals size: "+ headerVals.size());
-
-      for( String val : headerVals )
-      {
-        System.out.println( "   Header val: " + val );
-      }
-    }
-
-
     List<String> authHeader = headers.getRequestHeader( "api_token" );
-
-    System.out.println("API TOKEN IN HEADER: " + authHeader.get( 0 ));
-
     String authToken = authHeader.get( 0 );
-
-    System.out.println("Input API Token: " + authToken);
 
 		// Check the input X-API-Key auth token by attempting to retrieve a session from the DB
     try
