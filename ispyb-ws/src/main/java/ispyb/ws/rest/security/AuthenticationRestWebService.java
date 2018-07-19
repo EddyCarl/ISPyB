@@ -1,5 +1,9 @@
 package ispyb.ws.rest.security;
 
+import io.swagger.annotations.Contact;
+import io.swagger.annotations.Info;
+import io.swagger.annotations.SwaggerDefinition;
+import io.swagger.annotations.Tag;
 import ispyb.server.common.util.LoggerFormatter;
 import ispyb.server.common.vos.login.Login3VO;
 import ispyb.server.security.LdapConnection;
@@ -36,6 +40,22 @@ import utils.SwaggerTagConstants;
 
 @Api( tags = SwaggerTagConstants.LEGACY_TAG )
 @Path("/")
+@SwaggerDefinition(
+	info = @Info(
+		description = "Another bloody test",
+		version = "1.0",
+		title = "Another bloody test title!!!!!!!!!",
+		contact = @Contact(
+			name = "Carl Edmunds",
+			email = "this.is.an.email@address.com",
+			url = "www.thisisurl.com"
+		)),
+	schemes = {SwaggerDefinition.Scheme.HTTP},
+	tags = {
+		@Tag( name = "TAG ONE" , description = "THIS IS TAG ONE"),
+		@Tag( name = "TAG 2" , description = "THIS IS TAG 2")
+	}
+)
 public class AuthenticationRestWebService extends RestWebService {
 	private final static Logger logger = Logger.getLogger(AuthenticationRestWebService.class);
 
@@ -100,6 +120,7 @@ public class AuthenticationRestWebService extends RestWebService {
           case "DLS":
           	// Obtaining the roles is a weird one - Does CAS have any notion of "roles"?
           	roles = DLSLoginModule.getRoles();
+						siteId = "DLS";
 
           	// Attempt to authenticate the user via the CAS server...
 						if(!DLSLoginModule.authenticateUser(login, password))

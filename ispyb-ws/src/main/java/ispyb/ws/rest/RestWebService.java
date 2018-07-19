@@ -7,6 +7,10 @@ import java.util.List;
 import javax.naming.NamingException;
 import javax.ws.rs.Path;
 
+import io.swagger.annotations.Contact;
+import io.swagger.annotations.Info;
+import io.swagger.annotations.SwaggerDefinition;
+import io.swagger.annotations.Tag;
 import ispyb.server.common.vos.login.Login3VO;
 import ispyb.server.common.vos.proposals.Proposal3VO;
 import ispyb.ws.ParentWebService;

@@ -9,9 +9,10 @@ import org.hibernate.SQLQuery;
 import org.hibernate.transform.AliasToEntityMapResultTransformer;
 
 public class WsServiceBean {
-	
+
 	protected List<Map<String, Object>> executeSQLQuery(SQLQuery query ){
 		query.setResultTransformer(AliasToEntityMapResultTransformer.INSTANCE);
+		System.out.println("Query list: " + query.list());
 		@SuppressWarnings("unchecked")
 		List<Map<String, Object>> aliasToValueMapList = query.list();
 		return aliasToValueMapList;
@@ -28,6 +29,6 @@ public class WsServiceBean {
 	        IOUtils.closeQuietly(str);
 	    }
 	}
-	    
-	    
+
+
 }

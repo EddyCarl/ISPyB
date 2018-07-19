@@ -1,10 +1,5 @@
 package ispyb.ws.rest.proposal;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
-import io.swagger.annotations.Authorization;
 import ispyb.server.common.services.ws.rest.session.SessionService;
 import ispyb.server.common.util.ejb.Ejb3ServiceLocator;
 import ispyb.server.common.vos.login.Login3VO;
@@ -21,11 +16,17 @@ import javax.annotation.security.RolesAllowed;
 import javax.naming.NamingException;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
+
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
@@ -40,6 +41,56 @@ import utils.SwaggerTagConstants;
 public class SessionRestWebService extends RestWebService
 {
   private final static Logger logger = Logger.getLogger(SessionRestWebService.class);
+
+
+
+  @GET
+  @Path("simple-sessions")
+  @Produces({ "application/json" })
+  @ApiOperation( value = "Retrieve a list of sessions from the database",
+    authorizations = @Authorization( value = "apiKeyAuth")
+  )
+  public Response getSimpleSessions(@QueryParam("id") List<Integer> sessionIDs,
+                              @Context HttpHeaders headers )
+  {
+    String methodName = "getSessions";
+    long id = this.logInit(methodName, logger, sessionIDs);
+
+    List<String> authHeader = headers.getRequestHeader( "api_token" );
+    String authToken = authHeader.get( 0 );
+
+    // Check the input X-API-Key auth token by attempting to retrieve a session from the DB
+    try
+    {
+      Login3VO login3VO = this.getLogin3Service().findByToken( authToken );
+
+      if(login3VO == null)
+      {
+        return this.unathorisedResponse( methodName, id, logger );
+      }
+    }
+    catch( NamingException ne )
+    {
+      return this.serverError(methodName, ne, id, logger);
+    }
+
+
+    // Retrieve the valid users list of sessions
+
+    try
+    {
+      System.out.println("Calling the service method here... ");
+      List<Map<String, Object>> result = getSessionService().getTestSessionInfo(sessionIDs);
+      this.logFinish(methodName, id, logger);
+      return sendResponse(result);
+    }
+    catch (Exception e)
+    {
+      return this.serverError(methodName, e, id, logger);
+    }
+  }
+
+
 
   /**
    * Used to retrieve a full list of sessions stored in the database, that are available to the user currently

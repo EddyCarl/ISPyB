@@ -40,6 +40,7 @@ public interface SessionService {
 
 	public List<Map<String, Object>> getSessionViewByDates(String start, String end, String siteId);
 
+	public List<Map<String, Object>> getTestSessionInfo(List<Integer> sessionIDs);
 
 
 }
