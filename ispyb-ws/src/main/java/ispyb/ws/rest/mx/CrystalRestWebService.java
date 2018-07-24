@@ -1,7 +1,11 @@
 package ispyb.ws.rest.mx;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.FormParam;
@@ -54,7 +58,8 @@ public class CrystalRestWebService extends MXRestWebService {
   @ApiResponses
     ( {
       @ApiResponse( code = 200, message = "Ok" ),
-      @ApiResponse( code = 400, message = "Some error" )
+      @ApiResponse( code = 400, message = "Some error" ),
+      @ApiResponse( code = 404, message = "No Crystal Snapshot Path records found for the input dataCollectionId" )
     } )
   public Response retrieveCrystalSnapshotPaths
   (
@@ -66,7 +71,38 @@ public class CrystalRestWebService extends MXRestWebService {
 
   ) throws Exception
   {
-    return null;
+    String methodName = "retrieveCrystalSnapshotPaths";
+    long id = this.logInit(methodName, logger, dataCollectionId );
+
+    if(dataCollectionId != 1)
+    {
+      Map<String, Object> error = new HashMap<>();
+      error.put( "error", "The input dataCollection ID[" + dataCollectionId + "] has no crystal snapshot path records associated" );
+      return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
+    }
+
+    return Response.ok( buildDummyCrystalSnapshotPathData() ).build();
+  }
+
+
+  private List<Map<String, Object>> buildDummyCrystalSnapshotPathData()
+  {
+    List<Map<String, Object>> dummyCrystalSnapshotPathData = new ArrayList<>();
+
+    for( int i = 0; i < 10; i++ )
+    {
+      Map<String, Object> dummyCrystalSnapshotPath = new HashMap<>();
+
+      dummyCrystalSnapshotPath.put( "XTALSNAPSHOTFULLPATH1", "/dls/dummy/crystal/path/1/index/" + i );
+      dummyCrystalSnapshotPath.put( "XTALSNAPSHOTFULLPATH2", "/dls/dummy/crystal/path/2/index/" + i );
+      dummyCrystalSnapshotPath.put( "XTALSNAPSHOTFULLPATH3", "/dls/dummy/crystal/path/3/index/" + i );
+      dummyCrystalSnapshotPath.put( "XTALSNAPSHOTFULLPATH4", "/dls/dummy/crystal/path/4/index/" + i );
+      dummyCrystalSnapshotPath.put( "RNUM", i );
+
+      dummyCrystalSnapshotPathData.add( dummyCrystalSnapshotPath );
+    }
+
+    return dummyCrystalSnapshotPathData;
   }
 
 
