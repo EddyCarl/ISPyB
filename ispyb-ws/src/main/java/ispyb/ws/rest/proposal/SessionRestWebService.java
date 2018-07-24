@@ -8,12 +8,11 @@ import io.swagger.annotations.Authorization;
 import ispyb.server.common.services.ws.rest.session.SessionService;
 import ispyb.server.common.util.ejb.Ejb3ServiceLocator;
 import ispyb.server.common.vos.login.Login3VO;
-import ispyb.server.mx.vos.collections.DataCollection3VO;
-import ispyb.server.mx.vos.collections.EnergyScan3VO;
 import ispyb.server.mx.vos.collections.Session3VO;
 import ispyb.ws.rest.RestWebService;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -22,17 +21,11 @@ import javax.naming.NamingException;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 
-import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
@@ -46,55 +39,6 @@ import utils.SwaggerTagConstants;
 public class SessionRestWebService extends RestWebService
 {
   private final static Logger logger = Logger.getLogger(SessionRestWebService.class);
-
-
-
-  @GET
-  @Path("simple-sessions")
-  @Produces({ "application/json" })
-  @ApiOperation( value = "Retrieve a list of sessions from the database",
-    authorizations = @Authorization( value = "apiKeyAuth")
-  )
-  public Response getSimpleSessions(@QueryParam("id") List<Integer> sessionIDs,
-                              @Context HttpHeaders headers )
-  {
-    String methodName = "getSessions";
-    long id = this.logInit(methodName, logger, sessionIDs);
-
-    List<String> authHeader = headers.getRequestHeader( "api_token" );
-    String authToken = authHeader.get( 0 );
-
-    // Check the input X-API-Key auth token by attempting to retrieve a session from the DB
-    try
-    {
-      Login3VO login3VO = this.getLogin3Service().findByToken( authToken );
-
-      if(login3VO == null)
-      {
-        return this.unathorisedResponse( methodName, id, logger );
-      }
-    }
-    catch( NamingException ne )
-    {
-      return this.serverError(methodName, ne, id, logger);
-    }
-
-
-    // Retrieve the valid users list of sessions
-
-    try
-    {
-      System.out.println("Calling the service method here... ");
-      List<Map<String, Object>> result = getSessionService().getTestSessionInfo(sessionIDs);
-      this.logFinish(methodName, id, logger);
-      return sendResponse(result);
-    }
-    catch (Exception e)
-    {
-      return this.serverError(methodName, e, id, logger);
-    }
-  }
-
 
 
   /**
@@ -120,7 +64,42 @@ public class SessionRestWebService extends RestWebService
     } )
   public Response retrieveSessions() throws Exception
   {
-    return null;
+    String methodName = "retrieveSessions";
+    long id = this.logInit(methodName, logger);
+
+    return Response.ok( buildDummySessions() ).build();
+  }
+
+
+
+  private List<Map<String, Object>> buildDummySessions()
+  {
+    List<Map<String, Object>> dummySessions = new ArrayList<>();
+
+    Map<String, Object> dummySessionA = new HashMap<>();
+    dummySessionA.put( "sessionId", "1000" );
+    dummySessionA.put( "proposalId", "2000" );
+    dummySessionA.put( "startDate", "2018-03-27 09:00:00" );
+    dummySessionA.put( "beamlineName", "i02-2" );
+    dummySessionA.put( "beamlineOperator", "Joe Bloggs" );
+    dummySessionA.put( "projectCode", "123" );
+    dummySessionA.put( "visit_number", "1" );
+    dummySessionA.put( "RNUM", "1" );
+
+    Map<String, Object> dummySessionB = new HashMap<>();
+    dummySessionB.put( "sessionId", "2000" );
+    dummySessionB.put( "proposalId", "3000" );
+    dummySessionB.put( "startDate", "2018-03-27 11:00:00" );
+    dummySessionB.put( "beamlineName", "i02-3" );
+    dummySessionB.put( "beamlineOperator", "Bill Bloggs" );
+    dummySessionB.put( "projectCode", "456" );
+    dummySessionB.put( "visit_number", "2" );
+    dummySessionB.put( "RNUM", "2" );
+
+    dummySessions.add( dummySessionA );
+    dummySessions.add( dummySessionB );
+
+    return dummySessions;
   }
 
 
@@ -161,7 +140,6 @@ public class SessionRestWebService extends RestWebService
     System.out.println("The input session ID is: " );
     return null;
   }
-
 
 
 
