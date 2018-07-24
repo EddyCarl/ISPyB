@@ -165,9 +165,11 @@ public class ProposalRestWebService extends MXRestWebService
       case 3:
         return Response.ok( buildDummyProposals().get( 2 ) ).build();
       default:
-        Map<String, String> error = new HashMap<>();
-        error.put( "error", "The input proposalId[" + proposalID + "] does not exist." );
-        return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
+        return Response.status( Response.Status.NOT_FOUND ).build();
+
+//        Map<String, String> error = new HashMap<>();
+//        error.put( "error", "The input proposalId[" + proposalID + "] does not exist." );
+//        return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
     }
   }
 

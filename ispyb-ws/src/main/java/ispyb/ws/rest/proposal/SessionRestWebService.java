@@ -77,8 +77,8 @@ public class SessionRestWebService extends RestWebService
     List<Map<String, Object>> dummySessions = new ArrayList<>();
 
     Map<String, Object> dummySessionA = new HashMap<>();
-    dummySessionA.put( "sessionId", "1000" );
-    dummySessionA.put( "proposalId", "2000" );
+    dummySessionA.put( "sessionId", "1" );
+    dummySessionA.put( "proposalId", "2" );
     dummySessionA.put( "startDate", "2018-03-27 09:00:00" );
     dummySessionA.put( "beamlineName", "i02-2" );
     dummySessionA.put( "beamlineOperator", "Joe Bloggs" );
@@ -87,8 +87,8 @@ public class SessionRestWebService extends RestWebService
     dummySessionA.put( "RNUM", "1" );
 
     Map<String, Object> dummySessionB = new HashMap<>();
-    dummySessionB.put( "sessionId", "2000" );
-    dummySessionB.put( "proposalId", "3000" );
+    dummySessionB.put( "sessionId", "2" );
+    dummySessionB.put( "proposalId", "3" );
     dummySessionB.put( "startDate", "2018-03-27 11:00:00" );
     dummySessionB.put( "beamlineName", "i02-3" );
     dummySessionB.put( "beamlineOperator", "Bill Bloggs" );
