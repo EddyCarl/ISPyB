@@ -342,7 +342,9 @@ public class DataCollectionRestWebService extends MXRestWebService {
   @ApiResponses
     ( {
       @ApiResponse( code = 200, message = "Ok" ),
-      @ApiResponse( code = 400, message = "Some error" )
+      @ApiResponse( code = 400, message = "Some error" ),
+      @ApiResponse( code = 404, message = "No screening strategy records found for the input dataCollectionId" ),
+      @ApiResponse( code = 404, message = "No screening strategy wedge records found for the input screeningStrategyId" )
     } )
   public Response retrieveScreeningStrategyWedge
   (
@@ -354,13 +356,58 @@ public class DataCollectionRestWebService extends MXRestWebService {
 
     @ApiParam
       (
-        name = "sswId", required = true, example = "5", value = "The ID of the screening strategy wedge to retrieve"
-      ) @PathParam( "sswId" ) int screenStratWedgeId
+        name = "sswId", required = true, example = "5", value = "The ID of the screening strategy to retrieve"
+      ) @PathParam( "sswId" ) int screeningStrategyId
 
   ) throws Exception
   {
-    return null;
+    String methodName = "retrieveScreeningStrategyWedge";
+    long id = this.logInit(methodName, logger, dataCollectionId, screeningStrategyId );
+
+    if(dataCollectionId != 1)
+    {
+      Map<String, Object> error = new HashMap<>();
+      error.put( "error", "The input dataCollection ID[" + dataCollectionId + "] has no screening output records associated" );
+      return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
+    }
+
+    if(screeningStrategyId != 1)
+    {
+      Map<String, Object> error = new HashMap<>();
+      error.put( "error", "The input screeningStrategy ID[" + screeningStrategyId + "] has no screening strategy wedge records associated" );
+      return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
+    }
+
+    return Response.ok( buildDummyScreeningWedgeData() ).build();
   }
+
+
+  private List<Map<String, Object>> buildDummyScreeningWedgeData()
+  {
+    List<Map<String, Object>> dummyScreeningWedgeData = new ArrayList<>();
+
+    for( int i = 0; i < 5; i++ )
+    {
+      Map<String, Object> dummyScreeningWedge = new HashMap<>();
+      Random rand = new Random();
+
+      dummyScreeningWedge.put( "screeningStrategyWedgeId", i );
+      dummyScreeningWedge.put( "screeningStrategyId", "1" );
+      dummyScreeningWedge.put( "resolution", rand.nextInt(i + 40) + 0.5 );
+      dummyScreeningWedge.put( "completeness", rand.nextInt(i + 40) + 0.5 );
+      dummyScreeningWedge.put( "multiplicity", rand.nextInt(i + 40) + 0.5 );
+      dummyScreeningWedge.put( "wedgeNumber", rand.nextInt(i + 40) + 0.5 );
+      dummyScreeningWedge.put( "doseTotal", rand.nextInt(i + 40) + 0.5 );
+      dummyScreeningWedge.put( "numberOfImages", rand.nextInt(i + 40) + 0.5 );
+      dummyScreeningWedge.put( "RNUM", i );
+
+      dummyScreeningWedgeData.add( dummyScreeningWedge );
+    }
+
+    return dummyScreeningWedgeData;
+  }
+
+
 
 
 
