@@ -137,8 +137,24 @@ public class SessionRestWebService extends RestWebService
 
   ) throws Exception
   {
-    System.out.println("The input session ID is: " );
-    return null;
+    String methodName = "retrieveSessionById";
+    long id = this.logInit(methodName, logger, sessionID);
+    List<Map<String, Object>> dummySessions = buildDummySessions();
+
+    if( sessionID == 1000 )
+    {
+      return Response.ok( dummySessions.get( 0 ) ).build();
+    }
+    else if( sessionID == 2000 )
+    {
+      return Response.ok( dummySessions.get( 1 ) ).build();
+    }
+    else
+    {
+      Map<String, String> error = new HashMap<>();
+      error.put( "error", "The input sessionId[" + sessionID + "] does not exist." );
+      return Response.noContent().entity( error ).build();
+    }
   }
 
 
