@@ -82,7 +82,7 @@ public class AutoprocintegrationRestWebService extends MXRestWebService {
   ) throws Exception
   {
     String methodName = "retrieveAutoProcessingResults";
-    long id = this.logInit(methodName, logger);
+    long id = this.logInit(methodName, logger, dataCollectionId);
 
     if(dataCollectionId != 1)
     {
