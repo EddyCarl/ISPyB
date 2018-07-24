@@ -89,6 +89,13 @@ public class DataCollectionRestWebService extends MXRestWebService {
     String methodName = "retrieveDataCollections";
     long id = this.logInit(methodName, logger);
 
+    if(sessionID != 1)
+    {
+      Map<String, Object> error = new HashMap<>();
+      error.put( "error", "The input sessionId[ " + sessionID + " ] has no data collection records associated with it" );
+      return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
+    }
+
     List<Map<String, Object>> dataCollections = new ArrayList<>();
     Map<String, Object> dataCollection = new HashMap<>();
 
