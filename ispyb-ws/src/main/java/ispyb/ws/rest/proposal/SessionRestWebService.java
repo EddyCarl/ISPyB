@@ -125,7 +125,8 @@ public class SessionRestWebService extends RestWebService
   @ApiResponses
     ( {
       @ApiResponse( code = 200, message = "Ok" ),
-      @ApiResponse( code = 400, message = "Some error" )
+      @ApiResponse( code = 400, message = "Some error" ),
+      @ApiResponse( code = 404, message = "A session could not be found for the input ID" )
     } )
   public Response retrieveSessionById
   (

@@ -74,8 +74,48 @@ public class ProposalRestWebService extends MXRestWebService
   } )
   public Response retrieveProposals() throws Exception
   {
-    return null;
+    String methodName = "retrieveProposals";
+    long id = this.logInit(methodName, logger);
+
+    return Response.ok( buildDummyProposals() ).build();
   }
+
+
+  private List<Map<String, Object>> buildDummyProposals()
+  {
+    List<Map<String, Object>> dummyProposals = new ArrayList<>();
+
+    Map<String, Object> dummyProposalA = new HashMap<>();
+    dummyProposalA.put( "title", "Test Proposal cm-001" );
+    dummyProposalA.put( "proposalId", "1" );
+    dummyProposalA.put( "proposalCode", "cm" );
+    dummyProposalA.put( "proposalNumber", "1" );
+    dummyProposalA.put( "proposalType", "NULL" );
+    dummyProposalA.put( "RNUM", "1" );
+
+    Map<String, Object> dummyProposalB = new HashMap<>();
+    dummyProposalB.put( "title", "Test Proposal cm-002" );
+    dummyProposalB.put( "proposalId", "2" );
+    dummyProposalB.put( "proposalCode", "cm" );
+    dummyProposalB.put( "proposalNumber", "2" );
+    dummyProposalB.put( "proposalType", "NULL" );
+    dummyProposalB.put( "RNUM", "2" );
+
+    Map<String, Object> dummyProposalC = new HashMap<>();
+    dummyProposalC.put( "title", "Test Proposal mx-001" );
+    dummyProposalC.put( "proposalId", "3" );
+    dummyProposalC.put( "proposalCode", "mx" );
+    dummyProposalC.put( "proposalNumber", "1" );
+    dummyProposalC.put( "proposalType", "NULL" );
+    dummyProposalC.put( "RNUM", "3" );
+
+    dummyProposals.add( dummyProposalA );
+    dummyProposals.add( dummyProposalB );
+    dummyProposals.add( dummyProposalC );
+
+    return dummyProposals;
+  }
+
 
 
   /**
@@ -100,7 +140,8 @@ public class ProposalRestWebService extends MXRestWebService
   @ApiResponses
   ( {
       @ApiResponse( code = 200, message = "Ok" ),
-      @ApiResponse( code = 400, message = "Some error" )
+      @ApiResponse( code = 400, message = "Some error" ),
+      @ApiResponse( code = 404, message = "A proposal could not be found for the input ID" )
   } )
   public Response retrieveProposalById
   (
@@ -112,8 +153,22 @@ public class ProposalRestWebService extends MXRestWebService
 
   ) throws Exception
   {
-    System.out.println("The proposalID input is: " + proposalID);
-    return null;
+    String methodName = "retrieveProposals";
+    long id = this.logInit(methodName, logger, proposalID);
+
+    switch( proposalID )
+    {
+      case 1:
+        return Response.ok( buildDummyProposals().get( 0 ) ).build();
+      case 2:
+        return Response.ok( buildDummyProposals().get( 1 ) ).build();
+      case 3:
+        return Response.ok( buildDummyProposals().get( 2 ) ).build();
+      default:
+        Map<String, String> error = new HashMap<>();
+        error.put( "error", "The input proposalId[" + proposalID + "] does not exist." );
+        return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
+    }
   }
 
 
