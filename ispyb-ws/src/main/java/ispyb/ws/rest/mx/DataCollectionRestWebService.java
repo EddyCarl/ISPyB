@@ -68,7 +68,8 @@ public class DataCollectionRestWebService extends MXRestWebService {
   @ApiResponses
     ( {
       @ApiResponse( code = 200, message = "Ok" ),
-      @ApiResponse( code = 400, message = "Some error" )
+      @ApiResponse( code = 400, message = "Some error" ),
+      @ApiResponse( code = 404, message = "No data collection records found for the input sessionId" )
     } )
   public Response retrieveDataCollections
   (
@@ -203,7 +204,8 @@ public class DataCollectionRestWebService extends MXRestWebService {
   @ApiResponses
     ( {
       @ApiResponse( code = 200, message = "Ok" ),
-      @ApiResponse( code = 400, message = "Some error" )
+      @ApiResponse( code = 400, message = "Some error" ),
+      @ApiResponse( code = 404, message = "No data collection records found for the input sessionId" )
     } )
   public Response retrieveDataCollectionsDetails
   (
