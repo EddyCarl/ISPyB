@@ -3,9 +3,11 @@ package ispyb.ws.rest.mx;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import javax.annotation.security.RolesAllowed;
 import javax.naming.NamingException;
@@ -57,7 +59,8 @@ public class SampleRestWebService extends MXRestWebService {
   @ApiResponses
     ( {
       @ApiResponse( code = 200, message = "Ok" ),
-      @ApiResponse( code = 400, message = "Some error" )
+      @ApiResponse( code = 400, message = "Some error" ),
+      @ApiResponse( code = 404, message = "A Beamline sample could not be found for the input ID" )
     } )
   public Response retrieveBeamLineSampleInfo
   (
@@ -69,8 +72,45 @@ public class SampleRestWebService extends MXRestWebService {
 
   ) throws Exception
   {
-    return null;
+    String methodName = "retrieveBeamLineSampleInfo";
+    long id = this.logInit(methodName, logger, beamLineSampleId );
+
+    if(beamLineSampleId != 1)
+    {
+      Map<String, Object> error = new HashMap<>();
+      error.put( "error", "The input beamLineSample ID[" + beamLineSampleId + "] does not exist." );
+      return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
+    }
+
+    return Response.ok( buildDummySampleData() ).build();
   }
+
+
+
+  private List<Map<String, Object>> buildDummySampleData()
+  {
+    List<Map<String, Object>> dummySampleData = new ArrayList<>();
+
+    for( int i = 0; i < 10; i++ )
+    {
+      Map<String, Object> dummySample = new HashMap<>();
+      Random rand = new Random();
+
+      dummySample.put( "blsampleid", "1" );
+      dummySample.put( "name", "Sample name " + i );
+      dummySample.put( "looplength", rand.nextInt(i + 40) + 0.5 );
+      dummySample.put( "looptype", rand.nextInt(i + 40) + 0.5 );
+      dummySample.put( "comments", "Dummy comment " + i );
+      dummySample.put( "crystalid", i );
+      dummySample.put( "RNUM", i );
+
+      dummySampleData.add( dummySample );
+    }
+
+    return dummySampleData;
+  }
+
+
 
 
 
