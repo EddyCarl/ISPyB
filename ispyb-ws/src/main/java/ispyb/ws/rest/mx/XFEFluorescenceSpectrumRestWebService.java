@@ -15,6 +15,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -56,7 +57,8 @@ public class XFEFluorescenceSpectrumRestWebService extends RestWebService {
   @ApiResponses
     ( {
       @ApiResponse( code = 200, message = "Ok" ),
-      @ApiResponse( code = 400, message = "Some error" )
+      @ApiResponse( code = 400, message = "Some error" ),
+      @ApiResponse( code = 404, message = "No fluorescence spectrum records found for the input sessionId" )
     } )
   public Response retrieveFluorescenceSpectrumData
   (
@@ -64,15 +66,49 @@ public class XFEFluorescenceSpectrumRestWebService extends RestWebService {
     @ApiParam
       (
         name = "id", required = true, example = "12", value = "The ID of the session to retrieve"
-      ) @PathParam( "id" ) int sessionId
+      ) @PathParam( "id" ) int sessionID
 
   ) throws Exception
   {
-    return null;
+    String methodName = "retrieveFluorescenceSpectrumData";
+    long id = this.logInit(methodName, logger, sessionID);
+
+    if(sessionID != 1)
+    {
+      Map<String, Object> error = new HashMap<>();
+      String errorMsg = "The input sessionId[ \" + sessionID + \" ] has no fluorescence spectrum " +
+                        "records associated with it";
+
+      error.put( "error", errorMsg );
+      return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
+    }
+
+    return Response.ok( buildDummyFSpectrumData() ).build();
   }
 
 
 
+  private List<Map<String, Object>> buildDummyFSpectrumData()
+  {
+    List<Map<String, Object>> dummyFSpectrumData = new ArrayList<>();
+
+    for( int i = 0; i < 10; i++ )
+    {
+      Map<String, Object> dummyFSpectrum = new HashMap<>();
+
+      dummyFSpectrum.put( "sessionId", "1" );
+      dummyFSpectrum.put( "wavelength", i + 1 );
+      dummyFSpectrum.put( "exposureTime", i + 2 );
+      dummyFSpectrum.put( "startTime", "2016-04-18 11:00:00" );
+      dummyFSpectrum.put( "jpegScanFileFullPath", "/dls/dummy/jpeg/filepath" );
+      dummyFSpectrum.put( "energy", i + 3 );
+      dummyFSpectrum.put( "RNUM", i );
+
+      dummyFSpectrumData.add( dummyFSpectrum );
+    }
+
+    return dummyFSpectrumData;
+  }
 
 
   /*
