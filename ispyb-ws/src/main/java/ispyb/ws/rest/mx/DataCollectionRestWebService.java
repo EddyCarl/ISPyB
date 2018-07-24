@@ -521,7 +521,8 @@ public class DataCollectionRestWebService extends MXRestWebService {
   @ApiResponses
     ( {
       @ApiResponse( code = 200, message = "Ok" ),
-      @ApiResponse( code = 400, message = "Some error" )
+      @ApiResponse( code = 400, message = "Some error" ),
+      @ApiResponse( code = 404, message = "No screening comments records found for the input dataCollectionId" )
     } )
   public Response retrieveScreeningComments
   (
@@ -529,11 +530,44 @@ public class DataCollectionRestWebService extends MXRestWebService {
     @ApiParam
       (
         name = "id", required = true, example = "12", value = "The ID of the data collection to retrieve"
-      ) @PathParam( "id" ) int sessionID
+      ) @PathParam( "id" ) int dataCollectionID
 
   ) throws Exception
   {
-    return null;
+    String methodName = "retrieveScreeningComments";
+    long id = this.logInit(methodName, logger, dataCollectionID );
+
+    if(dataCollectionID != 1)
+    {
+      Map<String, Object> error = new HashMap<>();
+      error.put( "error", "The input dataCollection ID[" + dataCollectionID + "] has no screening comments records associated" );
+      return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
+    }
+
+    return Response.ok( buildDummyScreeningCommentsData() ).build();
+  }
+
+
+
+  private List<Map<String, Object>> buildDummyScreeningCommentsData()
+  {
+    List<Map<String, Object>> dummyScreeningCommentsData = new ArrayList<>();
+
+    for( int i = 0; i < 10; i++ )
+    {
+      Map<String, Object> dummyScreeningComment = new HashMap<>();
+      Random rand = new Random();
+
+      dummyScreeningComment.put( "screeningId", i );
+      dummyScreeningComment.put( "dataCollectionId", "1" );
+      dummyScreeningComment.put( "comments", "Long dummy comment " + i );
+      dummyScreeningComment.put( "shortComments", "Short dummy comment " + i );
+      dummyScreeningComment.put( "RNUM", i );
+
+      dummyScreeningCommentsData.add( dummyScreeningComment );
+    }
+
+    return dummyScreeningCommentsData;
   }
 
 
