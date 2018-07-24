@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import javax.annotation.security.RolesAllowed;
 import javax.naming.NamingException;
@@ -99,7 +100,6 @@ public class DataCollectionRestWebService extends MXRestWebService {
     return Response.ok( dataCollections ).build();
   }
 
-
   /*
    *  **** NOTE ****
    *  The data collection method above is currently in place to serve the "Find Data Collection" SQL query which
@@ -112,6 +112,127 @@ public class DataCollectionRestWebService extends MXRestWebService {
    *  and method can be used for both SQL statements with just the optional additional "threshold" parameter being
    *  added if the user wishes to limit the returned rows by the numOfImages.
    */
+
+
+
+  private List<Map<String, Object>> buildDummyDataCollections()
+  {
+    List<Map<String, Object>> dummyCollections = new ArrayList<>();
+
+    for(int i = 0; i < 10; i++)
+    {
+      int dcId = i;
+      int blSampleId = i;
+      int noImgs = new Random().nextInt(11);
+      int rnum = i;
+      int sessionId = 1;
+
+      if( i % 2 == 0 )
+      {
+        sessionId = 2;
+      }
+
+      Map<String, Object> dummyCollection = buildDummyDataCollection( dcId, blSampleId, noImgs, sessionId, rnum );
+      dummyCollections.add( dummyCollection );
+    }
+
+    return dummyCollections;
+  }
+
+  private Map<String, Object> buildDummyDataCollection( int dcId, int blSampleId, int numImgs, int sessionId, int rnum )
+  {
+    Map<String, Object> dataCollection = new HashMap<>();
+
+    dataCollection.put( "dataCollectionId", dcId );
+    dataCollection.put( "blSampleId", blSampleId );
+    dataCollection.put( "startTime", "2016-04-18 11:00:00" );
+    dataCollection.put( "numberOfImages", numImgs );
+    dataCollection.put( "sessionId", sessionId );
+    dataCollection.put( "exposureTime", "0.1" );
+    dataCollection.put( "imagePrefix", "xtal1" );
+    dataCollection.put( "wavelength", "0.975" );
+    dataCollection.put( "resolution", "1.5" );
+    dataCollection.put( "imageDirectory", "/dummy/dls/dir" );
+    dataCollection.put( "comments", "dummy comment" );
+    dataCollection.put( "axisStart", "0" );
+    dataCollection.put( "axisEnd", "0.5" );
+    dataCollection.put( "axisRange", "0.5" );
+    dataCollection.put( "omegaStart", "0" );
+    dataCollection.put( "overlap", "-44.5" );
+    dataCollection.put( "beamSizeAtSampleX", "0.08" );
+    dataCollection.put( "beamSizeAtSampleY", "0.02" );
+    dataCollection.put( "transmission", "5.001" );
+    dataCollection.put( "xtalsnapshotfullpath1", "/dummy/dls/snap-path/1" );
+    dataCollection.put( "xtalsnapshotfullpath2", "/dummy/dls/snap-path/2" );
+    dataCollection.put( "xtalsnapshotfullpath3", "/dummy/dls/snap-path/3" );
+    dataCollection.put( "xtalsnapshotfullpath4", "/dummy/dls/snap-path/4" );
+    dataCollection.put( "RNUM", rnum );
+
+    return dataCollection;
+  }
+
+
+  /**
+   * Used to retrieve a list of Data Collection entries stored in the database where the number of images column
+   * in the record has a value larger than that of the set "threshold" value input via the app.
+   *
+   * @return  Response  - Returns a relevant HTTP response
+   */
+  @GET
+  @Path( "/sessions/{id}/data-collections/details" )
+  @ApiOperation
+    (
+      value = "Retrieves a list of Data Collection entries with expanded details",
+      notes = "Returns a list of Data Collection entries that are available to the user currently logged in. The " +
+        "returned list will contain data collection entries with more fields of information available",
+      tags = { SwaggerTagConstants.DATA_COLLECTION_TAG }, response = DataCollection3VO.class, responseContainer = "List",
+      authorizations = @Authorization( "apiKeyAuth" )
+    )
+  @Produces({ "application/json" })
+  @ApiResponses
+    ( {
+      @ApiResponse( code = 200, message = "Ok" ),
+      @ApiResponse( code = 400, message = "Some error" )
+    } )
+  public Response retrieveDataCollectionsDetails
+  (
+
+    @ApiParam
+      (
+        name = "id", required = true, example = "12", value = "The ID of the session to retrieve"
+      ) @PathParam( "id" ) int sessionID
+
+  ) throws Exception
+  {
+    String methodName = "retrieveDataCollectionsDetails";
+    long id = this.logInit(methodName, logger);
+
+    if( sessionID > 2 )
+    {
+      Map<String, Object> error = new HashMap<>();
+      error.put( "error", "No data collection entries exist for the input sessionId[" + sessionID + "]" );
+      return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
+    }
+
+    List<Map<String, Object>> dataCollections = buildDummyDataCollections();
+    List<Map<String, Object>> validCollections = new ArrayList<>();
+
+    for( int i = 0; i < dataCollections.size(); i++ )
+    {
+      if( dataCollections.get( i ).get( "sessionId" ).equals( "1" ) && sessionID == 1 )
+      {
+        validCollections.add( dataCollections.get( i ) );
+      }
+      else if( dataCollections.get( i ).get( "sessionId" ).equals( "2" ) && sessionID == 2 )
+      {
+        validCollections.add( dataCollections.get( i ) );
+      }
+    }
+
+    return Response.ok( validCollections ).build();
+  }
+
+
 
 
 
