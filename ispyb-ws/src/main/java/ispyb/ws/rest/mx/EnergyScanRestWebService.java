@@ -12,6 +12,8 @@ import ispyb.server.mx.vos.collections.EnergyScan3VO;
 import ispyb.ws.rest.RestWebService;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -34,7 +36,6 @@ public class EnergyScanRestWebService extends RestWebService {
 	 private final static Logger logger = Logger.getLogger(EnergyScanRestWebService.class);
 
 
-
   /**
    * Used to retrieve Energy Scan information for any records relating to the users session.
    *
@@ -53,7 +54,8 @@ public class EnergyScanRestWebService extends RestWebService {
   @ApiResponses
     ( {
       @ApiResponse( code = 200, message = "Ok" ),
-      @ApiResponse( code = 400, message = "Some error" )
+      @ApiResponse( code = 400, message = "Some error" ),
+      @ApiResponse( code = 404, message = "No energy scan records found for the input sessionId" )
     } )
   public Response retrieveEnergyScanData
   (
@@ -65,7 +67,50 @@ public class EnergyScanRestWebService extends RestWebService {
 
   ) throws Exception
   {
-    return null;
+    String methodName = "retrieveEnergyScanData";
+    long id = this.logInit(methodName, logger, sessionID);
+    List<Map<String, Object>> dummyEnergyScans = buildDummyEnergyScans();
+
+    if( sessionID == 1 )
+    {
+      return Response.ok( dummyEnergyScans ).build();
+    }
+    else
+    {
+      Map<String, String> error = new HashMap<>();
+      error.put( "error", "The input sessionId[" + sessionID + "] doesn't have any associated energy scan records" );
+      return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
+    }
+  }
+
+
+  private List<Map<String, Object>> buildDummyEnergyScans()
+  {
+    List<Map<String, Object>> dummyEnergyScans = new ArrayList<>();
+
+    for( int i = 0; i < 5; i++ )
+    {
+      Map<String, Object> dummyEnergyScan = new HashMap<>();
+      dummyEnergyScan.put( "sessionId", "1" );
+      dummyEnergyScan.put( "energyScanId", i );
+      dummyEnergyScan.put( "element", i );
+      dummyEnergyScan.put( "startEnergy", i );
+      dummyEnergyScan.put( "endEnergy", (i + 5) );
+      dummyEnergyScan.put( "peakEnergy", (i + 5) );
+      dummyEnergyScan.put( "peakFPrime", "0" );
+      dummyEnergyScan.put( "peakFDoublePrime", "0" );
+      dummyEnergyScan.put( "edgeEnergy", "0" );
+      dummyEnergyScan.put( "startTime", "2016-04-18 11:00:00" );
+      dummyEnergyScan.put( "inflectionEnergy", "0" );
+      dummyEnergyScan.put( "inflectionFPrime", "0" );
+      dummyEnergyScan.put( "inflectionFDoublePrime", "0" );
+      dummyEnergyScan.put( "jpegChoochFileFullPath", "/dummy/jpeg/filepath" );
+      dummyEnergyScan.put( "RNUM", i );
+
+      dummyEnergyScans.add( dummyEnergyScan );
+    }
+
+    return dummyEnergyScans;
   }
 
 
