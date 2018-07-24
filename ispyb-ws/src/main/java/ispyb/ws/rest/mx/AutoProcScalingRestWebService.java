@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
 import ispyb.server.mx.vos.autoproc.AutoProc3VO;
 import ispyb.server.mx.vos.autoproc.AutoProcScalingStatistics3VO;
+import org.apache.log4j.Logger;
 import utils.SwaggerTagConstants;
 
 import javax.ws.rs.GET;
@@ -15,11 +16,16 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Api
 @Path("/")
 public class AutoProcScalingRestWebService extends MXRestWebService
 {
+  private final static Logger logger = Logger.getLogger(AutoProcScalingRestWebService.class);
 
 
   /**
@@ -40,7 +46,8 @@ public class AutoProcScalingRestWebService extends MXRestWebService
   @ApiResponses
     ( {
       @ApiResponse( code = 200, message = "Ok" ),
-      @ApiResponse( code = 400, message = "Some error" )
+      @ApiResponse( code = 400, message = "Some error" ),
+      @ApiResponse( code = 404, message = "No MX MR Runs found for the input autoProcScalingId" )
     } )
   public Response retrieveMxMrRuns
   (
@@ -52,8 +59,53 @@ public class AutoProcScalingRestWebService extends MXRestWebService
 
   ) throws Exception
   {
-    return null;
+    String methodName = "retrieveMxMrRuns";
+    long id = this.logInit(methodName, logger, autoProcScalingId);
+
+    if(autoProcScalingId != 1)
+    {
+      Map<String, Object> error = new HashMap<>();
+      String errorMsg = "The input autoProcScaling ID[ " + autoProcScalingId+ " ] has no MX MR Runs associated with it";
+      error.put( "error", errorMsg );
+      return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
+    }
+
+    return Response.ok( buildDummyMxMrRunData() ).build();
   }
+
+
+
+  private List<Map<String, Object>> buildDummyMxMrRunData()
+  {
+    List<Map<String, Object>> dummyMxMrRunData = new ArrayList<>();
+
+    for( int i = 0; i < 5; i++ )
+    {
+      Map<String, Object> dummyMxMrRun = new HashMap<>();
+
+      int startValues = ( i + 5 * 10 );
+      int endValues = ( i + 10 * 5 );
+
+      dummyMxMrRun.put( "mxmrrunid", i );
+      dummyMxMrRun.put( "success", "Yes" );
+      dummyMxMrRun.put( "message", "Dummy Msg with index" + i );
+      dummyMxMrRun.put( "pipeline", "pipeline" );
+      dummyMxMrRun.put( "rvaluestart", startValues );
+      dummyMxMrRun.put( "rvalueend", endValues );
+      dummyMxMrRun.put( "rfreevaluestart", startValues  );
+      dummyMxMrRun.put( "rfreevalueend", endValues );
+      dummyMxMrRun.put( "logfile", "/dls/dummy/path/tologfile" );
+      dummyMxMrRun.put( "commandline", "commandline" );
+      dummyMxMrRun.put( "RNUM", i );
+
+      dummyMxMrRunData.add( dummyMxMrRun );
+    }
+
+    return dummyMxMrRunData;
+  }
+
+
+
 
 
   /**
