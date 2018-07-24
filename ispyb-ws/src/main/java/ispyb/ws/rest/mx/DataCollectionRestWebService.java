@@ -410,14 +410,13 @@ public class DataCollectionRestWebService extends MXRestWebService {
 
 
 
-
   /**
    * Used to retrieve a screening strategy for a particular data collection ID.
    *
    * @return  Response  - Returns a relevant HTTP response
    */
   @GET
-  @Path( "/data-collections/{dcId}/screening-strategy/{ssId}" )
+  @Path( "/data-collections/{dcId}/screening-strategy/{soId}" )
   @ApiOperation
     (
       value = "Retrieves a screening strategy for a particular data collection",
@@ -429,7 +428,9 @@ public class DataCollectionRestWebService extends MXRestWebService {
   @ApiResponses
     ( {
       @ApiResponse( code = 200, message = "Ok" ),
-      @ApiResponse( code = 400, message = "Some error" )
+      @ApiResponse( code = 400, message = "Some error" ),
+      @ApiResponse( code = 404, message = "No screening strategy records found for the input dataCollectionId" ),
+      @ApiResponse( code = 404, message = "No screening strategy wedge records found for the input screeningStrategyId" )
     } )
   public Response retrieveScreeningStrategy
   (
@@ -441,13 +442,62 @@ public class DataCollectionRestWebService extends MXRestWebService {
 
     @ApiParam
       (
-        name = "ssId", required = true, example = "5", value = "The ID of the screening strategy to retrieve"
-      ) @PathParam( "ssId" ) int screenStratId
+        name = "soId", required = true, example = "5", value = "The ID of the screening output to retrieve"
+      ) @PathParam( "soId" ) int screenOutputId
 
     ) throws Exception
   {
-    return null;
+    String methodName = "retrieveScreeningStrategy";
+    long id = this.logInit(methodName, logger, dataCollectionId, screenOutputId );
+
+    if(dataCollectionId != 1)
+    {
+      Map<String, Object> error = new HashMap<>();
+      error.put( "error", "The input dataCollection ID[" + dataCollectionId + "] has no screening output records associated" );
+      return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
+    }
+
+    if(screenOutputId != 1)
+    {
+      Map<String, Object> error = new HashMap<>();
+      error.put( "error", "The input screenOutput ID[" + screenOutputId + "] has no screening strategy records associated" );
+      return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
+    }
+
+    return Response.ok( buildDummyScreeningStrategyData() ).build();
   }
+
+
+  private List<Map<String, Object>> buildDummyScreeningStrategyData()
+  {
+    List<Map<String, Object>> dummyScreeningStrategyData = new ArrayList<>();
+
+    for( int i = 0; i < 10; i++ )
+    {
+      Map<String, Object> dummyScreeningStrategy = new HashMap<>();
+      Random rand = new Random();
+
+      dummyScreeningStrategy.put( "screeningOutputId", i );
+      dummyScreeningStrategy.put( "screeningStrategyId", "1" );
+      dummyScreeningStrategy.put( "phiStart", rand.nextInt(i + 40) + 0.5 );
+      dummyScreeningStrategy.put( "phiEnd", rand.nextInt(i + 40) + 0.5 );
+      dummyScreeningStrategy.put( "rotation", rand.nextInt(i + 40) + 0.5 );
+      dummyScreeningStrategy.put( "exposureTime", rand.nextInt(i + 40) + 0.5 );
+      dummyScreeningStrategy.put( "resolution", rand.nextInt(i + 40) + 0.5 );
+      dummyScreeningStrategy.put( "completeness", rand.nextInt(i + 40) + 0.5 );
+      dummyScreeningStrategy.put( "multiplicity", rand.nextInt(i + 40) + 0.5 );
+      dummyScreeningStrategy.put( "anomalous", rand.nextInt(i + 40) + 0.5 );
+      dummyScreeningStrategy.put( "program", rand.nextInt(i + 40) + 0.5 );
+      dummyScreeningStrategy.put( "rankingResolution", rand.nextInt(i + 40) + 0.5 );
+      dummyScreeningStrategy.put( "transmission", rand.nextInt(i + 40) + 0.5 );
+      dummyScreeningStrategy.put( "RNUM", i );
+
+      dummyScreeningStrategyData.add( dummyScreeningStrategy );
+    }
+
+    return dummyScreeningStrategyData;
+  }
+
 
 
 
@@ -485,6 +535,9 @@ public class DataCollectionRestWebService extends MXRestWebService {
   {
     return null;
   }
+
+
+
 
 
 
