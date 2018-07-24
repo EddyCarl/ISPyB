@@ -4,6 +4,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -68,7 +69,7 @@ public class DataCollectionRestWebService extends MXRestWebService {
       @ApiResponse( code = 200, message = "Ok" ),
       @ApiResponse( code = 400, message = "Some error" )
     } )
-  public Response retrieveDataCollectionList
+  public Response retrieveDataCollections
   (
 
     @ApiParam
@@ -78,12 +79,24 @@ public class DataCollectionRestWebService extends MXRestWebService {
     @ApiParam
       (
         name = "threshold", example = "10",
-        value = "Can be used to filter returned results so that only records numOfImages, over the threshold, are shown"
+        value = "Can be used to filter returned results so that only records numOfImages, over the threshold, are shown",
+        defaultValue = "1"
       ) @QueryParam( "threshold" ) int threshold
 
   ) throws Exception
   {
-    return null;
+    String methodName = "retrieveDataCollections";
+    long id = this.logInit(methodName, logger);
+
+    List<Map<String, Object>> dataCollections = new ArrayList<>();
+    Map<String, Object> dataCollection = new HashMap<>();
+
+    dataCollection.put("dataCollectionId", 1);
+    dataCollection.put("numberOfImages", 1);
+    dataCollection.put("RNUM", 1);
+    dataCollections.add(dataCollection);
+
+    return Response.ok( dataCollections ).build();
   }
 
 
