@@ -242,7 +242,7 @@ public class DataCollectionRestWebService extends MXRestWebService {
    * @return  Response  - Returns a relevant HTTP response
    */
   @GET
-  @Path( "/data-collections/{dcId}/screening-output-lattice/{solId}" )
+  @Path( "/data-collections/{dcId}/screening-output-lattice/{soId}" )
   @ApiOperation
     (
       value = "Retrieves a screening output lattice for a particular data collection",
@@ -254,7 +254,9 @@ public class DataCollectionRestWebService extends MXRestWebService {
   @ApiResponses
     ( {
       @ApiResponse( code = 200, message = "Ok" ),
-      @ApiResponse( code = 400, message = "Some error" )
+      @ApiResponse( code = 400, message = "Some error" ),
+      @ApiResponse( code = 404, message = "No screening output records found for the input dataCollectionId" ),
+      @ApiResponse( code = 404, message = "No screening output lattice records found for the input screeningOutputId" )
     } )
   public Response retrieveScreeningOutputLattice
   (
@@ -266,13 +268,59 @@ public class DataCollectionRestWebService extends MXRestWebService {
 
     @ApiParam
       (
-        name = "solId", required = true, example = "5", value = "The ID of the screening output lattice to retrieve"
-      ) @PathParam( "solId" ) int screenOutputLatticeId
+        name = "soId", required = true, example = "5", value = "The ID of the screening output to retrieve"
+      ) @PathParam( "soId" ) int screenOutputId
 
   ) throws Exception
   {
-    return null;
+    String methodName = "retrieveScreeningOutputLattice";
+    long id = this.logInit(methodName, logger, dataCollectionId, screenOutputId );
+
+    if(dataCollectionId != 1)
+    {
+      Map<String, Object> error = new HashMap<>();
+      error.put( "error", "The input dataCollection ID[" + dataCollectionId + "] has no screening output records associated" );
+      return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
+    }
+
+    if(screenOutputId != 1)
+    {
+      Map<String, Object> error = new HashMap<>();
+      error.put( "error", "The input screenOutput ID[" + screenOutputId + "] has no screening output lattice records associated" );
+      return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
+    }
+
+    return Response.ok( buildDummyScreeningLatticeData() ).build();
   }
+
+
+  private List<Map<String, Object>> buildDummyScreeningLatticeData()
+  {
+    List<Map<String, Object>> dummyScreeningLatticeData = new ArrayList<>();
+
+    for( int i = 0; i < 5; i++ )
+    {
+      Map<String, Object> dummyScreeningLattice = new HashMap<>();
+      Random rand = new Random();
+
+      dummyScreeningLattice.put( "screeningOutputId", "1" );
+      dummyScreeningLattice.put( "screeningOutputLatticeId", i );
+      dummyScreeningLattice.put( "spacegroup", rand.nextInt(i + 40) + 0.5 );
+      dummyScreeningLattice.put( "pointgroup", rand.nextInt(i + 40) + 0.5 );
+      dummyScreeningLattice.put( "unitcell_a", rand.nextInt(i + 40) + 0.5 );
+      dummyScreeningLattice.put( "unitcell_b", rand.nextInt(i + 40) + 0.5 );
+      dummyScreeningLattice.put( "unitcell_c", rand.nextInt(i + 40) + 0.5 );
+      dummyScreeningLattice.put( "unitcell_alpha", rand.nextInt(i + 40) + 0.5 );
+      dummyScreeningLattice.put( "unitcell_beta", rand.nextInt(i + 40) + 0.5 );
+      dummyScreeningLattice.put( "unitcell_gamma", rand.nextInt(i + 40) + 0.5 );
+      dummyScreeningLattice.put( "RNUM", i );
+
+      dummyScreeningLatticeData.add( dummyScreeningLattice );
+    }
+
+    return dummyScreeningLatticeData;
+  }
+
 
 
 
