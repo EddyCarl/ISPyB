@@ -88,7 +88,7 @@ public class DataCollectionRestWebService extends MXRestWebService {
   ) throws Exception
   {
     String methodName = "retrieveDataCollections";
-    long id = this.logInit(methodName, logger);
+    long id = this.logInit(methodName, logger, sessionID, threshold);
 
     if(sessionID != 1)
     {
@@ -218,7 +218,7 @@ public class DataCollectionRestWebService extends MXRestWebService {
   ) throws Exception
   {
     String methodName = "retrieveDataCollectionsDetails";
-    long id = this.logInit(methodName, logger);
+    long id = this.logInit(methodName, logger, sessionID);
 
     if( sessionID == 1 || sessionID == 2)
     {
