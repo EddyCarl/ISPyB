@@ -68,7 +68,8 @@ public class AutoprocintegrationRestWebService extends MXRestWebService {
   @ApiResponses
     ( {
       @ApiResponse( code = 200, message = "Ok" ),
-      @ApiResponse( code = 400, message = "Some error" )
+      @ApiResponse( code = 400, message = "Some error" ),
+      @ApiResponse( code = 404, message = "No auto processing results found for the input dataCollectionId" )
     } )
   public Response retrieveAutoProcessingResults
   (
@@ -80,7 +81,50 @@ public class AutoprocintegrationRestWebService extends MXRestWebService {
 
   ) throws Exception
   {
-    return null;
+    String methodName = "retrieveAutoProcessingResults";
+    long id = this.logInit(methodName, logger);
+
+    if(dataCollectionId != 1)
+    {
+      Map<String, Object> error = new HashMap<>();
+      String errorMsg = "The input data collection ID[ " + dataCollectionId+ " ] has no auto processing " +
+                        "results associated with it";
+
+      error.put( "error", errorMsg );
+      return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
+    }
+
+    return Response.ok( buildDummyAutoProcessingResults() ).build();
+  }
+
+
+
+  private List<Map<String, Object>> buildDummyAutoProcessingResults()
+  {
+    List<Map<String, Object>> dummyAutoProcResults = new ArrayList<>();
+
+    for( int i = 0; i < 10; i++ )
+    {
+      Map<String, Object> dummyAutoProcResult = new HashMap<>();
+
+      int cellValues = ( i + 5 * 10 );
+      int cellSecondaryValues = ( i + 10 * 5 );
+
+      dummyAutoProcResult.put( "autoProcIntegrationId", i );
+      dummyAutoProcResult.put( "dataCollectionId", "1" );
+      dummyAutoProcResult.put( "autoProcProgramId", i );
+      dummyAutoProcResult.put( "cell_a", cellValues );
+      dummyAutoProcResult.put( "cell_b", cellValues );
+      dummyAutoProcResult.put( "cell_c", cellValues );
+      dummyAutoProcResult.put( "cell_alpha", cellSecondaryValues  );
+      dummyAutoProcResult.put( "cell_beta", cellSecondaryValues );
+      dummyAutoProcResult.put( "cell_gamma", cellSecondaryValues );
+      dummyAutoProcResult.put( "RNUM", i );
+
+      dummyAutoProcResults.add( dummyAutoProcResult );
+    }
+
+    return dummyAutoProcResults;
   }
 
 
