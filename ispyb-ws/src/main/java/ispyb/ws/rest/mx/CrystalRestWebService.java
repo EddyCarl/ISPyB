@@ -126,7 +126,8 @@ public class CrystalRestWebService extends MXRestWebService {
   @ApiResponses
     ( {
       @ApiResponse( code = 200, message = "Ok" ),
-      @ApiResponse( code = 400, message = "Some error" )
+      @ApiResponse( code = 400, message = "Some error" ),
+      @ApiResponse( code = 404, message = "No Crystal Snapshot Images found for the input dataCollectionId" )
     } )
   public Response retrieveCrystalSnapshotImages
   (
@@ -138,8 +139,45 @@ public class CrystalRestWebService extends MXRestWebService {
 
   ) throws Exception
   {
-    return null;
+    String methodName = "retrieveCrystalSnapshotImages";
+    long id = this.logInit(methodName, logger, dataCollectionId );
+
+    if(dataCollectionId != 1)
+    {
+      Map<String, Object> error = new HashMap<>();
+      error.put( "error", "The input dataCollection ID[" + dataCollectionId + "] has no crystal snapshot images associated" );
+      return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
+    }
+
+    return Response.ok( buildDummyCrystalSnapshotImageData() ).build();
   }
+
+
+  private List<Map<String, Object>> buildDummyCrystalSnapshotImageData()
+  {
+    List<Map<String, Object>> dummyCrystalSnapshotImageData = new ArrayList<>();
+
+    for( int i = 0; i < 10; i++ )
+    {
+      Map<String, Object> dummyCrystalSnapshotImage = new HashMap<>();
+      Random rand = new Random();
+
+      dummyCrystalSnapshotImage.put( "imageId", i );
+      dummyCrystalSnapshotImage.put( "imageNumber", i );
+      dummyCrystalSnapshotImage.put( "fileName", "/dls/dummy/crystal/image/" + i + ".jpg" );
+      dummyCrystalSnapshotImage.put( "temperature", rand.nextInt( ( i + 20 ) ) );
+      dummyCrystalSnapshotImage.put( "measuredIntensity", rand.nextInt( ( i + 20 ) ) );
+      dummyCrystalSnapshotImage.put( "synchrotronCurrent", rand.nextInt( ( i + 20 ) ) );
+      dummyCrystalSnapshotImage.put( "comments", "Dummy Comment " + i );
+      dummyCrystalSnapshotImage.put( "RNUM", i );
+
+      dummyCrystalSnapshotImageData.add( dummyCrystalSnapshotImage );
+    }
+
+    return dummyCrystalSnapshotImageData;
+  }
+
+
 
 
 
