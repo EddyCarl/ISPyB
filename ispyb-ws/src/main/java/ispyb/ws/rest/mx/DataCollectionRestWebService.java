@@ -115,22 +115,16 @@ public class DataCollectionRestWebService extends MXRestWebService {
 
 
 
-  private List<Map<String, Object>> buildDummyDataCollections()
+  private List<Map<String, Object>> buildDummyDataCollections( int sessionId )
   {
     List<Map<String, Object>> dummyCollections = new ArrayList<>();
 
-    for(int i = 0; i < 10; i++)
+    for(int i = 0; i < 5; i++)
     {
       int dcId = i;
       int blSampleId = i;
       int noImgs = new Random().nextInt(11);
       int rnum = i;
-      int sessionId = 1;
-
-      if( i % 2 == 0 )
-      {
-        sessionId = 2;
-      }
 
       Map<String, Object> dummyCollection = buildDummyDataCollection( dcId, blSampleId, noImgs, sessionId, rnum );
       dummyCollections.add( dummyCollection );
@@ -207,29 +201,16 @@ public class DataCollectionRestWebService extends MXRestWebService {
     String methodName = "retrieveDataCollectionsDetails";
     long id = this.logInit(methodName, logger);
 
-    if( sessionID > 2 )
+    if( sessionID == 1 || sessionID == 2)
+    {
+      return Response.ok( buildDummyDataCollections(sessionID) ).build();
+    }
+    else
     {
       Map<String, Object> error = new HashMap<>();
       error.put( "error", "No data collection entries exist for the input sessionId[" + sessionID + "]" );
       return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
     }
-
-    List<Map<String, Object>> dataCollections = buildDummyDataCollections();
-    List<Map<String, Object>> validCollections = new ArrayList<>();
-
-    for( int i = 0; i < dataCollections.size(); i++ )
-    {
-      if( dataCollections.get( i ).get( "sessionId" ).equals( "1" ) && sessionID == 1 )
-      {
-        validCollections.add( dataCollections.get( i ) );
-      }
-      else if( dataCollections.get( i ).get( "sessionId" ).equals( "2" ) && sessionID == 2 )
-      {
-        validCollections.add( dataCollections.get( i ) );
-      }
-    }
-
-    return Response.ok( validCollections ).build();
   }
 
 
