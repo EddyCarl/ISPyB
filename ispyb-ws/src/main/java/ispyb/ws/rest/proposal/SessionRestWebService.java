@@ -153,7 +153,7 @@ public class SessionRestWebService extends RestWebService
     {
       Map<String, String> error = new HashMap<>();
       error.put( "error", "The input sessionId[" + sessionID + "] does not exist." );
-      return Response.noContent().entity( error ).build();
+      return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
     }
   }
 
