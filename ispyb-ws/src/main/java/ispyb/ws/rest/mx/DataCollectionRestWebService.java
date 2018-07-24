@@ -96,6 +96,16 @@ public class DataCollectionRestWebService extends MXRestWebService {
       return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
     }
 
+    if(threshold != 1)
+    {
+      Map<String, Object> error = new HashMap<>();
+      String errorMsg =  "No data collection records containing more than " + threshold + " images " +
+                          "were found for the input sessionId[ " + sessionID + " ]";
+
+      error.put( "error", errorMsg );
+      return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
+    }
+
     List<Map<String, Object>> dataCollections = new ArrayList<>();
     Map<String, Object> dataCollection = new HashMap<>();
 
