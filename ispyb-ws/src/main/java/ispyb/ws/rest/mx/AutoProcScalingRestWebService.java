@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 @Api
 @Path("/")
@@ -126,7 +127,8 @@ public class AutoProcScalingRestWebService extends MXRestWebService
   @ApiResponses
     ( {
       @ApiResponse( code = 200, message = "Ok" ),
-      @ApiResponse( code = 400, message = "Some error" )
+      @ApiResponse( code = 400, message = "Some error" ),
+      @ApiResponse( code = 404, message = "No auto-proc-scaling statistics found for the input autoProcScalingId" )
     } )
   public Response retrieveAutoProcScalingStatistics
   (
@@ -138,8 +140,57 @@ public class AutoProcScalingRestWebService extends MXRestWebService
 
   ) throws Exception
   {
-    return null;
+    String methodName = "retrieveAutoProcScalingStatistics";
+    long id = this.logInit(methodName, logger, autoProcScalingId);
+
+    if(autoProcScalingId != 1)
+    {
+      Map<String, Object> error = new HashMap<>();
+      String errorMsg = "The input autoProcScaling ID[ " + autoProcScalingId+ " ] has no statistics associated with it";
+      error.put( "error", errorMsg );
+      return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
+    }
+
+    return Response.ok( buildDummyAutoProcStatisticsData() ).build();
   }
+
+
+  private List<Map<String, Object>> buildDummyAutoProcStatisticsData()
+  {
+    List<Map<String, Object>> dummyAutoProcStatisticsData = new ArrayList<>();
+
+    for( int i = 0; i < 5; i++ )
+    {
+      Map<String, Object> dummyAutoProcStatistic = new HashMap<>();
+
+      double resolutionLimitBase = 1.45;
+      Random rand = new Random();
+
+      dummyAutoProcStatistic.put( "autoProcScalingId", "1" );
+      dummyAutoProcStatistic.put( "autoProcScalingStatisticsId", i );
+      dummyAutoProcStatistic.put( "scalingStatisticsType", "outershell" );
+      dummyAutoProcStatistic.put( "resolutionLimitLow", resolutionLimitBase + i );
+      dummyAutoProcStatistic.put( "resolutionLimitHigh", resolutionLimitBase + ( i * 5 ) );
+      dummyAutoProcStatistic.put( "rMerge", "3.0" );
+      dummyAutoProcStatistic.put( "meanIOverSigI", rand.nextInt(20) );
+      dummyAutoProcStatistic.put( "completeness", rand.nextInt(20) );
+      dummyAutoProcStatistic.put( "nTotalUniqueObservations", rand.nextInt(20));
+      dummyAutoProcStatistic.put( "multiplicity", rand.nextInt(20) );
+      dummyAutoProcStatistic.put( "anomalousCompleteness", rand.nextInt(20) );
+      dummyAutoProcStatistic.put( "anomalousMultiplicity", rand.nextInt(20) );
+      dummyAutoProcStatistic.put( "ccHalf", rand.nextInt(20) );
+      dummyAutoProcStatistic.put( "ccAnomalous", rand.nextInt(20) );
+      dummyAutoProcStatistic.put( "RNUM", i );
+
+      dummyAutoProcStatisticsData.add( dummyAutoProcStatistic );
+    }
+
+    return dummyAutoProcStatisticsData;
+  }
+
+
+
+
 
 
   /**
