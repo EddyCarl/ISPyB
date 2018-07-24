@@ -190,9 +190,6 @@ public class AutoProcScalingRestWebService extends MXRestWebService
 
 
 
-
-
-
   /**
    * Used to retrieve the data for a specific Auto Proc instance based on the input auto-proc ID.
    *
@@ -211,7 +208,8 @@ public class AutoProcScalingRestWebService extends MXRestWebService
   @ApiResponses
     ( {
       @ApiResponse( code = 200, message = "Ok" ),
-      @ApiResponse( code = 400, message = "Some error" )
+      @ApiResponse( code = 400, message = "Some error" ),
+      @ApiResponse( code = 404, message = "An Auto Proc instance could not be found for the input ID" )
     } )
   public Response retrieveAutoProc
   (
@@ -223,14 +221,44 @@ public class AutoProcScalingRestWebService extends MXRestWebService
 
   ) throws Exception
   {
-    return null;
+    String methodName = "retrieveAutoProc";
+    long id = this.logInit(methodName, logger, autoProcId);
+
+    if(autoProcId != 1)
+    {
+      Map<String, Object> error = new HashMap<>();
+      error.put( "error", "The input autoProc ID[" + autoProcId + "] does not exist." );
+      return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
+    }
+
+    return Response.ok( buildDummyAutoProcData() ).build();
   }
 
 
 
+  private List<Map<String, Object>> buildDummyAutoProcData()
+  {
+    List<Map<String, Object>> dummyAutoProcData = new ArrayList<>();
 
+    for( int i = 0; i < 5; i++ )
+    {
+      Map<String, Object> dummyAutoProc = new HashMap<>();
+      Random rand = new Random();
 
+      dummyAutoProc.put( "autoProcId", "1" );
+      dummyAutoProc.put( "spaceGroup", i );
+      dummyAutoProc.put( "refinedCell_a", rand.nextInt(i + 40) + 0.5 );
+      dummyAutoProc.put( "refinedCell_b", rand.nextInt(i + 40) + 0.5 );
+      dummyAutoProc.put( "refinedCell_c", rand.nextInt(i + 40) + 0.5 );
+      dummyAutoProc.put( "refinedCell_alpha", rand.nextInt(i + 40) + 0.5 );
+      dummyAutoProc.put( "refinedCell_beta", rand.nextInt(i + 40) + 0.5 );
+      dummyAutoProc.put( "refinedCell_gamma", rand.nextInt(i + 40) + 0.5 );
+      dummyAutoProc.put( "RNUM", i );
 
+      dummyAutoProcData.add( dummyAutoProc );
+    }
 
+    return dummyAutoProcData;
+  }
 
 }
