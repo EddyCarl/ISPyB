@@ -76,7 +76,7 @@ public class XFEFluorescenceSpectrumRestWebService extends RestWebService {
     if(sessionID != 1)
     {
       Map<String, Object> error = new HashMap<>();
-      String errorMsg = "The input sessionId[ \" + sessionID + \" ] has no fluorescence spectrum " +
+      String errorMsg = "The input sessionId[ " + sessionID + " ] has no fluorescence spectrum " +
                         "records associated with it";
 
       error.put( "error", errorMsg );
