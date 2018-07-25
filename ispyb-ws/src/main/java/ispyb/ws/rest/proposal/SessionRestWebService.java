@@ -142,11 +142,11 @@ public class SessionRestWebService extends RestWebService
     long id = this.logInit(methodName, logger, sessionID);
     List<Map<String, Object>> dummySessions = buildDummySessions();
 
-    if( sessionID == 1000 )
+    if( sessionID == 1 )
     {
       return Response.ok( dummySessions.get( 0 ) ).build();
     }
-    else if( sessionID == 2000 )
+    else if( sessionID == 2 )
     {
       return Response.ok( dummySessions.get( 1 ) ).build();
     }
