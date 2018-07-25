@@ -148,7 +148,8 @@ public class AutoprocintegrationRestWebService extends MXRestWebService {
   @ApiResponses
     ( {
       @ApiResponse( code = 200, message = "Ok" ),
-      @ApiResponse( code = 400, message = "Some error" )
+      @ApiResponse( code = 400, message = "Some error" ),
+      @ApiResponse( code = 404, message = "No auto proc scaling records found for the input autoProcIntId" )
     } )
   public Response retrieveAutoProcIndexScalingSuccess
   (
@@ -160,12 +161,43 @@ public class AutoprocintegrationRestWebService extends MXRestWebService {
 
   ) throws Exception
   {
-    return null;
+    String methodName = "retrieveAutoProcIndexScalingSuccess";
+    long id = this.logInit(methodName, logger, autoProcIntId);
+
+    if(autoProcIntId != 1)
+    {
+      Map<String, Object> error = new HashMap<>();
+      String errorMsg = "The input autoProcInt ID[ " + autoProcIntId+ " ] has no auto proc scaling " +
+                        "results associated with it";
+
+      error.put( "error", errorMsg );
+      return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
+    }
+
+    return Response.ok( buildDummyAutoProcIndexScalingSuccessData() ).build();
   }
 
 
+  private List<Map<String, Object>> buildDummyAutoProcIndexScalingSuccessData()
+  {
+    List<Map<String, Object>> dummyAutoProcIndScalingSuccData = new ArrayList<>();
 
+    for( int i = 0; i < 5; i++ )
+    {
+      Map<String, Object> dummyAutoProcIndScalingSucc = new HashMap<>();
 
+      int cellValues = ( i + 5 * 10 );
+      int cellSecondaryValues = ( i + 10 * 5 );
+
+      dummyAutoProcIndScalingSucc.put( "autoProcIntegrationId", "1" );
+      dummyAutoProcIndScalingSucc.put( "autoProcScalingId", i );
+      dummyAutoProcIndScalingSucc.put( "RNUM", i );
+
+      dummyAutoProcIndScalingSuccData.add( dummyAutoProcIndScalingSucc );
+    }
+
+    return dummyAutoProcIndScalingSuccData;
+  }
 
 
 
