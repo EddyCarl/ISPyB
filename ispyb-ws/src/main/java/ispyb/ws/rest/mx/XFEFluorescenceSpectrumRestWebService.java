@@ -25,11 +25,14 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
 
 import io.swagger.annotations.Api;
+import utils.DLSApiAuthenticationChecker;
 import utils.SwaggerTagConstants;
 
 @Api( tags = SwaggerTagConstants.LEGACY_TAG )
@@ -58,6 +61,7 @@ public class XFEFluorescenceSpectrumRestWebService extends RestWebService {
     ( {
       @ApiResponse( code = 200, message = "Ok" ),
       @ApiResponse( code = 400, message = "Some error" ),
+      @ApiResponse( code = 401, message = "You are not authorised to use this endpoint" ),
       @ApiResponse( code = 404, message = "No fluorescence spectrum records found for the input sessionId" )
     } )
   public Response retrieveFluorescenceSpectrumData
@@ -66,12 +70,21 @@ public class XFEFluorescenceSpectrumRestWebService extends RestWebService {
     @ApiParam
       (
         name = "id", required = true, example = "12", value = "The ID of the session to retrieve"
-      ) @PathParam( "id" ) int sessionID
+      ) @PathParam( "id" ) int sessionID, @Context HttpHeaders headers
 
-  ) throws Exception
+    ) throws Exception
   {
     String methodName = "retrieveFluorescenceSpectrumData";
     long id = this.logInit(methodName, logger, sessionID);
+
+    String apiToken = DLSApiAuthenticationChecker.retrieveToken( headers );
+
+    if( !DLSApiAuthenticationChecker.userIsAuthenticated( this.getLogin3Service(), apiToken ) )
+    {
+      Map<String, Object> error = new HashMap<>();
+      error.put( "error", "You are not authorised to use this endpoint" );
+      return Response.status(Response.Status.UNAUTHORIZED).entity( error ).build();
+    }
 
     if(sessionID != 1)
     {
