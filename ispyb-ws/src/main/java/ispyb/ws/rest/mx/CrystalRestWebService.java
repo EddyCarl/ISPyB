@@ -17,11 +17,13 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.core.Response;
 
+import dls.model.CrystalSnapshotPaths;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
+import ispyb.server.mx.vos.collections.DataCollection3VO;
 import ispyb.server.mx.vos.sample.BLSample3VO;
 import org.apache.log4j.Logger;
 import org.apache.poi.util.StringUtil;
@@ -51,8 +53,8 @@ public class CrystalRestWebService extends MXRestWebService {
     (
       value = "Retrieve the crystal snapshot image paths.",
       notes = "Retrieve the crystal snapshot image paths for a particular data-collection specified by the input ID.",
-      tags = { SwaggerTagConstants.CRYSTAL_SNAPSHOT_TAG }, response = Crystal3VO.class,
-      responseContainer = "List", authorizations = @Authorization( "apiKeyAuth" )
+      tags = { SwaggerTagConstants.CRYSTAL_SNAPSHOT_TAG },
+      response = CrystalSnapshotPaths.class, authorizations = @Authorization( "apiKeyAuth" )
     )
   @Produces({ "application/json" })
   @ApiResponses
@@ -66,7 +68,7 @@ public class CrystalRestWebService extends MXRestWebService {
 
     @ApiParam
       (
-        name = "id", required = true, example = "12", value = "The ID of the data-collection to retrieve"
+        name = "id", required = true, example = "12", value = "The Id of the data-collection to retrieve"
       ) @PathParam( "id" ) int dataCollectionId
 
   ) throws Exception
@@ -74,14 +76,28 @@ public class CrystalRestWebService extends MXRestWebService {
     String methodName = "retrieveCrystalSnapshotPaths";
     long id = this.logInit(methodName, logger, dataCollectionId );
 
-    if(dataCollectionId != 1)
+    // Need to check the auth token here before getting anything...
+    // The DataCollectionId must belong to a users sessions...
+
+    // Get a dataCollection entity by ID if available
+    DataCollection3VO dataCollection = this.getDataCollection3Service().findByPk(dataCollectionId, false, false);
+
+    if( dataCollection == null )
     {
       Map<String, Object> error = new HashMap<>();
-      error.put( "error", "The input dataCollection ID[" + dataCollectionId + "] has no crystal snapshot path records associated" );
+      error.put( "error", "The input dataCollectionId[" + dataCollectionId + "] could not be found in the database." );
       return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
     }
 
-    return Response.ok( buildDummyCrystalSnapshotPathData() ).build();
+    // Get the crystal snapshot paths from that ID
+    CrystalSnapshotPaths crystalSnapshotPaths = new CrystalSnapshotPaths();
+    crystalSnapshotPaths.setCrystalSnapshotFullPathOne( dataCollection.getXtalSnapshotFullPath1() );
+    crystalSnapshotPaths.setCrystalSnapshotFullPathTwo( dataCollection.getXtalSnapshotFullPath2() );
+    crystalSnapshotPaths.setCrystalSnapshotFullPathThree( dataCollection.getXtalSnapshotFullPath3() );
+    crystalSnapshotPaths.setCrystalSnapshotFullPathFour( dataCollection.getXtalSnapshotFullPath4() );
+    crystalSnapshotPaths.setRowNumber( 1 ); // Only returning a single entry
+
+    return Response.ok( crystalSnapshotPaths ).build();
   }
 
 

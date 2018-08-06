@@ -1,19 +1,19 @@
 /*************************************************************************************************
  * This file is part of ISPyB.
- * 
+ *
  * ISPyB is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * ISPyB is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with ISPyB.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * Contributors : S. Delageniere, R. Leal, L. Launer, K. Levik, S. Veyrier, P. Brenchereau, M. Bodin, A. De Maria Antolinos
  ****************************************************************************************************/
 package ispyb.server.mx.services.collections;
@@ -109,7 +109,7 @@ public class DataCollection3ServiceBean implements DataCollection3Service, DataC
 
 	/**
 	 * Create new DataCollection3.
-	 * 
+	 *
 	 * @param vo
 	 *            the entity to persist.
 	 * @return the persisted entity.
@@ -125,7 +125,7 @@ public class DataCollection3ServiceBean implements DataCollection3Service, DataC
 
 	/**
 	 * Update the DataCollection3 data.
-	 * 
+	 *
 	 * @param vo
 	 *            the entity data to update.
 	 * @return the updated entity.
@@ -140,7 +140,7 @@ public class DataCollection3ServiceBean implements DataCollection3Service, DataC
 
 	/**
 	 * Remove the DataCollection3 from its pk
-	 * 
+	 *
 	 * @param vo
 	 *            the entity to remove.
 	 */
@@ -154,7 +154,7 @@ public class DataCollection3ServiceBean implements DataCollection3Service, DataC
 
 	/**
 	 * Remove the DataCollection3
-	 * 
+	 *
 	 * @param vo
 	 *            the entity to remove.
 	 */
@@ -168,7 +168,7 @@ public class DataCollection3ServiceBean implements DataCollection3Service, DataC
 	/**
 	 * Finds a Scientist entity by its primary key and set linked value objects
 	 * if necessary
-	 * 
+	 *
 	 * @param pk
 	 *            the primary key
 	 * @param withLink1
@@ -188,7 +188,7 @@ public class DataCollection3ServiceBean implements DataCollection3Service, DataC
 
 	/**
 	 * Find a dataCollection by its primary key -- webservices object
-	 * 
+	 *
 	 * @param pk
 	 * @param withLink1
 	 * @param withLink2
@@ -210,7 +210,7 @@ public class DataCollection3ServiceBean implements DataCollection3Service, DataC
 
 	/**
 	 * Get all lights entities
-	 * 
+	 *
 	 * @param localEntities
 	 * @return
 	 * @throws CloneNotSupportedException
@@ -264,7 +264,7 @@ public class DataCollection3ServiceBean implements DataCollection3Service, DataC
 
 	/**
 	 * Find all DataCollection3s and set linked value objects if necessary
-	 * 
+	 *
 	 * @param withLink1
 	 * @param withLink2
 	 */
@@ -275,20 +275,37 @@ public class DataCollection3ServiceBean implements DataCollection3Service, DataC
 		return foundEntities;
 	}
 
-	@SuppressWarnings("unchecked")
-	public List<DataCollection3VO> findByShippingId(final Integer shippingId) throws Exception {
+  @SuppressWarnings("unchecked")
+  public List<DataCollection3VO> findByShippingId(final Integer shippingId) throws Exception {
 
-		String query = FIND_BY_SHIPPING_ID;
-		List<DataCollection3VO> col = this.entityManager.createNativeQuery(query, "dataCollectionNativeQuery").setParameter("shippingId", shippingId)
-				.getResultList();
-		return col;
-	}
+    String query = FIND_BY_SHIPPING_ID;
+    List<DataCollection3VO> col = this.entityManager.createNativeQuery(query, "dataCollectionNativeQuery").setParameter("shippingId", shippingId)
+      .getResultList();
+    return col;
+  }
+
+  public DataCollection3VO findByDataCollectionId(final Integer dataCollectionId) throws Exception
+  {
+    // Build up the query - Select from DataCollection table where ID = dataCollectionId
+    Query query = entityManager.createQuery( FIND_BY_PK( false, false ) );
+    query.setParameter( "pk", dataCollectionId );
+
+    // Attempt to retrieve a single result from the table
+    try
+    {
+      return ( DataCollection3VO ) query.getSingleResult();
+    }
+    catch( NoResultException nre )
+    {
+      return null;
+    }
+  }
 
 	/**
 	 * Check if user has access rights to create, change and remove
 	 * DataCollection3 entities. If not set rollback only and throw
 	 * AccessDeniedException
-	 * 
+	 *
 	 * @throws AccessDeniedException
 	 */
 	private void checkCreateChangeRemoveAccess() throws Exception {
@@ -302,7 +319,7 @@ public class DataCollection3ServiceBean implements DataCollection3Service, DataC
 
 	/**
 	 * Find the dataCollections for a given sample
-	 * 
+	 *
 	 * @param blSampleId
 	 * @param detachLight
 	 * @return
@@ -330,7 +347,7 @@ public class DataCollection3ServiceBean implements DataCollection3Service, DataC
 
 	/**
 	 * Get all lights entities
-	 * 
+	 *
 	 * @param localEntities
 	 * @return
 	 * @throws CloneNotSupportedException
@@ -347,7 +364,7 @@ public class DataCollection3ServiceBean implements DataCollection3Service, DataC
 
 	/**
 	 * Get all lights entities
-	 * 
+	 *
 	 * @param localEntities
 	 * @return
 	 * @throws CloneNotSupportedException
@@ -362,7 +379,7 @@ public class DataCollection3ServiceBean implements DataCollection3Service, DataC
 	/**
 	 * Find a dataCollection with the image directory, the image prefix and the
 	 * dataCollection Number
-	 * 
+	 *
 	 * @param imageDirectory
 	 * @param imagePrefix
 	 * @param dataCollectionNumber
@@ -395,7 +412,7 @@ public class DataCollection3ServiceBean implements DataCollection3Service, DataC
 
 	/**
 	 * Find a dataCollection with the image fileLocation and image fileName
-	 * 
+	 *
 	 * @param fileLocation
 	 * @param fileName
 	 * @return
@@ -425,7 +442,7 @@ public class DataCollection3ServiceBean implements DataCollection3Service, DataC
 
 	/**
 	 * Find a dataCollection with the image fileLocation and image fileName
-	 * 
+	 *
 	 * @param fileLocation
 	 * @param fileName
 	 * @return
@@ -454,7 +471,7 @@ public class DataCollection3ServiceBean implements DataCollection3Service, DataC
 	}
 
 	/**
-	 * 
+	 *
 	 * @param imageDirectory
 	 * @param imagePrefix
 	 * @param dataCollectionNumber
@@ -503,7 +520,7 @@ public class DataCollection3ServiceBean implements DataCollection3Service, DataC
 	}
 
 	/**
-	 * 
+	 *
 	 * @param proposalId
 	 * @param sampleName
 	 * @param proteinAcronym
@@ -631,7 +648,7 @@ public class DataCollection3ServiceBean implements DataCollection3Service, DataC
 	}
 
 	/**
-	 * 
+	 *
 	 * @param proteinAcronym
 	 * @param printableForReport
 	 * @param proposalId
@@ -675,7 +692,7 @@ public class DataCollection3ServiceBean implements DataCollection3Service, DataC
 	}
 
 	/**
-	 * 
+	 *
 	 * @param blSampleId
 	 * @param printableForReport
 	 * @param proposalId
@@ -733,7 +750,7 @@ public class DataCollection3ServiceBean implements DataCollection3Service, DataC
 
 	/**
 	 * returns the XDSInfo for a given dataCollectionId
-	 * 
+	 *
 	 * @param dataCollectionId
 	 * @return
 	 * @throws Exception
@@ -817,7 +834,7 @@ public class DataCollection3ServiceBean implements DataCollection3Service, DataC
 
 	/**
 	 * returns the pdb full path for a given dataCollectionId
-	 * 
+	 *
 	 * @param dataCollectionId
 	 * @return
 	 * @throws Exception
@@ -844,7 +861,7 @@ public class DataCollection3ServiceBean implements DataCollection3Service, DataC
 
 	/**
 	 * returns the list of dataCollections with startTime > startDate
-	 * 
+	 *
 	 * @param startDate
 	 * @return
 	 * @throws Exception
@@ -876,7 +893,7 @@ public class DataCollection3ServiceBean implements DataCollection3Service, DataC
 
 	/**
 	 * get the number of datcollections which have more then 4 images
-	 * 
+	 *
 	 * @param dcgId
 	 * @return
 	 * @throws Exception
@@ -900,7 +917,7 @@ public class DataCollection3ServiceBean implements DataCollection3Service, DataC
 
 	/**
 	 * get the number of datacollections which have less/or 4 images
-	 * 
+	 *
 	 * @param dcgId
 	 * @return
 	 * @throws Exception
@@ -927,7 +944,7 @@ public class DataCollection3ServiceBean implements DataCollection3Service, DataC
 
 	/**
 	 * Checks the data for integrity. E.g. if references and categories exist.
-	 * 
+	 *
 	 * @param vo
 	 *            the data to check
 	 * @param create
@@ -962,7 +979,7 @@ public class DataCollection3ServiceBean implements DataCollection3Service, DataC
 		List<DataCollection3VO> foundEntities = crit.list();
 		return foundEntities;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public List<DataCollection3VO> findByProposalId(int proposalId, int dataCollectionId) throws Exception {
 		Session session = (Session) this.entityManager.getDelegate();

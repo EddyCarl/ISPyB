@@ -18,6 +18,10 @@ public class DLSApiAuthenticationChecker
     {
       if( headers.getRequestHeader( API_TOKEN_HEADER ) != null )
       {
+
+        // I think we hit an exception when trying to "get(0)" if the API token hasn't actually been input
+        // into the header... Investigate further
+
         if( headers.getRequestHeader( API_TOKEN_HEADER ).get( 0 ) != null )
         {
           apiToken = headers.getRequestHeader( API_TOKEN_HEADER ).get( 0 );
