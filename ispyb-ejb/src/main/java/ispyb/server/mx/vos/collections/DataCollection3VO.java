@@ -236,11 +236,11 @@ public class DataCollection3VO extends ISPyBValueObject implements Cloneable {
 	@Column(name = "bestWilsonPlotPath")
 	protected String bestWilsonPlotPath;
 
-//	@Column(name = "imageQualityIndicatorsPlotPath")
-//	protected String imageQualityIndicatorsPlotPath;
-//
-//	@Column(name = "imageQualityIndicatorsCSVPath")
-//	protected String imageQualityIndicatorsCSVPath;
+	@Column(name = "imageQualityIndicatorsPlotPath")
+	protected String imageQualityIndicatorsPlotPath;
+
+	@Column(name = "imageQualityIndicatorsCSVPath")
+	protected String imageQualityIndicatorsCSVPath;
 
 	@Column(name = "magnification")
 	protected Integer magnification;
