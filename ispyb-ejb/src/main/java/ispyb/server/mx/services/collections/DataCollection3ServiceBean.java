@@ -284,7 +284,7 @@ public class DataCollection3ServiceBean implements DataCollection3Service, DataC
     return col;
   }
 
-  public DataCollection3VO findByDataCollectionId(final Integer dataCollectionId) throws Exception
+  public DataCollection3VO findByDataCollectionId(final Integer dataCollectionId)
   {
     // Build up the query - Select from DataCollection table where ID = dataCollectionId
     Query query = entityManager.createQuery( FIND_BY_PK( false, false ) );
