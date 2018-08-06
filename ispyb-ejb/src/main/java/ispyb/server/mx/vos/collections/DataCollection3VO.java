@@ -1,19 +1,19 @@
 /*************************************************************************************************
  * This file is part of ISPyB.
- * 
+ *
  * ISPyB is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * ISPyB is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with ISPyB.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * Contributors : S. Delageniere, R. Leal, L. Launer, K. Levik, S. Veyrier, P. Brenchereau, M. Bodin, A. De Maria Antolinos
  ****************************************************************************************************/
 
@@ -46,7 +46,7 @@ import org.apache.log4j.Logger;
 
 /**
  * DataCollection3 value object mapping table DataCollection
- * 
+ *
  */
 @Entity
 @Table(name = "DataCollection")
@@ -236,20 +236,20 @@ public class DataCollection3VO extends ISPyBValueObject implements Cloneable {
 	@Column(name = "bestWilsonPlotPath")
 	protected String bestWilsonPlotPath;
 
-	@Column(name = "imageQualityIndicatorsPlotPath")
-	protected String imageQualityIndicatorsPlotPath;
-	
-	@Column(name = "imageQualityIndicatorsCSVPath")
-	protected String imageQualityIndicatorsCSVPath;
-	
+//	@Column(name = "imageQualityIndicatorsPlotPath")
+//	protected String imageQualityIndicatorsPlotPath;
+//
+//	@Column(name = "imageQualityIndicatorsCSVPath")
+//	protected String imageQualityIndicatorsCSVPath;
+
 	@Column(name = "magnification")
 	protected Integer magnification;
-	
+
 	@Column(name = "voltage")
 	protected Float voltage;
-	
-	
-	
+
+
+
 	@OneToMany
 	@JoinColumn(name = "dataCollectionId")
 	private Set<Image3VO> imageVOs;
@@ -978,7 +978,7 @@ public class DataCollection3VO extends ISPyBValueObject implements Cloneable {
 	/**
 	 * Checks the values of this value object for correctness and completeness. Should be done before persisting the
 	 * data in the DB.
-	 * 
+	 *
 	 * @param create
 	 *            should be true if the value object is just being created in the DB, this avoids some checks like
 	 *            testing the primary key
@@ -1081,7 +1081,7 @@ public class DataCollection3VO extends ISPyBValueObject implements Cloneable {
 
 	/**
 	 * returns the acronym of the associated protein
-	 * 
+	 *
 	 * @return
 	 */
 	public String getAcronym() {
