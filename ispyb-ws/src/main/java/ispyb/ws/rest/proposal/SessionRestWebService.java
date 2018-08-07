@@ -65,7 +65,47 @@ public class SessionRestWebService extends RestWebService
   public Response retrieveSessions() throws Exception
   {
     String methodName = "retrieveSessions";
-    long id = this.logInit(methodName, logger);
+    long id = this.logInit(methodName, logger );
+
+    // * CE * Need to check the auth token here before getting anything...
+    //        The DataCollectionId must belong to a users sessions.
+
+    // Retrieve a list of sessions if possible
+    List<Session3VO> sessions = this.getSession3Service().findAll( false, false, false );
+
+    if( sessions == null )
+    {
+      Map<String, Object> error = new HashMap<>();
+      error.put( "error", "There were no sessions found in the database." );
+      return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
+    }
+
+    if( sessions.isEmpty() )
+    {
+      Map<String, Object> error = new HashMap<>();
+      error.put( "error", "There were no sessions found in the database." );
+      return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
+    }
+
+    // Build the response to send the session information back
+    System.out.println( "Session List: " + sessions.size() );
+
+    int rowIdx = 1;
+    for( Session3VO session3VO : sessions )
+    {
+      System.out.println( "session3VO.getSessionId() = " + session3VO.getSessionId() );
+      System.out.println( "session3VO.getProposalVOId() = " + session3VO.getProposalVOId() );
+      System.out.println( "session3VO.getStartDate() = " + session3VO.getStartDate() );
+      System.out.println( "session3VO.getBeamlineName() = " + session3VO.getBeamlineName() );
+      System.out.println( "session3VO.getBeamlineOperator() = " + session3VO.getBeamlineOperator() );
+      System.out.println( "session3VO.getProjectCode() = " + session3VO.getProjectCode() );
+      System.out.println( "session3VO.getVisit_number() = " + session3VO.getVisit_number() );
+      System.out.println( "session3VO.rowIdx() = " + rowIdx++ );
+    }
+
+//    // Create the response using the snapshot paths from the obtained dataCollection entity
+//    return Response.ok( buildCrystalSnapshotPathResponse( dataCollection ) ).build();
+//
 
     return Response.ok( buildDummySessions() ).build();
   }
