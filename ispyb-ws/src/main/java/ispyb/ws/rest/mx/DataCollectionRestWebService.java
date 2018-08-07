@@ -20,6 +20,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
+import dls.model.ScreeningCommentsResponse;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
@@ -530,57 +531,87 @@ public class DataCollectionRestWebService extends MXRestWebService {
     @ApiParam
       (
         name = "id", required = true, example = "12", value = "The ID of the data collection to retrieve"
-      ) @PathParam( "id" ) int dataCollectionID
+      ) @PathParam( "id" ) int dataCollectionId
 
   ) throws Exception
   {
     String methodName = "retrieveScreeningComments";
-    long id = this.logInit(methodName, logger, dataCollectionID );
+    long id = this.logInit(methodName, logger, dataCollectionId );
 
-    if(dataCollectionID != 1)
+    // * CE * Need to check the auth token here before getting anything...
+    //        The DataCollectionId must belong to a users sessions.
+
+    // Get a dataCollection entity by ID if available
+    DataCollection3VO dataCollection = this.getDataCollection3Service().findByPk(dataCollectionId, false, false);
+
+    if( dataCollection == null )
     {
       Map<String, Object> error = new HashMap<>();
-      error.put( "error", "The input dataCollection ID[" + dataCollectionID + "] has no screening comments records associated" );
+      error.put( "error", "The input dataCollectionId[" + dataCollectionId + "] could not be found in the database." );
       return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
     }
 
-    return Response.ok( buildDummyScreeningCommentsData() ).build();
-  }
+    // Get a list of screenings using the dataCollectionId
+    List<Screening3VO> screenings = this.getScreening3Service().findFiltered( dataCollectionId );
 
+    Map<String, Object> emptyScreeningsError = new HashMap<>();
+    String errorMessage = "Unable to find any screening entities for the input dataCollectionId[" + dataCollectionId + "].";
+    emptyScreeningsError.put( "error", errorMessage );
 
-
-  private List<Map<String, Object>> buildDummyScreeningCommentsData()
-  {
-    List<Map<String, Object>> dummyScreeningCommentsData = new ArrayList<>();
-
-    for( int i = 0; i < 10; i++ )
+    if( screenings == null )
     {
-      Map<String, Object> dummyScreeningComment = new HashMap<>();
-      Random rand = new Random();
-
-      dummyScreeningComment.put( "screeningId", i );
-      dummyScreeningComment.put( "dataCollectionId", "1" );
-      dummyScreeningComment.put( "comments", "Long dummy comment " + i );
-      dummyScreeningComment.put( "shortComments", "Short dummy comment " + i );
-      dummyScreeningComment.put( "RNUM", i );
-
-      dummyScreeningCommentsData.add( dummyScreeningComment );
+      return Response.status(Response.Status.NOT_FOUND).entity( emptyScreeningsError ).build();
+    }
+    if( screenings.isEmpty() )
+    {
+      return Response.status(Response.Status.NOT_FOUND).entity( emptyScreeningsError ).build();
     }
 
-    return dummyScreeningCommentsData;
+    // Create the response using the data obtained
+    return Response.ok( buildScreeningCommentsResponse( dataCollectionId, screenings ) ).build();
   }
 
 
 
 
 
+  /**
+   * Utility method used to build a list of ScreeningCommentsResponse objects for each of the returned
+   * Screening entities in the database. They will hold the relevant screening data and the dataCollectionId.
+   *
+   * @param dataCollectionId - The dataCollectionId input by the user
+   * @param screenings - The list of obtained Screening entities from the database
+   *
+   * @return List<ScreeningCommentsResponse> - A list of response objects built to hold the relevant data
+   */
+  private List<ScreeningCommentsResponse> buildScreeningCommentsResponse( final int dataCollectionId,
+                                                                          final List<Screening3VO> screenings )
+  {
+    List<ScreeningCommentsResponse> screeningCommentsResponses = new ArrayList<>();
 
+    /*
+     * Loop through the obtained Screening entities and pull the relevant information
+     * needed to create the response objects to be sent back to the user
+     */
+    int rowIdx = 1;
+    for( Screening3VO screening : screenings )
+    {
+      ScreeningCommentsResponse screeningCommentsResponse = new ScreeningCommentsResponse();
+      screeningCommentsResponse.setScreeningId( screening.getScreeningId() );
+      screeningCommentsResponse.setDataCollectionId( dataCollectionId );
+      screeningCommentsResponse.setComments( screening.getComments() );
+      screeningCommentsResponse.setShortComments( screening.getShortComments() );
+      screeningCommentsResponse.setRowNumber( rowIdx++ );
+      screeningCommentsResponses.add( screeningCommentsResponse );
+    }
+
+    return screeningCommentsResponses;
+  }
 
 
   /*
    * ---- Legacy endpoints below this point ----
    */
-
   @RolesAllowed({ "User", "Manager", "Industrial", "Localcontact" })
 	@GET
 	@GZIP

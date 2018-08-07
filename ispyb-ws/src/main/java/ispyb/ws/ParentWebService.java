@@ -44,6 +44,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
+import ispyb.server.mx.services.screening.Screening3Service;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 
@@ -261,9 +262,13 @@ public  class ParentWebService {
 		return (Dewar3Service) Ejb3ServiceLocator.getInstance().getLocalService(Dewar3Service.class);
 	}
 
-	protected SchemaStatusService getSchemaStatusService() throws NamingException {
-		return (SchemaStatusService) Ejb3ServiceLocator.getInstance().getLocalService(SchemaStatusService.class);
-	}
+  protected SchemaStatusService getSchemaStatusService() throws NamingException {
+    return (SchemaStatusService) Ejb3ServiceLocator.getInstance().getLocalService(SchemaStatusService.class);
+  }
+
+  protected Screening3Service getScreening3Service() throws NamingException {
+    return (Screening3Service) Ejb3ServiceLocator.getInstance().getLocalService(Screening3Service.class);
+  }
 
 	/**
 	 * Gets proposal Id by login name
