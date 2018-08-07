@@ -16,6 +16,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
+import dls.model.ProposalResponse;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.Authorization;
@@ -122,7 +123,7 @@ public class ProposalRestWebService extends MXRestWebService
    * Used to retrieve the information related to a specific proposal stored in the database, based on the input
    * proposal ID in the endpoint (if it is available to the user currently logged into the system.)
    *
-   * @param   proposalID  - Input proposalID used to retrieve information for
+   * @param   proposalId  - Input proposalId used to retrieve information for
    *
    * @return  Response    - Returns a relevant HTTP response
    */
@@ -149,49 +150,57 @@ public class ProposalRestWebService extends MXRestWebService
     @ApiParam
     (
       name = "id", required = true, example = "131", value = "The ID of the proposal to retrieve"
-    ) @PathParam( "id" ) int proposalID
+    ) @PathParam( "id" ) int proposalId
 
   ) throws Exception
   {
     String methodName = "retrieveProposals";
-    long id = this.logInit(methodName, logger, proposalID);
+    long id = this.logInit(methodName, logger, proposalId);
 
-    switch( proposalID )
+    // * CE * Need to check the auth token here before getting anything...
+    //        The DataCollectionId must belong to a users sessions.
+
+    // Retrieve a proposal instance from the database if possible, using the input ID
+    Proposal3VO proposal3VO = this.getProposal3Service().findProposalById( proposalId );
+
+    if( proposal3VO == null )
     {
-      case 1:
-        return Response.ok( buildDummyProposals().get( 0 ) ).build();
-      case 2:
-        return Response.ok( buildDummyProposals().get( 1 ) ).build();
-      case 3:
-        return Response.ok( buildDummyProposals().get( 2 ) ).build();
-      default:
-        Map<String, String> error = new HashMap<>();
-        error.put( "error", "The input proposalId[" + proposalID + "] does not exist." );
-        return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
+      Map<String, Object> error = new HashMap<>();
+      error.put( "error", "The input proposalId[" + proposalId + "] could not be found in the database." );
+      return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
     }
+
+    // Create the response using the entity obtained from the database
+    return Response.ok( buildProposalResponse( proposal3VO ) ).build();
   }
 
 
-  @RolesAllowed({"User", "Manager", "Industrial", "Localcontact"})
-  @GET
-  @Path("/simple-proposals")
-  @Produces({ "application/json" })
-  @ApiOperation( value = "Return list of proposals", httpMethod="GET",
-    authorizations = {@Authorization(value="apiKeyAuth" ) } )
-  public Response getSimpleProposals() throws Exception {
-    String methodName = "getSimpleProposals";
-    long id = this.logInit(methodName, logger);
-    try {
-      List<Map<String, Object>> proposals = this.getProposalsFromTokenNoAuth();
-      this.logFinish(methodName, id, logger);
-      return this.sendResponse(proposals);
-    } catch (Exception e) {
-      return this.logError(methodName, e, id, logger);
-    }
+  /**
+   * Utility method used to build a ProposalResponse object which will hold the relevant
+   * data that is taken from the Proposal3VO entity retrieved from the database.
+   *
+   * @param proposal - The obtained Proposal3VO entity from the database
+   *
+   * @return ProposalResponse - A response object holding the relevant data
+   */
+  private ProposalResponse buildProposalResponse( Proposal3VO proposal )
+  {
+    ProposalResponse proposalResponse = new ProposalResponse();
+
+    proposalResponse.setProposalId( proposal.getProposalId() );
+    proposalResponse.setProposalNumber( proposal.getNumber() );
+    proposalResponse.setProposalCode( proposal.getCode() );
+    proposalResponse.setProposalType( proposal.getType() );
+    proposalResponse.setTitle( proposal.getTitle() );
+    proposalResponse.setRowNumber( 1 );   // Single return value
+
+    return proposalResponse;
   }
 
 
-
+  /*
+   * ---- Legacy endpoints below this point ----
+   */
   @RolesAllowed({"User", "Manager", "Industrial", "Localcontact"})
   @GET
   @Path("{token}/proposal/list")
@@ -336,13 +345,6 @@ public class ProposalRestWebService extends MXRestWebService
 			return this.logError("listProposal", e, id, logger);
 		}
 	}
-
-
-	private List<Map<String, Object>> getProposalsFromTokenNoAuth () throws Exception {
-		List<Map<String, Object>> proposals = new ArrayList<Map<String,Object>>();
-		return this.getProposal3Service().findProposals();
-	}
-
 
 	private List<Map<String, Object>> getProposalsFromToken (String token) throws Exception {
 		Login3VO login3VO = this.getLogin3Service().findByToken(token);
