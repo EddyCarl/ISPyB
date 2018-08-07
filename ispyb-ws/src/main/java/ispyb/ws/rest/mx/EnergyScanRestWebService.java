@@ -1,5 +1,7 @@
 package ispyb.ws.rest.mx;
 
+import dls.dto.EnergyScanDataDTO;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
@@ -9,13 +11,10 @@ import ispyb.server.common.util.ejb.Ejb3ServiceLocator;
 import ispyb.server.mx.services.collections.EnergyScan3Service;
 import ispyb.server.mx.services.ws.rest.energyscan.EnergyScanRestWsService;
 import ispyb.server.mx.vos.collections.EnergyScan3VO;
+import ispyb.server.mx.vos.collections.Session3VO;
 import ispyb.ws.rest.RestWebService;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import org.apache.log4j.Logger;
+import utils.SwaggerTagConstants;
 
 import javax.annotation.security.RolesAllowed;
 import javax.naming.NamingException;
@@ -24,17 +23,17 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
-
-import org.apache.log4j.Logger;
-
-import io.swagger.annotations.Api;
-import utils.SwaggerTagConstants;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Api( tags = SwaggerTagConstants.LEGACY_TAG )
 @Path("/")
-public class EnergyScanRestWebService extends RestWebService {
-	 private final static Logger logger = Logger.getLogger(EnergyScanRestWebService.class);
-
+public class EnergyScanRestWebService extends RestWebService
+{
+  private final static Logger logger = Logger.getLogger(EnergyScanRestWebService.class);
 
   /**
    * Used to retrieve Energy Scan information for any records relating to the users session.
@@ -63,63 +62,89 @@ public class EnergyScanRestWebService extends RestWebService {
     @ApiParam
       (
         name = "id", required = true, example = "12", value = "The ID of the session to retrieve"
-      ) @PathParam( "id" ) int sessionID
+      ) @PathParam( "id" ) int sessionId
 
   ) throws Exception
   {
     String methodName = "retrieveEnergyScanData";
-    long id = this.logInit(methodName, logger, sessionID);
-    List<Map<String, Object>> dummyEnergyScans = buildDummyEnergyScans();
+    long id = this.logInit(methodName, logger, sessionId);
 
-    if( sessionID == 1 )
-    {
-      return Response.ok( dummyEnergyScans ).build();
-    }
-    else
+    // Retrieve the session entity using the input sessionId
+    Session3VO session = this.getSession3Service().findByPk( sessionId, false, true, false );
+
+    if( session == null )
     {
       Map<String, String> error = new HashMap<>();
-      error.put( "error", "The input sessionId[" + sessionID + "] doesn't have any associated energy scan records" );
+      error.put( "error", "The input sessionId[" + sessionId + "] could not be found in the database" );
       return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
     }
-  }
 
+    // Retrieve any energy scan entities attached to the session entity
+    List<EnergyScan3VO> energyScans = session.getEnergyScansList();
 
-  private List<Map<String, Object>> buildDummyEnergyScans()
-  {
-    List<Map<String, Object>> dummyEnergyScans = new ArrayList<>();
-
-    for( int i = 0; i < 5; i++ )
+    if( energyScans == null )
     {
-      Map<String, Object> dummyEnergyScan = new HashMap<>();
-      dummyEnergyScan.put( "sessionId", "1" );
-      dummyEnergyScan.put( "energyScanId", i );
-      dummyEnergyScan.put( "element", i );
-      dummyEnergyScan.put( "startEnergy", i );
-      dummyEnergyScan.put( "endEnergy", (i + 5) );
-      dummyEnergyScan.put( "peakEnergy", (i + 5) );
-      dummyEnergyScan.put( "peakFPrime", "0" );
-      dummyEnergyScan.put( "peakFDoublePrime", "0" );
-      dummyEnergyScan.put( "edgeEnergy", "0" );
-      dummyEnergyScan.put( "startTime", "2016-04-18 11:00:00" );
-      dummyEnergyScan.put( "inflectionEnergy", "0" );
-      dummyEnergyScan.put( "inflectionFPrime", "0" );
-      dummyEnergyScan.put( "inflectionFDoublePrime", "0" );
-      dummyEnergyScan.put( "jpegChoochFileFullPath", "/dummy/jpeg/filepath" );
-      dummyEnergyScan.put( "RNUM", i );
-
-      dummyEnergyScans.add( dummyEnergyScan );
+      Map<String, String> error = new HashMap<>();
+      error.put( "error", "The input sessionId[" + sessionId + "] doesn't have any associated energy scan records" );
+      return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
     }
 
-    return dummyEnergyScans;
+    if( energyScans.isEmpty() )
+    {
+      Map<String, String> error = new HashMap<>();
+      error.put( "error", "The input sessionId[" + sessionId + "] doesn't have any associated energy scan records" );
+      return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
+    }
+
+    return Response.ok( buildEnergyScanDataResponse( sessionId, energyScans ) ).build();
   }
 
 
+  /**
+   * Utility method used to build a list of EnergyScanDTO objects which hold the relevant data
+   * required for the response. Each object is populated with data retrieved from the EnergyScan3VO entities
+   * obtained from the database.
+   *
+   * @param sessionId - The sessionId to be used in each EnergyScanDTO (Passed in by the user)
+   * @param energyScans - A list of the EnergyScan3VO entities retrieved from the database
+   *
+   * @return List<EnergyScanDataDTO> - A list of the response objects holding just the relevant data
+   */
+  private List<EnergyScanDataDTO> buildEnergyScanDataResponse( final int sessionId, List<EnergyScan3VO> energyScans )
+  {
+    List<EnergyScanDataDTO> energyScanDataDTOList = new ArrayList<>();
+
+    int rowNumber = 1;
+    for( EnergyScan3VO energyScan : energyScans )
+    {
+      EnergyScanDataDTO energyScanDataDTO = new EnergyScanDataDTO();
+
+      energyScanDataDTO.setSessionId( sessionId );
+      energyScanDataDTO.setEnergyScanId( energyScan.getEnergyScanId() );
+      energyScanDataDTO.setElement( energyScan.getElement() );
+      energyScanDataDTO.setStartEnergy( energyScan.getStartEnergy() );
+      energyScanDataDTO.setEndEnergy( energyScan.getEndEnergy() );
+      energyScanDataDTO.setPeakEnergy( energyScan.getPeakEnergy() );
+      energyScanDataDTO.setPeakFPrime( energyScan.getPeakFPrime() );
+      energyScanDataDTO.setPeakFDoublePrime( energyScan.getPeakFDoublePrime() );
+      energyScanDataDTO.setEdgeEnergy( energyScan.getEdgeEnergy() );
+      energyScanDataDTO.setStartTime( energyScan.getStartTime() );
+      energyScanDataDTO.setInflectionEnergy( energyScan.getInflectionEnergy() );
+      energyScanDataDTO.setInflectionFPrime( energyScan.getInflectionFPrime() );
+      energyScanDataDTO.setInflectionFDoublePrime( energyScan.getInflectionFDoublePrime() );
+      energyScanDataDTO.setJpegChoochFileFullPath( energyScan.getJpegChoochFileFullPath() );
+      energyScanDataDTO.setRowNumber( rowNumber++ );
+
+      energyScanDataDTOList.add( energyScanDataDTO );
+    }
+
+    return energyScanDataDTOList;
+  }
 
 
   /*
    * ---- Legacy endpoints below this point ----
    */
-
     @Path("{token}/proposal/{proposal}/mx/energyscan/session/{sessionId}/list")
 	@RolesAllowed({"User", "Manager", "Industrial", "Localcontact"})
 	@GET
