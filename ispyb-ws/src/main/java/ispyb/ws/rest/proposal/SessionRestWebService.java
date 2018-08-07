@@ -1,5 +1,6 @@
 package ispyb.ws.rest.proposal;
 
+import dls.model.SessionListResponse;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
@@ -87,27 +88,8 @@ public class SessionRestWebService extends RestWebService
       return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
     }
 
-    // Build the response to send the session information back
-    System.out.println( "Session List: " + sessions.size() );
-
-    int rowIdx = 1;
-    for( Session3VO session3VO : sessions )
-    {
-      System.out.println( "session3VO.getSessionId() = " + session3VO.getSessionId() );
-      System.out.println( "session3VO.getProposalVOId() = " + session3VO.getProposalVOId() );
-      System.out.println( "session3VO.getStartDate() = " + session3VO.getStartDate() );
-      System.out.println( "session3VO.getBeamlineName() = " + session3VO.getBeamlineName() );
-      System.out.println( "session3VO.getBeamlineOperator() = " + session3VO.getBeamlineOperator() );
-      System.out.println( "session3VO.getProjectCode() = " + session3VO.getProjectCode() );
-      System.out.println( "session3VO.getVisit_number() = " + session3VO.getVisit_number() );
-      System.out.println( "session3VO.rowIdx() = " + rowIdx++ );
-    }
-
-//    // Create the response using the snapshot paths from the obtained dataCollection entity
-//    return Response.ok( buildCrystalSnapshotPathResponse( dataCollection ) ).build();
-//
-
-    return Response.ok( buildDummySessions() ).build();
+    // Create the response using the snapshot paths from the obtained dataCollection entity
+    return Response.ok( buildSessionListResponses( sessions ) ).build();
   }
 
 
@@ -200,11 +182,42 @@ public class SessionRestWebService extends RestWebService
 
 
 
+  /**
+   * Utility method used to build a list of SessionListResponse objects which will hold the relevant
+   * data that is taken from the Session3VO entities retrieved from the database.
+   *
+   * @param sessions - The obtained list of Session3VO entities from the database
+   *
+   * @return List<SessionListResponse> - A list of the response objects to hold the data
+   */
+  private List<SessionListResponse> buildSessionListResponses( List<Session3VO> sessions )
+  {
+    List<SessionListResponse> sessionListResponses = new ArrayList<>();
+
+    int rowNumber = 1;
+    for( Session3VO session3VO : sessions )
+    {
+      SessionListResponse sessionListResponse = new SessionListResponse();
+
+      sessionListResponse.setSessionId( session3VO.getSessionId() );
+      sessionListResponse.setProposalId( session3VO.getProposalVOId() );
+      sessionListResponse.setStartDate( session3VO.getStartDate() );
+      sessionListResponse.setBeamlineName( session3VO.getBeamlineName() );
+      sessionListResponse.setBeamLineOperator( session3VO.getBeamlineOperator() );
+      sessionListResponse.setProjectCode( session3VO.getProjectCode() );
+      sessionListResponse.setVisitNumber( session3VO.getVisit_number() );
+      sessionListResponse.setRowNumber( rowNumber++ );
+
+      sessionListResponses.add( sessionListResponse );
+    }
+
+    return sessionListResponses;
+  }
+
 
   /*
    * ---- Legacy endpoints below this point ----
    */
-
   @RolesAllowed({ "User", "Manager", "Industrial", "Localcontact" })
   @POST
   @Path("{token}/proposal/{proposal}/mx/session/{sessionId}/comments/save")
