@@ -1,5 +1,28 @@
 package ispyb.ws.rest.mx;
 
+import dls.model.CrystalSnapshotPaths;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
+import ispyb.server.mx.vos.autoproc.SpaceGroup3VO;
+import ispyb.server.mx.vos.collections.DataCollection3VO;
+import ispyb.server.mx.vos.sample.Crystal3VO;
+import ispyb.server.mx.vos.sample.Protein3VO;
+import org.apache.log4j.Logger;
+import utils.SwaggerTagConstants;
+
+import javax.annotation.security.RolesAllowed;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.FormParam;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Response;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,40 +30,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import javax.annotation.security.RolesAllowed;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.core.Response;
-
-import dls.model.CrystalSnapshotPaths;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
-import io.swagger.annotations.Authorization;
-import ispyb.server.mx.vos.collections.DataCollection3VO;
-import ispyb.server.mx.vos.sample.BLSample3VO;
-import org.apache.log4j.Logger;
-import org.apache.poi.util.StringUtil;
-
-import io.swagger.annotations.Api;
-import ispyb.server.mx.vos.autoproc.GeometryClassname3VO;
-import ispyb.server.mx.vos.autoproc.SpaceGroup3VO;
-import ispyb.server.mx.vos.sample.Crystal3VO;
-import ispyb.server.mx.vos.sample.Protein3VO;
-import utils.SwaggerTagConstants;
-
 @Api( tags = SwaggerTagConstants.LEGACY_TAG )
 @Path("/")
-public class CrystalRestWebService extends MXRestWebService {
-
-	private final static Logger logger = Logger.getLogger(CrystalRestWebService.class);
-
+public class CrystalRestWebService extends MXRestWebService
+{
+  private final static Logger logger = Logger.getLogger(CrystalRestWebService.class);
 
   /**
    * Used to retrieve the crystal snapshot image paths for a given data collection ID.
@@ -76,8 +70,8 @@ public class CrystalRestWebService extends MXRestWebService {
     String methodName = "retrieveCrystalSnapshotPaths";
     long id = this.logInit(methodName, logger, dataCollectionId );
 
-    // Need to check the auth token here before getting anything...
-    // The DataCollectionId must belong to a users sessions...
+    // * CE * Need to check the auth token here before getting anything...
+    //        The DataCollectionId must belong to a users sessions.
 
     // Get a dataCollection entity by ID if available
     DataCollection3VO dataCollection = this.getDataCollection3Service().findByPk(dataCollectionId, false, false);
@@ -89,37 +83,12 @@ public class CrystalRestWebService extends MXRestWebService {
       return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
     }
 
-    // Get the crystal snapshot paths from that ID
-    CrystalSnapshotPaths crystalSnapshotPaths = new CrystalSnapshotPaths();
-    crystalSnapshotPaths.setCrystalSnapshotFullPathOne( dataCollection.getXtalSnapshotFullPath1() );
-    crystalSnapshotPaths.setCrystalSnapshotFullPathTwo( dataCollection.getXtalSnapshotFullPath2() );
-    crystalSnapshotPaths.setCrystalSnapshotFullPathThree( dataCollection.getXtalSnapshotFullPath3() );
-    crystalSnapshotPaths.setCrystalSnapshotFullPathFour( dataCollection.getXtalSnapshotFullPath4() );
-    crystalSnapshotPaths.setRowNumber( 1 ); // Only returning a single entry
-
-    return Response.ok( crystalSnapshotPaths ).build();
+    // Create the response using the snapshot paths from the obtained dataCollection entity
+    return Response.ok( buildCrystalSnapshotPathResponse( dataCollection ) ).build();
   }
 
 
-  private List<Map<String, Object>> buildDummyCrystalSnapshotPathData()
-  {
-    List<Map<String, Object>> dummyCrystalSnapshotPathData = new ArrayList<>();
 
-    for( int i = 0; i < 10; i++ )
-    {
-      Map<String, Object> dummyCrystalSnapshotPath = new HashMap<>();
-
-      dummyCrystalSnapshotPath.put( "XTALSNAPSHOTFULLPATH1", "/dls/dummy/crystal/path/1/index/" + i );
-      dummyCrystalSnapshotPath.put( "XTALSNAPSHOTFULLPATH2", "/dls/dummy/crystal/path/2/index/" + i );
-      dummyCrystalSnapshotPath.put( "XTALSNAPSHOTFULLPATH3", "/dls/dummy/crystal/path/3/index/" + i );
-      dummyCrystalSnapshotPath.put( "XTALSNAPSHOTFULLPATH4", "/dls/dummy/crystal/path/4/index/" + i );
-      dummyCrystalSnapshotPath.put( "RNUM", i );
-
-      dummyCrystalSnapshotPathData.add( dummyCrystalSnapshotPath );
-    }
-
-    return dummyCrystalSnapshotPathData;
-  }
 
 
 
@@ -195,12 +164,29 @@ public class CrystalRestWebService extends MXRestWebService {
 
 
 
+  /**
+   * Utility method used to build a CrystalSnapshotPaths object which will hold the relevant
+   * data that is taken from the DataCollection entity obtained from the database.
+   *
+   * @param dataCollection - The obtained dataCollection entity from the database
+   *
+   * @return CrystalSnapshotPaths crystalSnapshotPaths - The response object built to hold the data
+   */
+  private CrystalSnapshotPaths buildCrystalSnapshotPathResponse( final DataCollection3VO dataCollection )
+  {
+    CrystalSnapshotPaths crystalSnapshotPaths = new CrystalSnapshotPaths();
+    crystalSnapshotPaths.setCrystalSnapshotFullPathOne( dataCollection.getXtalSnapshotFullPath1() );
+    crystalSnapshotPaths.setCrystalSnapshotFullPathTwo( dataCollection.getXtalSnapshotFullPath2() );
+    crystalSnapshotPaths.setCrystalSnapshotFullPathThree( dataCollection.getXtalSnapshotFullPath3() );
+    crystalSnapshotPaths.setCrystalSnapshotFullPathFour( dataCollection.getXtalSnapshotFullPath4() );
+    crystalSnapshotPaths.setRowNumber( 1 ); // Only returning a single entry (Not sure if this ought to be changed?)
+    return crystalSnapshotPaths;
+  }
 
 
   /*
    * ---- Legacy endpoints below this point ----
    */
-
 	@RolesAllowed({ "User", "Manager", "Industrial", "Localcontact" })
 	@GET
 	@Path("{token}/proposal/{proposal}/mx/crystal/datacollection/{dataCollectionId}/pdb/download")
