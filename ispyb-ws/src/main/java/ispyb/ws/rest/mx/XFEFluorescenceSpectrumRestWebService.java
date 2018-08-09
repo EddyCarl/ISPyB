@@ -1,5 +1,6 @@
 package ispyb.ws.rest.mx;
 
+import dls.dto.XFEFluorescenceSpectrumDTO;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
@@ -8,6 +9,7 @@ import io.swagger.annotations.Authorization;
 import ispyb.server.common.util.ejb.Ejb3ServiceLocator;
 import ispyb.server.mx.services.ws.rest.xfefluorescencespectrum.XFEFluorescenSpectrumRestWsService;
 import ispyb.server.mx.vos.autoproc.AutoProcIntegration3VO;
+import ispyb.server.mx.vos.collections.Session3VO;
 import ispyb.server.mx.vos.collections.XFEFluorescenceSpectrum3VO;
 import ispyb.ws.rest.RestWebService;
 
@@ -37,9 +39,9 @@ import utils.SwaggerTagConstants;
 
 @Api( tags = SwaggerTagConstants.LEGACY_TAG )
 @Path("/")
-public class XFEFluorescenceSpectrumRestWebService extends RestWebService {
-	 private final static Logger logger = Logger.getLogger(XFEFluorescenceSpectrumRestWebService.class);
-
+public class XFEFluorescenceSpectrumRestWebService extends RestWebService
+{
+  private final static Logger logger = Logger.getLogger(XFEFluorescenceSpectrumRestWebService.class);
 
 
   /**
@@ -70,12 +72,12 @@ public class XFEFluorescenceSpectrumRestWebService extends RestWebService {
     @ApiParam
       (
         name = "id", required = true, example = "12", value = "The ID of the session to retrieve"
-      ) @PathParam( "id" ) int sessionID, @Context HttpHeaders headers
+      ) @PathParam( "id" ) int sessionId, @Context HttpHeaders headers
 
     ) throws Exception
   {
     String methodName = "retrieveFluorescenceSpectrumData";
-    long id = this.logInit(methodName, logger, sessionID);
+    long id = this.logInit(methodName, logger, sessionId);
 
     String apiToken = DLSApiAuthenticationChecker.retrieveToken( headers );
 
@@ -86,48 +88,75 @@ public class XFEFluorescenceSpectrumRestWebService extends RestWebService {
       return Response.status(Response.Status.UNAUTHORIZED).entity( error ).build();
     }
 
-    if(sessionID != 1)
-    {
-      Map<String, Object> error = new HashMap<>();
-      String errorMsg = "The input sessionId[ " + sessionID + " ] has no fluorescence spectrum " +
-                        "records associated with it";
+    // Retrieve the session entity using the input sessionId
+    Session3VO session = this.getSession3Service().findByPk( sessionId, false, false, true );
 
-      error.put( "error", errorMsg );
+    if( session == null )
+    {
+      Map<String, String> error = new HashMap<>();
+      error.put( "error", "The input sessionId[" + sessionId + "] could not be found in the database" );
       return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
     }
 
-    return Response.ok( buildDummyFSpectrumData() ).build();
+    // Retrieve any XFESpectrum entities attached to the session entity
+    List<XFEFluorescenceSpectrum3VO> xfefSpectrumList = session.getXfeSpectrumsList();
+
+    if( xfefSpectrumList == null )
+    {
+      Map<String, String> error = new HashMap<>();
+      error.put( "error", "The input sessionId[" + sessionId + "] doesn't have any associated XFE Spectrum records" );
+      return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
+    }
+
+    if( xfefSpectrumList.isEmpty() )
+    {
+      Map<String, String> error = new HashMap<>();
+      error.put( "error", "The input sessionId[" + sessionId + "] doesn't have any associated XFE Spectrum records" );
+      return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
+    }
+
+    return Response.ok( buildXFEFluorescenceSpectrumResponse( sessionId, xfefSpectrumList ) ).build();
   }
 
 
-
-  private List<Map<String, Object>> buildDummyFSpectrumData()
+  /**
+   * Utility method used to build a list of XFEFluorescenceSpectrumDTO objects which hold the relevant data
+   * required for the response. Each object is populated with data retrieved from the XFEFluorescenceSpectrum3VO
+   * entities obtained from the database.
+   *
+   * @param sessionId - The sessionId to be used in each XFEFluorescenceSpectrumDTO (Passed in by the user)
+   * @param xfefSpectrumList - A list of the XFEFluorescenceSpectrum3VO entities retrieved from the database
+   *
+   * @return List<XFEFluorescenceSpectrumDTO> - A list of the response objects holding just the relevant data
+   */
+  private List<XFEFluorescenceSpectrumDTO>
+                            buildXFEFluorescenceSpectrumResponse( final int sessionId,
+                                                                  List<XFEFluorescenceSpectrum3VO> xfefSpectrumList )
   {
-    List<Map<String, Object>> dummyFSpectrumData = new ArrayList<>();
+    List<XFEFluorescenceSpectrumDTO> xfefSpectrumDTOList = new ArrayList<>();
 
-    for( int i = 0; i < 10; i++ )
+    int rowNumber = 1;
+    for( XFEFluorescenceSpectrum3VO xfefSpectrum : xfefSpectrumList )
     {
-      Map<String, Object> dummyFSpectrum = new HashMap<>();
+      XFEFluorescenceSpectrumDTO xfeFluorescenceSpectrumDTO = new XFEFluorescenceSpectrumDTO();
 
-      dummyFSpectrum.put( "sessionId", "1" );
-      dummyFSpectrum.put( "wavelength", i + 1 );
-      dummyFSpectrum.put( "exposureTime", i + 2 );
-      dummyFSpectrum.put( "startTime", "2016-04-18 11:00:00" );
-      dummyFSpectrum.put( "jpegScanFileFullPath", "/dls/dummy/jpeg/filepath" );
-      dummyFSpectrum.put( "energy", i + 3 );
-      dummyFSpectrum.put( "RNUM", i );
+      xfeFluorescenceSpectrumDTO.setSessionId( sessionId );
+      xfeFluorescenceSpectrumDTO.setExposureTime( xfefSpectrum.getExposureTime() );
+      xfeFluorescenceSpectrumDTO.setStartTime( xfefSpectrum.getStartTime() );
+      xfeFluorescenceSpectrumDTO.setJpegScanFileFullPath( xfefSpectrum.getJpegScanFileFullPath() );
+      xfeFluorescenceSpectrumDTO.setEnergy( xfefSpectrum.getEnergy() );
+      xfeFluorescenceSpectrumDTO.setRowNumber( rowNumber++ );
 
-      dummyFSpectrumData.add( dummyFSpectrum );
+      xfefSpectrumDTOList.add( xfeFluorescenceSpectrumDTO );
     }
 
-    return dummyFSpectrumData;
+    return xfefSpectrumDTOList;
   }
 
 
   /*
    * ---- Legacy endpoints below this point ----
    */
-
   @Path("{token}/proposal/{proposal}/mx/xrfscan/session/{sessionId}/list")
 	@RolesAllowed({"User", "Manager", "Industrial", "Localcontact"})
 	@GET
