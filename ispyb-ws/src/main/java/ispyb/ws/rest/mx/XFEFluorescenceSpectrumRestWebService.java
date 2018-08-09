@@ -1,6 +1,7 @@
 package ispyb.ws.rest.mx;
 
 import dls.dto.XFEFluorescenceSpectrumDTO;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
@@ -8,18 +9,12 @@ import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
 import ispyb.server.common.util.ejb.Ejb3ServiceLocator;
 import ispyb.server.mx.services.ws.rest.xfefluorescencespectrum.XFEFluorescenSpectrumRestWsService;
-import ispyb.server.mx.vos.autoproc.AutoProcIntegration3VO;
 import ispyb.server.mx.vos.collections.Session3VO;
 import ispyb.server.mx.vos.collections.XFEFluorescenceSpectrum3VO;
 import ispyb.ws.rest.RestWebService;
-
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import org.apache.log4j.Logger;
+import utils.DLSApiAuthenticationChecker;
+import utils.SwaggerTagConstants;
 
 import javax.annotation.security.RolesAllowed;
 import javax.naming.NamingException;
@@ -30,12 +25,13 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
-
-import org.apache.log4j.Logger;
-
-import io.swagger.annotations.Api;
-import utils.DLSApiAuthenticationChecker;
-import utils.SwaggerTagConstants;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Api( tags = SwaggerTagConstants.LEGACY_TAG )
 @Path("/")
