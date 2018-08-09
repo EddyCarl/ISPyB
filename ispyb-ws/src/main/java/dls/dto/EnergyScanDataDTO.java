@@ -1,5 +1,6 @@
 package dls.dto;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class EnergyScanDataDTO
@@ -22,7 +23,7 @@ public class EnergyScanDataDTO
 
   private String edgeEnergy;
 
-  private Date startTime;
+  private String startTime;
 
   private double inflectionEnergy;
 
@@ -143,7 +144,7 @@ public class EnergyScanDataDTO
   }
 
 
-  public Date getStartTime()
+  public String getStartTime()
   {
     return startTime;
   }
@@ -151,7 +152,8 @@ public class EnergyScanDataDTO
 
   public void setStartTime( Date startTime )
   {
-    this.startTime = startTime;
+    SimpleDateFormat sdf = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss");
+    this.startTime = sdf.format( startTime );
   }
 
 
