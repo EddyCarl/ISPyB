@@ -34,6 +34,7 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityResult;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -258,7 +259,7 @@ public class DataCollection3VO extends ISPyBValueObject implements Cloneable {
 //	@JoinColumn(name = "dataCollectionId")
 //	private Set<Screening3VO> screeningVOs;
 
-	@OneToMany
+	@OneToMany(fetch = FetchType.EAGER )
 	@JoinColumn(name = "dataCollectionId")
 	private Set<AutoProcIntegration3VO> autoProcIntegrationVOs;
 
