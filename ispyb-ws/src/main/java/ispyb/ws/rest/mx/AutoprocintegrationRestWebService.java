@@ -1,28 +1,23 @@
 package ispyb.ws.rest.mx;
 
+import dls.dto.AutoProcIntegrationDTO;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
 import ispyb.common.util.HashMapToZip;
-import ispyb.server.common.test.services.ZipperTest;
 import ispyb.server.common.util.ejb.Ejb3ServiceLocator;
 import ispyb.server.mx.services.utils.reader.AutoProcProgramaAttachmentFileReader;
 import ispyb.server.mx.services.ws.rest.autoprocessingintegration.AutoProcessingIntegrationService;
 import ispyb.server.mx.vos.autoproc.AutoProcIntegration3VO;
 import ispyb.server.mx.vos.autoproc.AutoProcProgram3VO;
 import ispyb.server.mx.vos.autoproc.AutoProcProgramAttachment3VO;
-import ispyb.server.mx.vos.autoproc.AutoProcScaling3VO;
 import ispyb.server.mx.vos.collections.DataCollection3VO;
-import ispyb.server.mx.vos.collections.EnergyScan3VO;
-import ispyb.server.mx.vos.collections.Session3VO;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import org.apache.log4j.Logger;
+import org.jboss.resteasy.annotations.GZIP;
+import utils.SwaggerTagConstants;
 
 import javax.annotation.security.RolesAllowed;
 import javax.naming.NamingException;
@@ -31,22 +26,19 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
-import org.apache.log4j.Logger;
-import org.jboss.resteasy.annotations.GZIP;
-
-import io.swagger.annotations.Api;
-import utils.SwaggerTagConstants;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Api( tags = SwaggerTagConstants.LEGACY_TAG )
 @Path("/")
-public class AutoprocintegrationRestWebService extends MXRestWebService {
-
-	private final static Logger logger = Logger.getLogger(AutoprocintegrationRestWebService.class);
-	private static final String NOT_ALLOWED = "You don't have access to this resource";
-
+public class AutoprocintegrationRestWebService extends MXRestWebService
+{
+  private final static Logger logger = Logger.getLogger(AutoprocintegrationRestWebService.class);
+  private static final String NOT_ALLOWED = "You don't have access to this resource";
 
 
   /**
@@ -84,50 +76,78 @@ public class AutoprocintegrationRestWebService extends MXRestWebService {
     String methodName = "retrieveAutoProcessingResults";
     long id = this.logInit(methodName, logger, dataCollectionId);
 
-    if(dataCollectionId != 1)
+    // Retrieve the data collection entity using the input dataCollectionId
+    DataCollection3VO dataCollection = this.getDataCollection3Service().findByDataCollectionId( dataCollectionId );
+
+    if( dataCollection == null )
     {
       Map<String, Object> error = new HashMap<>();
-      String errorMsg = "The input data collection ID[ " + dataCollectionId+ " ] has no auto processing " +
-                        "results associated with it";
-
-      error.put( "error", errorMsg );
+      error.put( "error", "The input dataCollectionId[" + dataCollectionId + "] could not be found in the database" );
       return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
     }
 
-    return Response.ok( buildDummyAutoProcessingResults() ).build();
-  }
+    // Retrieve any autoProcIntegration entities attached to the data collection entity
+    List<AutoProcIntegration3VO> autoProcIntegrationList = dataCollection.getAutoProcIntegrationsList();
 
-
-
-  private List<Map<String, Object>> buildDummyAutoProcessingResults()
-  {
-    List<Map<String, Object>> dummyAutoProcResults = new ArrayList<>();
-
-    for( int i = 0; i < 10; i++ )
+    if( autoProcIntegrationList == null )
     {
-      Map<String, Object> dummyAutoProcResult = new HashMap<>();
-
-      int cellValues = ( i + 5 * 10 );
-      int cellSecondaryValues = ( i + 10 * 5 );
-
-      dummyAutoProcResult.put( "autoProcIntegrationId", i );
-      dummyAutoProcResult.put( "dataCollectionId", "1" );
-      dummyAutoProcResult.put( "autoProcProgramId", i );
-      dummyAutoProcResult.put( "cell_a", cellValues );
-      dummyAutoProcResult.put( "cell_b", cellValues );
-      dummyAutoProcResult.put( "cell_c", cellValues );
-      dummyAutoProcResult.put( "cell_alpha", cellSecondaryValues  );
-      dummyAutoProcResult.put( "cell_beta", cellSecondaryValues );
-      dummyAutoProcResult.put( "cell_gamma", cellSecondaryValues );
-      dummyAutoProcResult.put( "RNUM", i );
-
-      dummyAutoProcResults.add( dummyAutoProcResult );
+      Map<String, String> error = new HashMap<>();
+      String errorMessage = "The input dataCollectionId[" + dataCollectionId + "] doesn't have " +
+                            "any associated autoProcIntegration records";
+      error.put( "error", errorMessage );
+      return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
     }
 
-    return dummyAutoProcResults;
+    if( autoProcIntegrationList.isEmpty() )
+    {
+      Map<String, String> error = new HashMap<>();
+      String errorMessage = "The input dataCollectionId[" + dataCollectionId + "] doesn't have " +
+        "any associated autoProcIntegration records";
+      error.put( "error", errorMessage );
+      return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
+    }
+
+    return Response.ok( buildAutoProcIntegrationResponse( dataCollectionId, autoProcIntegrationList ) ).build();
   }
 
 
+  /**
+   * Utility method used to build a list of AutoProcIntegrationDTO objects which hold the relevant data
+   * required for the response. Each object is populated with data retrieved from the AutoProcIntegration3VO entities
+   * obtained from the database.
+   *
+   * @param dataCollectionId - The dataCollectionId to be used in each AutoProcIntegrationDTO (Passed in by the user)
+   * @param autoProcIntegrations - A list of the AutoProcIntegration3VO entities retrieved from the database
+   *
+   * @return List<AutoProcIntegrationDTO> - A list of the response objects holding just the relevant data
+   */
+  private List<AutoProcIntegrationDTO>
+                            buildAutoProcIntegrationResponse( final int dataCollectionId,
+                                                              final List<AutoProcIntegration3VO> autoProcIntegrations )
+  {
+    List<AutoProcIntegrationDTO> autoProcIntegrationDTOList = new ArrayList<>();
+
+    int rowNumber = 1;
+    for( AutoProcIntegration3VO autoProcIntegration : autoProcIntegrations )
+    {
+      AutoProcIntegrationDTO autoProcIntegrationDTO = new AutoProcIntegrationDTO();
+
+      autoProcIntegrationDTO.setAutoProcIntegrationId( autoProcIntegration.getAutoProcIntegrationId() );
+      autoProcIntegrationDTO.setDataCollectionId( dataCollectionId );
+      autoProcIntegrationDTO.setAutoProcProgramId( autoProcIntegration.getAutoProcProgramVOId() );
+      autoProcIntegrationDTO.setCellA( autoProcIntegration.getCellA() );
+      autoProcIntegrationDTO.setCellB( autoProcIntegration.getCellB() );
+      autoProcIntegrationDTO.setCellC( autoProcIntegration.getCellC() );
+      autoProcIntegrationDTO.setCellAlpha( autoProcIntegration.getCellAlpha() );
+      autoProcIntegrationDTO.setCellBeta( autoProcIntegration.getCellBeta() );
+      autoProcIntegrationDTO.setCellGamma( autoProcIntegration.getCellGamma() );
+      autoProcIntegrationDTO.setRowNumber( rowNumber++ );
+
+      autoProcIntegrationDTOList.add( autoProcIntegrationDTO );
+    }
+
+    return autoProcIntegrationDTOList;
+  }
 
 
   /**
