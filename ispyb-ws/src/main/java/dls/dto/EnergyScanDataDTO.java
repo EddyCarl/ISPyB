@@ -152,8 +152,8 @@ public class EnergyScanDataDTO
 
   public void setStartTime( Date startTime )
   {
-    SimpleDateFormat sdf = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss");
-    this.startTime = sdf.format( startTime );
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss");
+    this.startTime = simpleDateFormat.format( startTime );
   }
 
 

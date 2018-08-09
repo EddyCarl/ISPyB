@@ -1,5 +1,6 @@
 package dls.model;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class SessionListResponse
@@ -8,7 +9,7 @@ public class SessionListResponse
 
   private int proposalId;
 
-  private Date startDate;
+  private String startDate;
 
   private String beamlineName;
 
@@ -45,7 +46,7 @@ public class SessionListResponse
   }
 
 
-  public Date getStartDate()
+  public String getStartDate()
   {
     return startDate;
   }
@@ -53,7 +54,8 @@ public class SessionListResponse
 
   public void setStartDate( Date startDate )
   {
-    this.startDate = startDate;
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss");
+    this.startDate = simpleDateFormat.format( startDate );
   }
 
 
