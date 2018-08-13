@@ -22,6 +22,7 @@ import javax.ws.rs.core.Response;
 import javax.xml.crypto.Data;
 
 import dls.dto.ScreeningLatticeOutputDTO;
+import dls.dto.ScreeningStrategyWedgeDTO;
 import dls.model.ScreeningCommentsResponse;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -31,6 +32,7 @@ import io.swagger.annotations.Authorization;
 import ispyb.server.common.util.ejb.Ejb3ServiceLocator;
 import ispyb.server.mx.services.screening.Screening3Service;
 import ispyb.server.mx.services.screening.ScreeningOutput3Service;
+import ispyb.server.mx.services.screening.ScreeningStrategy3Service;
 import ispyb.server.mx.vos.collections.EnergyScan3VO;
 import ispyb.server.mx.vos.screening.Screening3VO;
 import ispyb.server.mx.vos.screening.ScreeningOutput3VO;
@@ -358,50 +360,39 @@ public class DataCollectionRestWebService extends MXRestWebService {
     String methodName = "retrieveScreeningStrategyWedge";
     long id = this.logInit(methodName, logger, dataCollectionId, screeningStrategyId );
 
-    if(dataCollectionId != 1)
+    // Retrieve the screeningOutput entity using the input screeningOutputId (finding the wedge information also)
+    ScreeningStrategy3VO screeningStrategy = this.getScreeningStrategy3Service().findByPk( screeningStrategyId, true );
+
+    if( screeningStrategy == null )
     {
       Map<String, Object> error = new HashMap<>();
-      error.put( "error", "The input dataCollection ID[" + dataCollectionId + "] has no screening output records associated" );
+      error.put( "error", "The input screeningStrategyId[" + screeningStrategyId + "] could not be found in the database" );
       return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
     }
 
-    if(screeningStrategyId != 1)
+    // Retrieve any screeningStrategyWedge entities attached to the screeningStrategy entity
+    List<ScreeningStrategyWedge3VO> screeningStrategyWedgeList = screeningStrategy.getScreeningStrategyWedgesList();
+
+    if( screeningStrategyWedgeList == null )
     {
-      Map<String, Object> error = new HashMap<>();
-      error.put( "error", "The input screeningStrategy ID[" + screeningStrategyId + "] has no screening strategy wedge records associated" );
+      Map<String, String> error = new HashMap<>();
+      String errorMessage = "The input screeningStrategyId[" + screeningStrategyId + "] doesn't have " +
+        "any associated screeningStrategyWedge records";
+      error.put( "error", errorMessage );
       return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
     }
 
-    return Response.ok( buildDummyScreeningWedgeData() ).build();
-  }
-
-
-  private List<Map<String, Object>> buildDummyScreeningWedgeData()
-  {
-    List<Map<String, Object>> dummyScreeningWedgeData = new ArrayList<>();
-
-    for( int i = 0; i < 5; i++ )
+    if( screeningStrategyWedgeList.isEmpty() )
     {
-      Map<String, Object> dummyScreeningWedge = new HashMap<>();
-      Random rand = new Random();
-
-      dummyScreeningWedge.put( "screeningStrategyWedgeId", i );
-      dummyScreeningWedge.put( "screeningStrategyId", "1" );
-      dummyScreeningWedge.put( "resolution", rand.nextInt(i + 40) + 0.5 );
-      dummyScreeningWedge.put( "completeness", rand.nextInt(i + 40) + 0.5 );
-      dummyScreeningWedge.put( "multiplicity", rand.nextInt(i + 40) + 0.5 );
-      dummyScreeningWedge.put( "wedgeNumber", rand.nextInt(i + 40) + 0.5 );
-      dummyScreeningWedge.put( "doseTotal", rand.nextInt(i + 40) + 0.5 );
-      dummyScreeningWedge.put( "numberOfImages", rand.nextInt(i + 40) + 0.5 );
-      dummyScreeningWedge.put( "RNUM", i );
-
-      dummyScreeningWedgeData.add( dummyScreeningWedge );
+      Map<String, String> error = new HashMap<>();
+      String errorMessage = "The input screeningStrategyId[" + screeningStrategyId + "] doesn't have " +
+        "any associated screeningStrategyWedge records";
+      error.put( "error", errorMessage );
+      return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
     }
 
-    return dummyScreeningWedgeData;
+    return Response.ok( buildScreeningStrategyWedgeResponse( screeningStrategyId, screeningStrategyWedgeList ) ).build();
   }
-
-
 
 
   /**
@@ -638,6 +629,44 @@ public class DataCollectionRestWebService extends MXRestWebService {
 
 
   /**
+   * Utility method used to build a list of ScreeningStrategyWedgeDTO objects which hold the relevant data
+   * required for the response. Each object is populated with data retrieved from the ScreeningStrategyWedge3VO entities
+   * obtained from the database.
+   *
+   * @param screeningStrategyId - The screeningStrategyId to be used in each ScreeningStrategyWedgeDTO (Passed in by the user)
+   * @param screeningStrategyWedgeList - A list of the ScreeningStrategyWedge3VO entities retrieved from the database
+   *
+   * @return List<ScreeningStrategyWedgeDTO> - A list of the response objects holding just the relevant data
+   */
+  private List<ScreeningStrategyWedgeDTO>
+  buildScreeningStrategyWedgeResponse( final int screeningStrategyId,
+                                       final List<ScreeningStrategyWedge3VO> screeningStrategyWedgeList )
+  {
+    List<ScreeningStrategyWedgeDTO> screeningStrategyWedgeDTOList = new ArrayList<>();
+
+    int rowNumber = 1;
+    for( ScreeningStrategyWedge3VO screeningStrategyWedge : screeningStrategyWedgeList )
+    {
+      ScreeningStrategyWedgeDTO screeningStrategyWedgeDTO = new ScreeningStrategyWedgeDTO();
+
+      screeningStrategyWedgeDTO.setScreeningStrategyWedgeId( screeningStrategyWedge.getScreeningStrategyWedgeId() );
+      screeningStrategyWedgeDTO.setScreeningStrategyId( screeningStrategyId );
+      screeningStrategyWedgeDTO.setResolution( screeningStrategyWedge.getResolution() );
+      screeningStrategyWedgeDTO.setCompleteness( screeningStrategyWedge.getCompleteness() );
+      screeningStrategyWedgeDTO.setMultiplicity( screeningStrategyWedge.getMultiplicity() );
+      screeningStrategyWedgeDTO.setWedgeNumber( screeningStrategyWedge.getWedgeNumber() );
+      screeningStrategyWedgeDTO.setDoseTotal( screeningStrategyWedge.getDoseTotal() );
+      screeningStrategyWedgeDTO.setNumberOfImages( screeningStrategyWedge.getNumberOfImages() );
+      screeningStrategyWedgeDTO.setRowNumber( rowNumber++ );
+
+      screeningStrategyWedgeDTOList.add( screeningStrategyWedgeDTO );
+    }
+
+    return screeningStrategyWedgeDTOList;
+  }
+
+
+  /**
    * Utility method used to get a ScreeningOutput3Service instance in order to obtain ScreeningOutput3VO entities
    * from the database using the methods defined in the service.
    *
@@ -648,6 +677,20 @@ public class DataCollectionRestWebService extends MXRestWebService {
   protected ScreeningOutput3Service getScreeningOutput3Service() throws NamingException {
     return (ScreeningOutput3Service) Ejb3ServiceLocator.getInstance().getLocalService(ScreeningOutput3Service.class);
   }
+
+
+  /**
+   * Utility method used to get a ScreeningStrategy3Service instance in order to obtain ScreeningStrategy3VO entities
+   * from the database using the methods defined in the service.
+   *
+   * @return ScreeningStrategy3Service - The service containing helper methods to obtain data from the database
+   *
+   * @throws NamingException
+   */
+  protected ScreeningStrategy3Service getScreeningStrategy3Service() throws NamingException {
+    return (ScreeningStrategy3Service) Ejb3ServiceLocator.getInstance().getLocalService(ScreeningStrategy3Service.class);
+  }
+
 
   /*
    * ---- Legacy endpoints below this point ----
