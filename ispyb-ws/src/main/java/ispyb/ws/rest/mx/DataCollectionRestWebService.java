@@ -19,13 +19,18 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
+import javax.xml.crypto.Data;
 
+import dls.dto.ScreeningLatticeOutputDTO;
 import dls.model.ScreeningCommentsResponse;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
+import ispyb.server.common.util.ejb.Ejb3ServiceLocator;
+import ispyb.server.mx.services.screening.Screening3Service;
+import ispyb.server.mx.services.screening.ScreeningOutput3Service;
 import ispyb.server.mx.vos.collections.EnergyScan3VO;
 import ispyb.server.mx.vos.screening.Screening3VO;
 import ispyb.server.mx.vos.screening.ScreeningOutput3VO;
@@ -270,58 +275,46 @@ public class DataCollectionRestWebService extends MXRestWebService {
     @ApiParam
       (
         name = "soId", required = true, example = "5", value = "The ID of the screening output to retrieve"
-      ) @PathParam( "soId" ) int screenOutputId
+      ) @PathParam( "soId" ) int screeningOutputId
 
   ) throws Exception
   {
     String methodName = "retrieveScreeningOutputLattice";
-    long id = this.logInit(methodName, logger, dataCollectionId, screenOutputId );
+    long id = this.logInit(methodName, logger, dataCollectionId, screeningOutputId );
 
-    if(dataCollectionId != 1)
+    // Retrieve the screeningOutput entity using the input screeningOutputId (finding the lattice information also)
+    ScreeningOutput3VO screeningOutput3VO = this.getScreeningOutput3Service().findByPk( screeningOutputId, false, true );
+
+    if( screeningOutput3VO == null )
     {
       Map<String, Object> error = new HashMap<>();
-      error.put( "error", "The input dataCollection ID[" + dataCollectionId + "] has no screening output records associated" );
+      error.put( "error", "The input screeningOutputId[" + screeningOutputId + "] could not be found in the database" );
       return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
     }
 
-    if(screenOutputId != 1)
+    // Retrieve any screeningOutputLattice entities attached to the screeningOutput entity
+    List<ScreeningOutputLattice3VO> screeningOutputLatticesList = screeningOutput3VO.getScreeningOutputLatticesList();
+
+    if( screeningOutputLatticesList == null )
     {
-      Map<String, Object> error = new HashMap<>();
-      error.put( "error", "The input screenOutput ID[" + screenOutputId + "] has no screening output lattice records associated" );
+      Map<String, String> error = new HashMap<>();
+      String errorMessage = "The input screeningOutputId[" + screeningOutputId + "] doesn't have " +
+        "any associated screeningOutputLattice records";
+      error.put( "error", errorMessage );
       return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
     }
 
-    return Response.ok( buildDummyScreeningLatticeData() ).build();
-  }
-
-
-  private List<Map<String, Object>> buildDummyScreeningLatticeData()
-  {
-    List<Map<String, Object>> dummyScreeningLatticeData = new ArrayList<>();
-
-    for( int i = 0; i < 5; i++ )
+    if( screeningOutputLatticesList.isEmpty() )
     {
-      Map<String, Object> dummyScreeningLattice = new HashMap<>();
-      Random rand = new Random();
-
-      dummyScreeningLattice.put( "screeningOutputId", "1" );
-      dummyScreeningLattice.put( "screeningOutputLatticeId", i );
-      dummyScreeningLattice.put( "spacegroup", rand.nextInt(i + 40) + 0.5 );
-      dummyScreeningLattice.put( "pointgroup", rand.nextInt(i + 40) + 0.5 );
-      dummyScreeningLattice.put( "unitcell_a", rand.nextInt(i + 40) + 0.5 );
-      dummyScreeningLattice.put( "unitcell_b", rand.nextInt(i + 40) + 0.5 );
-      dummyScreeningLattice.put( "unitcell_c", rand.nextInt(i + 40) + 0.5 );
-      dummyScreeningLattice.put( "unitcell_alpha", rand.nextInt(i + 40) + 0.5 );
-      dummyScreeningLattice.put( "unitcell_beta", rand.nextInt(i + 40) + 0.5 );
-      dummyScreeningLattice.put( "unitcell_gamma", rand.nextInt(i + 40) + 0.5 );
-      dummyScreeningLattice.put( "RNUM", i );
-
-      dummyScreeningLatticeData.add( dummyScreeningLattice );
+      Map<String, String> error = new HashMap<>();
+      String errorMessage = "The input screeningOutputId[" + screeningOutputId + "] doesn't have " +
+        "any associated screeningOutputLattice records";
+      error.put( "error", errorMessage );
+      return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
     }
 
-    return dummyScreeningLatticeData;
+    return Response.ok( buildScreeningOutputLatticeResponse( screeningOutputId, screeningOutputLatticesList ) ).build();
   }
-
 
 
 
@@ -538,9 +531,6 @@ public class DataCollectionRestWebService extends MXRestWebService {
     String methodName = "retrieveScreeningComments";
     long id = this.logInit(methodName, logger, dataCollectionId );
 
-    // * CE * Need to check the auth token here before getting anything...
-    //        The DataCollectionId must belong to a users sessions.
-
     // Get a dataCollection entity by ID if available
     DataCollection3VO dataCollection = this.getDataCollection3Service().findByPk(dataCollectionId, false, false);
 
@@ -573,6 +563,44 @@ public class DataCollectionRestWebService extends MXRestWebService {
 
 
 
+  /**
+   * Utility method used to build a list of ScreeningLatticeOutputDTO objects which hold the relevant data
+   * required for the response. Each object is populated with data retrieved from the ScreeningOutputLattice3VO entities
+   * obtained from the database.
+   *
+   * @param screeningOutputId - The screeningOutputId to be used in each ScreeningLatticeOutputDTO (Passed in by the user)
+   * @param screeningOutputLatticesList - A list of the ScreeningOutputLattice3VO entities retrieved from the database
+   *
+   * @return List<ScreeningLatticeOutputDTO> - A list of the response objects holding just the relevant data
+   */
+  private List<ScreeningLatticeOutputDTO>
+  buildScreeningOutputLatticeResponse( final int screeningOutputId,
+                                       final List<ScreeningOutputLattice3VO> screeningOutputLatticesList )
+  {
+    List<ScreeningLatticeOutputDTO> screeningLatticeOutputDTOList = new ArrayList<>();
+
+    int rowNumber = 1;
+    for( ScreeningOutputLattice3VO screeningOutputLattice : screeningOutputLatticesList )
+    {
+      ScreeningLatticeOutputDTO screeningLatticeOutputDTO = new ScreeningLatticeOutputDTO();
+
+      screeningLatticeOutputDTO.setScreeningOutputId( screeningOutputId );
+      screeningLatticeOutputDTO.setScreeningOutputLatticeId( screeningOutputLattice.getScreeningOutputLatticeId() );
+      screeningLatticeOutputDTO.setSpaceGroup( screeningOutputLattice.getSpaceGroup() );
+      screeningLatticeOutputDTO.setPointGroup( screeningOutputLattice.getPointGroup() );
+      screeningLatticeOutputDTO.setUnitCellA( screeningOutputLattice.getUnitCell_a() );
+      screeningLatticeOutputDTO.setUnitCellB( screeningOutputLattice.getUnitCell_b() );
+      screeningLatticeOutputDTO.setUnitCellC( screeningOutputLattice.getUnitCell_c() );
+      screeningLatticeOutputDTO.setUnitCellAlpha( screeningOutputLattice.getUnitCell_alpha() );
+      screeningLatticeOutputDTO.setUnitCellBeta( screeningOutputLattice.getUnitCell_beta() );
+      screeningLatticeOutputDTO.setUnitCellGamma( screeningOutputLattice.getUnitCell_gamma() );
+      screeningLatticeOutputDTO.setRowNumber( rowNumber++ );
+
+      screeningLatticeOutputDTOList.add( screeningLatticeOutputDTO );
+    }
+
+    return screeningLatticeOutputDTOList;
+  }
 
 
   /**
@@ -608,6 +636,18 @@ public class DataCollectionRestWebService extends MXRestWebService {
     return screeningCommentsResponses;
   }
 
+
+  /**
+   * Utility method used to get a ScreeningOutput3Service instance in order to obtain ScreeningOutput3VO entities
+   * from the database using the methods defined in the service.
+   *
+   * @return ScreeningOutput3Service - The service containing helper methods to obtain data from the database
+   *
+   * @throws NamingException
+   */
+  protected ScreeningOutput3Service getScreeningOutput3Service() throws NamingException {
+    return (ScreeningOutput3Service) Ejb3ServiceLocator.getInstance().getLocalService(ScreeningOutput3Service.class);
+  }
 
   /*
    * ---- Legacy endpoints below this point ----
