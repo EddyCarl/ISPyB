@@ -22,6 +22,7 @@ import javax.ws.rs.core.Response;
 import javax.xml.crypto.Data;
 
 import dls.dto.ScreeningLatticeOutputDTO;
+import dls.dto.ScreeningStrategyDTO;
 import dls.dto.ScreeningStrategyWedgeDTO;
 import dls.model.ScreeningCommentsResponse;
 import io.swagger.annotations.ApiOperation;
@@ -414,8 +415,7 @@ public class DataCollectionRestWebService extends MXRestWebService {
     ( {
       @ApiResponse( code = 200, message = "Ok" ),
       @ApiResponse( code = 400, message = "Some error" ),
-      @ApiResponse( code = 404, message = "No screening strategy records found for the input dataCollectionId" ),
-      @ApiResponse( code = 404, message = "No screening strategy wedge records found for the input screeningStrategyId" )
+      @ApiResponse( code = 404, message = "No screening strategy records found for the input dataCollectionId" )
     } )
   public Response retrieveScreeningStrategy
   (
@@ -428,63 +428,46 @@ public class DataCollectionRestWebService extends MXRestWebService {
     @ApiParam
       (
         name = "soId", required = true, example = "5", value = "The ID of the screening output to retrieve"
-      ) @PathParam( "soId" ) int screenOutputId
+      ) @PathParam( "soId" ) int screeningOutputId
 
     ) throws Exception
   {
     String methodName = "retrieveScreeningStrategy";
-    long id = this.logInit(methodName, logger, dataCollectionId, screenOutputId );
+    long id = this.logInit(methodName, logger, dataCollectionId, screeningOutputId );
 
-    if(dataCollectionId != 1)
+    // Retrieve the screeningOutput entity using the input screeningOutputId (finding the lattice information also)
+    ScreeningOutput3VO screeningOutput3VO = this.getScreeningOutput3Service().findByPk( screeningOutputId, true, false );
+
+    if( screeningOutput3VO == null )
     {
       Map<String, Object> error = new HashMap<>();
-      error.put( "error", "The input dataCollection ID[" + dataCollectionId + "] has no screening output records associated" );
+      error.put( "error", "The input screeningOutputId[" + screeningOutputId + "] could not be found in the database" );
       return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
     }
 
-    if(screenOutputId != 1)
+    // Retrieve any screeningStrategy entities attached to the screeningOutput entity
+    List<ScreeningStrategy3VO> screeningStrategyList = screeningOutput3VO.getScreeningStrategysList();
+
+    if( screeningStrategyList == null )
     {
-      Map<String, Object> error = new HashMap<>();
-      error.put( "error", "The input screenOutput ID[" + screenOutputId + "] has no screening strategy records associated" );
+      Map<String, String> error = new HashMap<>();
+      String errorMessage = "The input screeningOutputId[" + screeningOutputId + "] doesn't have " +
+        "any associated screeningStrategy records";
+      error.put( "error", errorMessage );
       return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
     }
 
-    return Response.ok( buildDummyScreeningStrategyData() ).build();
-  }
-
-
-  private List<Map<String, Object>> buildDummyScreeningStrategyData()
-  {
-    List<Map<String, Object>> dummyScreeningStrategyData = new ArrayList<>();
-
-    for( int i = 0; i < 10; i++ )
+    if( screeningStrategyList.isEmpty() )
     {
-      Map<String, Object> dummyScreeningStrategy = new HashMap<>();
-      Random rand = new Random();
-
-      dummyScreeningStrategy.put( "screeningOutputId", i );
-      dummyScreeningStrategy.put( "screeningStrategyId", "1" );
-      dummyScreeningStrategy.put( "phiStart", rand.nextInt(i + 40) + 0.5 );
-      dummyScreeningStrategy.put( "phiEnd", rand.nextInt(i + 40) + 0.5 );
-      dummyScreeningStrategy.put( "rotation", rand.nextInt(i + 40) + 0.5 );
-      dummyScreeningStrategy.put( "exposureTime", rand.nextInt(i + 40) + 0.5 );
-      dummyScreeningStrategy.put( "resolution", rand.nextInt(i + 40) + 0.5 );
-      dummyScreeningStrategy.put( "completeness", rand.nextInt(i + 40) + 0.5 );
-      dummyScreeningStrategy.put( "multiplicity", rand.nextInt(i + 40) + 0.5 );
-      dummyScreeningStrategy.put( "anomalous", rand.nextInt(i + 40) + 0.5 );
-      dummyScreeningStrategy.put( "program", rand.nextInt(i + 40) + 0.5 );
-      dummyScreeningStrategy.put( "rankingResolution", rand.nextInt(i + 40) + 0.5 );
-      dummyScreeningStrategy.put( "transmission", rand.nextInt(i + 40) + 0.5 );
-      dummyScreeningStrategy.put( "RNUM", i );
-
-      dummyScreeningStrategyData.add( dummyScreeningStrategy );
+      Map<String, String> error = new HashMap<>();
+      String errorMessage = "The input screeningOutputId[" + screeningOutputId + "] doesn't have " +
+        "any associated screeningStrategy records";
+      error.put( "error", errorMessage );
+      return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
     }
 
-    return dummyScreeningStrategyData;
+    return Response.ok( buildScreeningStrategyResponse( screeningOutputId, screeningStrategyList ) ).build();
   }
-
-
-
 
 
   /**
@@ -551,7 +534,6 @@ public class DataCollectionRestWebService extends MXRestWebService {
     // Create the response using the data obtained
     return Response.ok( buildScreeningCommentsResponse( dataCollectionId, screenings ) ).build();
   }
-
 
 
   /**
@@ -663,6 +645,49 @@ public class DataCollectionRestWebService extends MXRestWebService {
     }
 
     return screeningStrategyWedgeDTOList;
+  }
+
+
+  /**
+   * Utility method used to build a list of ScreeningStrategyDTO objects which hold the relevant data
+   * required for the response. Each object is populated with data retrieved from the ScreeningStrategy3VO entities
+   * obtained from the database.
+   *
+   * @param screeningOutputId - The screeningOutputId to be used in each ScreeningStrategyDTO (Passed in by the user)
+   * @param screeningStrategyList - A list of the ScreeningStrategy3VO entities retrieved from the database
+   *
+   * @return List<ScreeningStrategyDTO> - A list of the response objects holding just the relevant data
+   */
+  private List<ScreeningStrategyDTO>
+  buildScreeningStrategyResponse( final int screeningOutputId,
+                                       final List<ScreeningStrategy3VO> screeningStrategyList )
+  {
+    List<ScreeningStrategyDTO> screeningStrategyDTOList = new ArrayList<>();
+
+    int rowNumber = 1;
+    for( ScreeningStrategy3VO screeningStrategy : screeningStrategyList )
+    {
+      ScreeningStrategyDTO screeningStrategyDTO = new ScreeningStrategyDTO();
+
+      screeningStrategyDTO.setScreeningOutputId( screeningOutputId );
+      screeningStrategyDTO.setScreeningStrategyId( screeningStrategy.getScreeningStrategyId() );
+      screeningStrategyDTO.setPhiStart( screeningStrategy.getPhiStart() );
+      screeningStrategyDTO.setPhiEnd( screeningStrategy.getPhiEnd() );
+      screeningStrategyDTO.setRotation( screeningStrategy.getRotation() );
+      screeningStrategyDTO.setExposureTime( screeningStrategy.getExposureTime() );
+      screeningStrategyDTO.setResolution( screeningStrategy.getResolution() );
+      screeningStrategyDTO.setCompleteness( screeningStrategy.getCompleteness() );
+      screeningStrategyDTO.setMultiplicity( screeningStrategy.getMultiplicity() );
+      screeningStrategyDTO.setAnomalous( screeningStrategy.getAnomalous() );
+      screeningStrategyDTO.setProgram( screeningStrategy.getProgram() );
+      screeningStrategyDTO.setRankingResolution( screeningStrategy.getRankingResolution() );
+      screeningStrategyDTO.setTransmission( screeningStrategy.getTransmission() );
+      screeningStrategyDTO.setRowNumber( rowNumber++ );
+
+      screeningStrategyDTOList.add( screeningStrategyDTO );
+    }
+
+    return screeningStrategyDTOList;
   }
 
 
