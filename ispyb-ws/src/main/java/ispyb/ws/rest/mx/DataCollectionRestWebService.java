@@ -23,6 +23,7 @@ import javax.ws.rs.core.Response;
 import javax.xml.crypto.Data;
 
 import dls.dto.DataCollectionDTO;
+import dls.dto.DetailedDataCollectionDTO;
 import dls.dto.ScreeningLatticeOutputDTO;
 import dls.dto.ScreeningStrategyDTO;
 import dls.dto.ScreeningStrategyWedgeDTO;
@@ -38,6 +39,8 @@ import ispyb.server.mx.services.screening.ScreeningOutput3Service;
 import ispyb.server.mx.services.screening.ScreeningStrategy3Service;
 import ispyb.server.mx.vos.collections.DataCollectionGroup3VO;
 import ispyb.server.mx.vos.collections.EnergyScan3VO;
+import ispyb.server.mx.vos.sample.BLSample3VO;
+import ispyb.server.mx.vos.sample.BLSubSample3VO;
 import ispyb.server.mx.vos.screening.Screening3VO;
 import ispyb.server.mx.vos.screening.ScreeningOutput3VO;
 import ispyb.server.mx.vos.screening.ScreeningOutputLattice3VO;
@@ -89,7 +92,7 @@ public class DataCollectionRestWebService extends MXRestWebService {
     @ApiParam
       (
         name = "id", required = true, example = "12", value = "The ID of the session to retrieve"
-      ) @PathParam( "id" ) int sessionID,
+      ) @PathParam( "id" ) int sessionId,
     @ApiParam
       (
         name = "threshold", example = "10",
@@ -100,99 +103,40 @@ public class DataCollectionRestWebService extends MXRestWebService {
   ) throws Exception
   {
     String methodName = "retrieveDataCollections";
-    long id = this.logInit(methodName, logger, sessionID, threshold);
+    long id = this.logInit(methodName, logger, sessionId, threshold);
 
-    if(sessionID != 1)
+    // Retrieve the session entity using the input sessionId (finding the dataCollectionGroup entities also)
+    Session3VO session3VO = this.getSession3Service().findByPk( sessionId, true, false, false );
+
+    if( session3VO == null )
     {
       Map<String, Object> error = new HashMap<>();
-      error.put( "error", "The input sessionId[ " + sessionID + " ] has no data collection records associated with it" );
+      error.put( "error", "The input sessionId[" + sessionId + "] could not be found in the database" );
       return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
     }
 
-    if(threshold != 1)
-    {
-      Map<String, Object> error = new HashMap<>();
-      String errorMsg =  "No data collection records containing more than " + threshold + " images " +
-                          "were found for the input sessionId[ " + sessionID + " ]";
+    // Retrieve any dataCollectionGroup entities attached to the session entity
+    List<DataCollectionGroup3VO> dataCollectionGroupsList = session3VO.getDataCollectionGroupsList();
 
-      error.put( "error", errorMsg );
+    if( dataCollectionGroupsList == null )
+    {
+      Map<String, String> error = new HashMap<>();
+      String errorMessage = "The input sessionId[" + sessionId + "] doesn't have " +
+        "any associated dataCollectionGroup records";
+      error.put( "error", errorMessage );
       return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
     }
 
-    List<Map<String, Object>> dataCollections = new ArrayList<>();
-    Map<String, Object> dataCollection = new HashMap<>();
-
-    dataCollection.put("dataCollectionId", 1);
-    dataCollection.put("numberOfImages", 1);
-    dataCollection.put("RNUM", 1);
-    dataCollections.add(dataCollection);
-
-    return Response.ok( dataCollections ).build();
-  }
-
-  /*
-   *  **** NOTE ****
-   *  The data collection method above is currently in place to serve the "Find Data Collection" SQL query which
-   *  simply returns a single row (Limit of 1) that contains just the Data Collection ID and the numOfImages based
-   *  upon the threshold value input via query param.
-   *
-   *  The SQL query after this, "Get Data Collection Params for a given session" can use the same endpoint "technically",
-   *  however, this query is limited to 100 rows. This query also returns a lot more fields than the previous SQL query,
-   *  however, the numOfImages field is still one of them. So if we can ignore the row limit somehow, the same endpoint
-   *  and method can be used for both SQL statements with just the optional additional "threshold" parameter being
-   *  added if the user wishes to limit the returned rows by the numOfImages.
-   */
-
-
-
-  private List<Map<String, Object>> buildDummyDataCollections( int sessionId )
-  {
-    List<Map<String, Object>> dummyCollections = new ArrayList<>();
-
-    for(int i = 0; i < 5; i++)
+    if( dataCollectionGroupsList.isEmpty() )
     {
-      int dcId = i;
-      int blSampleId = i;
-      int noImgs = new Random().nextInt(11);
-      int rnum = i;
-
-      Map<String, Object> dummyCollection = buildDummyDataCollection( dcId, blSampleId, noImgs, sessionId, rnum );
-      dummyCollections.add( dummyCollection );
+      Map<String, String> error = new HashMap<>();
+      String errorMessage = "The input sessionId[" + sessionId + "] doesn't have " +
+        "any associated dataCollectionGroup records";
+      error.put( "error", errorMessage );
+      return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
     }
 
-    return dummyCollections;
-  }
-
-  private Map<String, Object> buildDummyDataCollection( int dcId, int blSampleId, int numImgs, int sessionId, int rnum )
-  {
-    Map<String, Object> dataCollection = new HashMap<>();
-
-    dataCollection.put( "dataCollectionId", dcId );
-    dataCollection.put( "blSampleId", blSampleId );
-    dataCollection.put( "startTime", "2016-04-18 11:00:00" );
-    dataCollection.put( "numberOfImages", numImgs );
-    dataCollection.put( "sessionId", sessionId );
-    dataCollection.put( "exposureTime", "0.1" );
-    dataCollection.put( "imagePrefix", "xtal1" );
-    dataCollection.put( "wavelength", "0.975" );
-    dataCollection.put( "resolution", "1.5" );
-    dataCollection.put( "imageDirectory", "/dummy/dls/dir" );
-    dataCollection.put( "comments", "dummy comment" );
-    dataCollection.put( "axisStart", "0" );
-    dataCollection.put( "axisEnd", "0.5" );
-    dataCollection.put( "axisRange", "0.5" );
-    dataCollection.put( "omegaStart", "0" );
-    dataCollection.put( "overlap", "-44.5" );
-    dataCollection.put( "beamSizeAtSampleX", "0.08" );
-    dataCollection.put( "beamSizeAtSampleY", "0.02" );
-    dataCollection.put( "transmission", "5.001" );
-    dataCollection.put( "xtalsnapshotfullpath1", "/dummy/dls/snap-path/1" );
-    dataCollection.put( "xtalsnapshotfullpath2", "/dummy/dls/snap-path/2" );
-    dataCollection.put( "xtalsnapshotfullpath3", "/dummy/dls/snap-path/3" );
-    dataCollection.put( "xtalsnapshotfullpath4", "/dummy/dls/snap-path/4" );
-    dataCollection.put( "RNUM", rnum );
-
-    return dataCollection;
+    return Response.ok( buildDataCollectionResponse( dataCollectionGroupsList ) ).build();
   }
 
 
@@ -263,7 +207,7 @@ public class DataCollectionRestWebService extends MXRestWebService {
       return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
     }
 
-    return Response.ok( buildDataCollectionResponse( dataCollectionGroupsList ) ).build();
+    return Response.ok( buildDetailedDataCollectionResponse( sessionId, dataCollectionGroupsList ) ).build();
   }
 
 
@@ -723,7 +667,7 @@ public class DataCollectionRestWebService extends MXRestWebService {
    * @return List<DataCollectionDTO> - A list of the response objects holding just the relevant data
    */
   private List<DataCollectionDTO>
-              buildDataCollectionResponse( final List<DataCollectionGroup3VO> dataCollectionGroupList )
+  buildDataCollectionResponse( final List<DataCollectionGroup3VO> dataCollectionGroupList )
   {
     List<DataCollectionDTO> dataCollectionDTOList = new ArrayList<>();
 
@@ -748,6 +692,92 @@ public class DataCollectionRestWebService extends MXRestWebService {
     }
 
     return dataCollectionDTOList;
+  }
+
+
+  /**
+   * Utility method used to build a list of DetailedDataCollectionDTO objects which hold the relevant data
+   * required for the response. Each object is populated with data retrieved from the DataCollection3VO entities
+   * obtained from the database (which in turn are retrieved from the DataCollectionGroup3VO entities).
+   *
+   * @param dataCollectionGroupList - A list of the DataCollectionGroup3VO entities retrieved from the database
+   *
+   * @return List<DetailedDataCollectionDTO> - A list of the response objects holding just the relevant data
+   */
+  private List<DetailedDataCollectionDTO>
+  buildDetailedDataCollectionResponse( final int sessionId,
+                                       final List<DataCollectionGroup3VO> dataCollectionGroupList )
+  {
+    List<DetailedDataCollectionDTO> detailedDataCollectionDTOList = new ArrayList<>();
+
+    for( DataCollectionGroup3VO dataCollectionGroup3VO : dataCollectionGroupList )
+    {
+      List<DataCollection3VO> dataCollection3VOList = dataCollectionGroup3VO.getDataCollectionsList();
+
+      if( dataCollection3VOList != null )
+      {
+        int rowNumber = 1;
+        for( DataCollection3VO dataCollection : dataCollection3VOList )
+        {
+          DetailedDataCollectionDTO detailedDataCollectionDTO = new DetailedDataCollectionDTO();
+
+          detailedDataCollectionDTO.setDataCollectionId( dataCollection.getDataCollectionId() );
+          detailedDataCollectionDTO.setBlSampleId( getBlSampleId( dataCollection ) );
+          detailedDataCollectionDTO.setStartTime( dataCollection.getStartTime() );
+          detailedDataCollectionDTO.setNumberOfImages( dataCollection.getNumberOfImages() );
+          detailedDataCollectionDTO.setSessionId( sessionId );
+          detailedDataCollectionDTO.setExposureTime( dataCollection.getExposureTime() );
+          detailedDataCollectionDTO.setImagePrefix( dataCollection.getImagePrefix() );
+          detailedDataCollectionDTO.setWavelength( dataCollection.getWavelength() );
+          detailedDataCollectionDTO.setResolution( dataCollection.getResolution() );
+          detailedDataCollectionDTO.setImageDirectory( dataCollection.getImageDirectory() );
+          detailedDataCollectionDTO.setComments( dataCollection.getComments() );
+          detailedDataCollectionDTO.setAxisStart( dataCollection.getAxisStart() );
+          detailedDataCollectionDTO.setAxisEnd( dataCollection.getAxisEnd() );
+          detailedDataCollectionDTO.setAxisRange( dataCollection.getAxisRange() );
+          detailedDataCollectionDTO.setOmegaStart( dataCollection.getOmegaStart() );
+          detailedDataCollectionDTO.setOverlap( dataCollection.getOverlap() );
+          detailedDataCollectionDTO.setBeamSizeAtSampleX( dataCollection.getBeamSizeAtSampleX() );
+          detailedDataCollectionDTO.setBeamSizeAtSampleY( dataCollection.getBeamSizeAtSampleY() );
+          detailedDataCollectionDTO.setTransmission( dataCollection.getTransmission() );
+          detailedDataCollectionDTO.setXtalSnapshotFullPath1( dataCollection.getXtalSnapshotFullPath1() );
+          detailedDataCollectionDTO.setXtalSnapshotFullPath2( dataCollection.getXtalSnapshotFullPath2() );
+          detailedDataCollectionDTO.setXtalSnapshotFullPath3( dataCollection.getXtalSnapshotFullPath3() );
+          detailedDataCollectionDTO.setXtalSnapshotFullPath4( dataCollection.getXtalSnapshotFullPath4() );
+          detailedDataCollectionDTO.setRowNumber( rowNumber++ );
+
+          detailedDataCollectionDTOList.add( detailedDataCollectionDTO );
+        }
+      }
+    }
+
+    return detailedDataCollectionDTOList;
+  }
+
+
+  /**
+   * Utility method used to return the id of a BLSample entity. The BLSample is nested within a BLSubSample which is
+   * again nested within a DataCollection. A null value is returned if there is an issue obtaining the BLSampleId.
+   *
+   * @param dataCollection3VO - The DataCollection holding the BLSubSample (which holds a BLSample)
+   *
+   * @return blSampleId - An integer ID representing the blSample
+   */
+  private Integer getBlSampleId( final DataCollection3VO dataCollection3VO )
+  {
+    BLSubSample3VO blSubSample3VO = dataCollection3VO.getBlSubSampleVO();
+    if( blSubSample3VO == null )
+    {
+      return null;
+    }
+
+    BLSample3VO blSample3VO = blSubSample3VO.getBlSampleVO();
+    if( blSample3VO == null )
+    {
+      return null;
+    }
+
+    return blSample3VO.getBlSampleId();
   }
 
 
