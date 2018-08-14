@@ -243,24 +243,6 @@ public class DataCollectionRestWebService extends MXRestWebService {
       return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
     }
 
-//    if( this.getWebServiceDataCollection3Service().getDataCollectionBySessionId( sessionID ).isEmpty() )
-//    {
-//      System.out.println("Couldn't retrieve any datacollection results by session ID");
-//      return Response.status(Response.Status.NOT_FOUND).entity( "DUMMY ERROR" ).build();
-//    }
-
-//    List<Map<String, Object>> dataCollections = new ArrayList<Map<String, Object>>();
-//    dataCollections.addAll( this.getWebServiceDataCollection3Service().getDataCollectionBySessionId( sessionID ) );
-//
-//    for( Map<String, Object> dataCollection : dataCollections )
-//    {
-//      System.out.println( "DataCollection size: " + dataCollection.size() );
-//
-//      System.out.println( "datacollection keyset: " + dataCollection.keySet() );
-//
-//      System.out.println( "datacollection values: " + dataCollection.values() );
-//    }
-
     List<DataCollectionGroup3VO> dataCollectionGroup3VOS = session3VO.getDataCollectionGroupsList();
 
     if( dataCollectionGroup3VOS == null )

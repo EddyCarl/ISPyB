@@ -1,19 +1,19 @@
 /*************************************************************************************************
  * This file is part of ISPyB.
- * 
+ *
  * ISPyB is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * ISPyB is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with ISPyB.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * Contributors : S. Delageniere, R. Leal, L. Launer, K. Levik, S. Veyrier, P. Brenchereau, M. Bodin, A. De Maria Antolinos
  ****************************************************************************************************/
 
@@ -33,6 +33,7 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityResult;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -45,7 +46,7 @@ import org.apache.log4j.Logger;
 
 /**
  * DataCollectionGroup3 value object mapping table DataCollectionGroup
- * 
+ *
  */
 @Entity
 @Table(name = "DataCollectionGroup")
@@ -62,69 +63,69 @@ public class DataCollectionGroup3VO extends ISPyBValueObject implements Cloneabl
 	@GeneratedValue
 	@Column(name = "dataCollectionGroupId")
 	protected Integer dataCollectionGroupId;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "sessionId")
 	private Session3VO sessionVO;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "workflowId")
 	protected Workflow3VO workflowVO;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "blSampleId")
 	protected BLSample3VO blSampleVO;
-	
+
 	@Column(name = "experimentType")
 	protected String experimentType;
-	
+
 	@Column(name = "startTime")
 	protected Date startTime;
-	
+
 	@Column(name = "endTime")
 	protected Date endTime;
-	
+
 	@Column(name = "crystalClass")
 	protected String crystalClass;
-	
+
 	@Column(name = "comments")
 	protected String comments;
-	
+
 	@Column(name = "detectorMode")
 	protected String detectorMode;
-	
+
 	@Column(name = "actualSampleBarcode")
 	protected String actualSampleBarcode;
-	
+
 	@Column(name = "actualSampleSlotInContainer")
 	protected Integer actualSampleSlotInContainer;
-	
+
 	@Column(name = "actualContainerBarcode")
 	protected String actualContainerBarcode;
-	
+
 	@Column(name = "actualContainerSlotInSC")
 	protected Integer actualContainerSlotInSC;
-	
+
 	@Column(name = "xtalSnapshotFullPath")
 	protected String xtalSnapshotFullPath;
-	
-	@OneToMany
+
+	@OneToMany(fetch = FetchType.EAGER)
 	@JoinColumn(name = "dataCollectionGroupId")
 	protected Set<DataCollection3VO> dataCollectionVOs;
-	
+
 	@OneToMany
 	@JoinColumn(name = "dataCollectionGroupId")
 	private Set<Screening3VO> screeningVOs;
-	
+
 
 	public DataCollectionGroup3VO() {
 		super();
 	}
 
-	
-	
+
+
 	public DataCollectionGroup3VO(Integer dataCollectionGroupId,
-			Session3VO sessionVO, BLSample3VO blSampleVO, Workflow3VO workflowVO, 
+			Session3VO sessionVO, BLSample3VO blSampleVO, Workflow3VO workflowVO,
 			String experimentType, Date startTime, Date endTime,
 			String crystalClass, String comments, String detectorMode,
 			String actualSampleBarcode, Integer actualSampleSlotInContainer,
@@ -146,7 +147,7 @@ public class DataCollectionGroup3VO extends ISPyBValueObject implements Cloneabl
 		this.actualContainerSlotInSC = actualContainerSlotInSC;
 		this.xtalSnapshotFullPath =  xtalSnapshotFullPath;
 	}
-	
+
 	public DataCollectionGroup3VO(DataCollectionGroup3VO vo) {
 		super();
 		this.dataCollectionGroupId = vo.getDataCollectionGroupId();
@@ -162,10 +163,10 @@ public class DataCollectionGroup3VO extends ISPyBValueObject implements Cloneabl
 		this.actualSampleBarcode = vo.getActualSampleBarcode();
 		this.actualSampleSlotInContainer = vo.getActualSampleSlotInContainer();
 		this.actualContainerBarcode = vo.getActualContainerBarcode();
-		this.actualContainerSlotInSC = vo.getActualContainerSlotInSC();	
+		this.actualContainerSlotInSC = vo.getActualContainerSlotInSC();
 		this.xtalSnapshotFullPath =  vo.getXtalSnapshotFullPath();
 	}
-	
+
 	public void fillVOFromWS(DataCollectionGroupWS3VO vo) {
 		this.dataCollectionGroupId = vo.getDataCollectionGroupId();
 		this.experimentType = vo.getExperimentType();
@@ -204,7 +205,7 @@ public class DataCollectionGroup3VO extends ISPyBValueObject implements Cloneabl
 		this.dataCollectionGroupId = dataCollectionGroupId;
 	}
 
-	
+
 	public Session3VO getSessionVO() {
 		return sessionVO;
 	}
@@ -317,11 +318,11 @@ public class DataCollectionGroup3VO extends ISPyBValueObject implements Cloneabl
 	public void setActualContainerSlotInSC(Integer actualContainerSlotInSC) {
 		this.actualContainerSlotInSC = actualContainerSlotInSC;
 	}
-	
+
 	public String getXtalSnapshotFullPath() {
 		return xtalSnapshotFullPath;
 	}
-	
+
 	public void setXtalSnapshotFullPath(String xtalSnapshotFullPath) {
 		this.xtalSnapshotFullPath = xtalSnapshotFullPath;
 	}
@@ -329,15 +330,15 @@ public class DataCollectionGroup3VO extends ISPyBValueObject implements Cloneabl
 	public Integer getSessionVOId(){
 		return sessionVO == null ? null : sessionVO.getSessionId();
 	}
-	
+
 	public Integer getBlSampleVOId(){
 		return blSampleVO == null ? null : blSampleVO.getBlSampleId();
 	}
-	
+
 	public Integer getWorkflowVOId(){
 		return workflowVO == null ? null : workflowVO.getWorkflowId();
 	}
-	
+
 	public Set<DataCollection3VO> getDataCollectionVOs() {
 		return dataCollectionVOs;
 	}
@@ -345,11 +346,11 @@ public class DataCollectionGroup3VO extends ISPyBValueObject implements Cloneabl
 	public void setDataCollectionVOs(Set<DataCollection3VO> dataCollectionVOs) {
 		this.dataCollectionVOs = dataCollectionVOs;
 	}
-	
+
 	public DataCollection3VO[] getDataCollectionsTab(){
 		return this.dataCollectionVOs == null ? null : dataCollectionVOs.toArray(new DataCollection3VO[this.dataCollectionVOs.size()]);
 	}
-	
+
 	public ArrayList<DataCollection3VO> getDataCollectionsList(){
 		return this.dataCollectionVOs == null ? null : new ArrayList<DataCollection3VO>(Arrays.asList(getDataCollectionsTab()));
 	}
@@ -365,7 +366,7 @@ public class DataCollectionGroup3VO extends ISPyBValueObject implements Cloneabl
 	public Screening3VO[] getScreeningsTab(){
 		return this.screeningVOs == null ? null : screeningVOs.toArray(new Screening3VO[this.screeningVOs.size()]);
 	}
-	
+
 	public ArrayList<Screening3VO> getScreeningsList(){
 		return this.screeningVOs == null ? null : new ArrayList<Screening3VO>(Arrays.asList(getScreeningsTab()));
 	}
@@ -383,7 +384,7 @@ public class DataCollectionGroup3VO extends ISPyBValueObject implements Cloneabl
 		int maxLengthActualSampleBarcode = 45;
 		int maxLengthActualContainerBarcode = 45;
 		int maxLengthXtalSnapshotFullPath = 255;
-		
+
 		String[] listExperimentType = {"EM", "SAD","SAD - Inverse Beam","OSC","Collect - Multiwedge","MAD","Helical","Multi-positional","Mesh","Burn","MAD - Inverse Beam","Characterization", "Dehydration"};
 		//session
 		if(sessionVO == null)
@@ -409,7 +410,7 @@ public class DataCollectionGroup3VO extends ISPyBValueObject implements Cloneabl
 		// xtalSnapshotFullPath
 		if(!StringUtils.isStringLengthValid(this.xtalSnapshotFullPath, maxLengthXtalSnapshotFullPath))
 			throw new IllegalArgumentException(StringUtils.getMessageErrorMaxLength("DataCollectionGroup", "xtalSnapshotFullPath", maxLengthXtalSnapshotFullPath));
-		
+
 	}
 
 	public String toWSString(){
@@ -425,10 +426,10 @@ public class DataCollectionGroup3VO extends ISPyBValueObject implements Cloneabl
 		"actualContainerBarcode="+this.actualContainerBarcode+", "+
 		"actualContainerSlotInSC="+this.actualContainerSlotInSC+", "+
 		"xtalSnapshotFullPath="+this.xtalSnapshotFullPath+", ";
-		
+
 		return s;
 	}
-	
+
 	public boolean isFirstCollect(DataCollection3VO collect){
 		if (collect != null && this.dataCollectionVOs != null && this.dataCollectionVOs.size() > 1){
 			List<DataCollection3VO> list = this.getDataCollectionsList();
@@ -443,7 +444,7 @@ public class DataCollectionGroup3VO extends ISPyBValueObject implements Cloneabl
 					vo = c;
 				}
 			}
-			
+
 			return vo.getDataCollectionId().equals(collect.getDataCollectionId());
 		}
 		return true;

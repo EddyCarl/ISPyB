@@ -64,13 +64,4 @@ public class DataCollectionRestWsServiceBean extends WsServiceBean implements Da
 		query.setParameter("dataCollectionGroupId", dataCollectionGroupId);
 		return executeSQLQuery(query);
 	}
-
-  @Override
-  public Collection<? extends Map<String, Object>> getDataCollectionBySessionId(int sessionId) {
-    String mySQLQuery = this.getViewTableQuery() + " where sessionId = :sessionId";
-    Session session = (Session) this.entityManager.getDelegate();
-    SQLQuery query = session.createSQLQuery(mySQLQuery);
-    query.setParameter("sessionId", sessionId);
-    return executeSQLQuery(query);
-  }
 }

@@ -31,6 +31,4 @@ public interface DataCollectionRestWsService {
 	public Collection<? extends Map<String, Object>> getViewDataCollectionsByWorkflowId(int proposalId, Integer id);
 
   public Collection<? extends Map<String, Object>> getDataCollectionByDataCollectionGroupId(int proposalId, Integer id);
-
-  public Collection<? extends Map<String, Object>> getDataCollectionBySessionId(int sessionId);
 }
