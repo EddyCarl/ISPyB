@@ -1,6 +1,7 @@
 package ispyb.ws.rest.mx;
 
 import dls.dto.AutoProcDTO;
+import dls.dto.AutoProcScalingStatisticsDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -8,6 +9,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
 import ispyb.server.mx.vos.autoproc.AutoProc3VO;
+import ispyb.server.mx.vos.autoproc.AutoProcScaling3VO;
 import ispyb.server.mx.vos.autoproc.AutoProcScalingStatistics3VO;
 import org.apache.log4j.Logger;
 import utils.SwaggerTagConstants;
@@ -141,15 +143,23 @@ public class AutoProcScalingRestWebService extends MXRestWebService
     String methodName = "retrieveAutoProcScalingStatistics";
     long id = this.logInit( methodName, logger, autoProcScalingId );
 
-    if( autoProcScalingId != 1 )
+
+    List<AutoProcScalingStatistics3VO> autoProcScalingStatisticsList =
+      this.getAutoProcScalingStatistics3Service().findByAutoProcId( autoProcScalingId, null );
+
+    System.out.println("autoProcScalingStatsList.size: " + autoProcScalingStatisticsList.size());
+
+    for( AutoProcScalingStatistics3VO autoProcScalingStatistics : autoProcScalingStatisticsList )
     {
-      Map<String, Object> error = new HashMap<>();
-      String errorMsg = "The input autoProcScaling ID[ " + autoProcScalingId + " ] has no statistics associated with it";
-      error.put( "error", errorMsg );
-      return Response.status( Response.Status.NOT_FOUND ).entity( error ).build();
+      System.out.println( "autoProcScalingStatistics.getId: " + autoProcScalingStatistics.getAutoProcScalingVOId() );
+      System.out.println( "autoProcScalingStatistics.getStatsId: " + autoProcScalingStatistics.getAutoProcScalingStatisticsId() );
+      System.out.println( "autoProcScalingStatistics.getCCHalf: " + autoProcScalingStatistics.getCcHalf() );
+      System.out.println( "autoProcScalingStatistics.getRMerge: " + autoProcScalingStatistics.getRmerge() );
     }
 
-    return Response.ok( buildDummyAutoProcStatisticsData() ).build();
+
+    return Response.ok( ).entity( "DUMMY STRING" ).build();
+//    return Response.ok( buildAutoProcScalingStatisticsResponse( autoProcScalingStatisticsList ) ).build();
   }
 
 
@@ -232,6 +242,49 @@ public class AutoProcScalingRestWebService extends MXRestWebService
     }
 
     return Response.ok( buildAutoProcResponse( autoProc ) ).build();
+  }
+
+
+
+  /**
+   * Utility method used to build a list of AutoProcScalingStatisticsDTO objects which hold the relevant data
+   * required for the response. Each object is populated with data retrieved from the AutoProcScalingStatistics3VO entities
+   * obtained from the database.
+   *
+   * @param autoProcScalingStatisticsList - A list of the AutoProcScalingStatistics3VO entities retrieved from the database
+   *
+   * @return List<AutoProcScalingStatisticsDTO> - A list of the response objects holding just the relevant data
+   */
+  private List<AutoProcScalingStatisticsDTO>
+  buildAutoProcScalingStatisticsResponse( final List<AutoProcScalingStatistics3VO> autoProcScalingStatisticsList )
+  {
+    List<AutoProcScalingStatisticsDTO> autoProcScalingStatisticsDTOList = new ArrayList<>();
+
+    int rowNumber = 1;
+    for( AutoProcScalingStatistics3VO autoProcScalingStatistics : autoProcScalingStatisticsList )
+    {
+      AutoProcScalingStatisticsDTO autoProcScalingStatisticsDTO = new AutoProcScalingStatisticsDTO();
+
+      autoProcScalingStatisticsDTO.setAutoProcScalingId( autoProcScalingStatistics.getAutoProcScalingVOId() );
+      autoProcScalingStatisticsDTO.setAutoProcScalingStatisticsId( autoProcScalingStatistics.getAutoProcScalingStatisticsId() );
+      autoProcScalingStatisticsDTO.setScalingStatisticsType( autoProcScalingStatistics.getScalingStatisticsType() );
+      autoProcScalingStatisticsDTO.setResolutionLimitLow( autoProcScalingStatistics.getResolutionLimitLow() );
+      autoProcScalingStatisticsDTO.setResolutionLimitHigh( autoProcScalingStatistics.getResolutionLimitHigh() );
+      autoProcScalingStatisticsDTO.setrMerge( autoProcScalingStatistics.getRmerge() );
+      autoProcScalingStatisticsDTO.setMeanIoverSigI( autoProcScalingStatistics.getMeanIoverSigI() );
+      autoProcScalingStatisticsDTO.setCompleteness( autoProcScalingStatistics.getCompleteness() );
+      autoProcScalingStatisticsDTO.setnTotalUniqueObservations( autoProcScalingStatistics.getnTotalUniqueObservations() );
+      autoProcScalingStatisticsDTO.setMultiplicity( autoProcScalingStatistics.getMultiplicity() );
+      autoProcScalingStatisticsDTO.setAnomalousCompleteness( autoProcScalingStatistics.getAnomalousCompleteness() );
+      autoProcScalingStatisticsDTO.setAnomalousMultiplicity( autoProcScalingStatistics.getAnomalousMultiplicity() );
+      autoProcScalingStatisticsDTO.setCcHalf( autoProcScalingStatistics.getCcHalf() );
+      autoProcScalingStatisticsDTO.setCcAno( autoProcScalingStatistics.getCcAno() );
+      autoProcScalingStatisticsDTO.setRowNumber( rowNumber++ );
+
+      autoProcScalingStatisticsDTOList.add( autoProcScalingStatisticsDTO );
+    }
+
+    return autoProcScalingStatisticsDTOList;
   }
 
 
