@@ -22,6 +22,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.xml.crypto.Data;
 
+import dls.dto.DataCollectionDTO;
 import dls.dto.ScreeningLatticeOutputDTO;
 import dls.dto.ScreeningStrategyDTO;
 import dls.dto.ScreeningStrategyWedgeDTO;
@@ -224,67 +225,46 @@ public class DataCollectionRestWebService extends MXRestWebService {
     @ApiParam
       (
         name = "id", required = true, example = "12", value = "The ID of the session to retrieve"
-      ) @PathParam( "id" ) int sessionID
+      ) @PathParam( "id" ) int sessionId
 
   ) throws Exception
   {
     String methodName = "retrieveDataCollectionsDetails";
-    long id = this.logInit(methodName, logger, sessionID);
+    long id = this.logInit(methodName, logger, sessionId);
 
-
-    System.out.println( "Finding session3VO using sessionId: " + sessionID );
-    Session3VO session3VO = this.getSession3Service().findByPk( sessionID, true, false, false );
+    // Retrieve the session entity using the input sessionId (finding the dataCollectionGroup entities also)
+    Session3VO session3VO = this.getSession3Service().findByPk( sessionId, true, false, false );
 
     if( session3VO == null )
     {
-      System.out.println( "Couldn't find a session3VO for the input sessionId: " + sessionID );
       Map<String, Object> error = new HashMap<>();
-      error.put( "error", "The input sessionID[" + sessionID + "] could not be found in the database" );
+      error.put( "error", "The input sessionId[" + sessionId + "] could not be found in the database" );
       return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
     }
 
-    List<DataCollectionGroup3VO> dataCollectionGroup3VOS = session3VO.getDataCollectionGroupsList();
+    // Retrieve any dataCollectionGroup entities attached to the session entity
+    List<DataCollectionGroup3VO> dataCollectionGroupsList = session3VO.getDataCollectionGroupsList();
 
-    if( dataCollectionGroup3VOS == null )
+    if( dataCollectionGroupsList == null )
     {
-      System.out.println( "Couldn't find dataCollectionGroup3VOS for the input sessionId: " + sessionID );
-      return Response.status(Response.Status.NOT_FOUND).entity( "DUMMY ERROR" ).build();
-
+      Map<String, String> error = new HashMap<>();
+      String errorMessage = "The input sessionId[" + sessionId + "] doesn't have " +
+        "any associated dataCollectionGroup records";
+      error.put( "error", errorMessage );
+      return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
     }
 
-    System.out.println( "Getting a list of DataCollectionGroup3VOs - Check size: " + dataCollectionGroup3VOS.size() );
-
-    System.out.println( "Looping through the DataCollectionGroup VOs " );
-    for( DataCollectionGroup3VO dataCollectionGroup3VO : dataCollectionGroup3VOS )
+    if( dataCollectionGroupsList.isEmpty() )
     {
-      System.out.println( "Pulling the data collection list from the datacollectiongroup" );
-      List<DataCollection3VO> dataCollection3VOS = dataCollectionGroup3VO.getDataCollectionsList();
-
-      if( dataCollection3VOS == null )
-      {
-        System.out.println( "Couldn't find dataCollection3VOS for the input sessionId: " + sessionID );
-        return Response.status(Response.Status.NOT_FOUND).entity( "DUMMY ERROR" ).build();
-
-      }
-
-      System.out.println( "Checking the size of the datacollection list: " + dataCollection3VOS.size() );
-
-
-      System.out.println( "Looping through the data collection list: " );
-
-      for( DataCollection3VO dataCollection3VO : dataCollection3VOS )
-      {
-        System.out.println( "DataCollectionId: " + dataCollection3VO.getDataCollectionId() );
-        System.out.println( "DataCollection.numImages: " + dataCollection3VO.getNumberOfImages());
-      }
-
+      Map<String, String> error = new HashMap<>();
+      String errorMessage = "The input sessionId[" + sessionId + "] doesn't have " +
+        "any associated dataCollectionGroup records";
+      error.put( "error", errorMessage );
+      return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
     }
 
-    return Response.status(Response.Status.NOT_FOUND).entity( "This is a dummy response" ).build();
+    return Response.ok( buildDataCollectionResponse( dataCollectionGroupsList ) ).build();
   }
-
-
-
 
 
   /**
@@ -730,6 +710,44 @@ public class DataCollectionRestWebService extends MXRestWebService {
     }
 
     return screeningStrategyDTOList;
+  }
+
+
+  /**
+   * Utility method used to build a list of DataCollectionDTO objects which hold the relevant data
+   * required for the response. Each object is populated with data retrieved from the DataCollection3VO entities
+   * obtained from the database (which in turn are retrieved from the DataCollectionGroup3VO entities).
+   *
+   * @param dataCollectionGroupList - A list of the DataCollectionGroup3VO entities retrieved from the database
+   *
+   * @return List<DataCollectionDTO> - A list of the response objects holding just the relevant data
+   */
+  private List<DataCollectionDTO>
+              buildDataCollectionResponse( final List<DataCollectionGroup3VO> dataCollectionGroupList )
+  {
+    List<DataCollectionDTO> dataCollectionDTOList = new ArrayList<>();
+
+    for( DataCollectionGroup3VO dataCollectionGroup3VO : dataCollectionGroupList )
+    {
+      List<DataCollection3VO> dataCollection3VOList = dataCollectionGroup3VO.getDataCollectionsList();
+
+      if( dataCollection3VOList != null )
+      {
+        int rowNumber = 1;
+        for( DataCollection3VO dataCollection : dataCollection3VOList )
+        {
+          DataCollectionDTO dataCollectionDTO = new DataCollectionDTO();
+
+          dataCollectionDTO.setDataCollectionId( dataCollection.getDataCollectionId() );
+          dataCollectionDTO.setNumberOfImages( dataCollection.getNumberOfImages() );
+          dataCollectionDTO.setRowNumber( rowNumber++ );
+
+          dataCollectionDTOList.add( dataCollectionDTO );
+        }
+      }
+    }
+
+    return dataCollectionDTOList;
   }
 
 
