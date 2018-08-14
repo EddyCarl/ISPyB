@@ -1,6 +1,6 @@
-package dls.model;
+package dls.dto;
 
-public class ScreeningCommentsResponse
+public class ScreeningCommentsDTO
 {
   private int screeningId;
 

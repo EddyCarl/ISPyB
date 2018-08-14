@@ -4,11 +4,9 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import javax.annotation.security.RolesAllowed;
 import javax.naming.NamingException;
@@ -20,25 +18,22 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
-import javax.xml.crypto.Data;
 
 import dls.dto.DataCollectionDTO;
 import dls.dto.DetailedDataCollectionDTO;
+import dls.dto.ScreeningCommentsDTO;
 import dls.dto.ScreeningLatticeOutputDTO;
 import dls.dto.ScreeningStrategyDTO;
 import dls.dto.ScreeningStrategyWedgeDTO;
-import dls.model.ScreeningCommentsResponse;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
 import ispyb.server.common.util.ejb.Ejb3ServiceLocator;
-import ispyb.server.mx.services.screening.Screening3Service;
 import ispyb.server.mx.services.screening.ScreeningOutput3Service;
 import ispyb.server.mx.services.screening.ScreeningStrategy3Service;
 import ispyb.server.mx.vos.collections.DataCollectionGroup3VO;
-import ispyb.server.mx.vos.collections.EnergyScan3VO;
 import ispyb.server.mx.vos.sample.BLSample3VO;
 import ispyb.server.mx.vos.sample.BLSubSample3VO;
 import ispyb.server.mx.vos.screening.Screening3VO;
@@ -543,18 +538,18 @@ public class DataCollectionRestWebService extends MXRestWebService {
 
 
   /**
-   * Utility method used to build a list of ScreeningCommentsResponse objects for each of the returned
+   * Utility method used to build a list of ScreeningCommentsDTO objects for each of the returned
    * Screening entities in the database. They will hold the relevant screening data and the dataCollectionId.
    *
    * @param dataCollectionId - The dataCollectionId input by the user
    * @param screenings - The list of obtained Screening entities from the database
    *
-   * @return List<ScreeningCommentsResponse> - A list of response objects built to hold the relevant data
+   * @return List<ScreeningCommentsDTO> - A list of response objects built to hold the relevant data
    */
-  private List<ScreeningCommentsResponse> buildScreeningCommentsResponse( final int dataCollectionId,
-                                                                          final List<Screening3VO> screenings )
+  private List<ScreeningCommentsDTO> buildScreeningCommentsResponse( final int dataCollectionId,
+                                                                     final List<Screening3VO> screenings )
   {
-    List<ScreeningCommentsResponse> screeningCommentsResponses = new ArrayList<>();
+    List<ScreeningCommentsDTO> screeningCommentsResponses = new ArrayList<>();
 
     /*
      * Loop through the obtained Screening entities and pull the relevant information
@@ -563,7 +558,7 @@ public class DataCollectionRestWebService extends MXRestWebService {
     int rowIdx = 1;
     for( Screening3VO screening : screenings )
     {
-      ScreeningCommentsResponse screeningCommentsResponse = new ScreeningCommentsResponse();
+      ScreeningCommentsDTO screeningCommentsResponse = new ScreeningCommentsDTO();
       screeningCommentsResponse.setScreeningId( screening.getScreeningId() );
       screeningCommentsResponse.setDataCollectionId( dataCollectionId );
       screeningCommentsResponse.setComments( screening.getComments() );
