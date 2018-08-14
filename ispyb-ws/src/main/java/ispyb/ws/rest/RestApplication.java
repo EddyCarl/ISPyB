@@ -89,6 +89,7 @@ public class RestApplication extends Application implements ReaderListener
 
     // MX package classes
     resources.add( ispyb.ws.rest.mx.AutoprocintegrationRestWebService.class );
+    resources.add( ispyb.ws.rest.mx.AutoProcScalingRestWebService.class );
     resources.add( ispyb.ws.rest.mx.CrystalRestWebService.class );
     resources.add( ispyb.ws.rest.mx.DataCollectionRestWebService.class );
     resources.add( ispyb.ws.rest.mx.EnergyScanRestWebService.class );
