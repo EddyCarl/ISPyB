@@ -17,6 +17,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
+import dls.dto.BLSampleDTO;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
@@ -75,43 +76,43 @@ public class SampleRestWebService extends MXRestWebService {
     String methodName = "retrieveBeamLineSampleInfo";
     long id = this.logInit(methodName, logger, beamLineSampleId );
 
-    if(beamLineSampleId != 1)
+    // Retrieve the blSample entity using the input beamLineSampleId
+    BLSample3VO blSample = this.getBLSample3Service().findByPk( beamLineSampleId, false, false );
+
+    if( blSample == null )
     {
       Map<String, Object> error = new HashMap<>();
-      error.put( "error", "The input beamLineSample ID[" + beamLineSampleId + "] does not exist." );
+      error.put( "error", "The input beamLineSampleId[" + beamLineSampleId + "] could not be found in the database" );
       return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
     }
 
-    return Response.ok( buildDummySampleData() ).build();
+    return Response.ok( buildBlSampleResponse( blSample ) ).build();
   }
 
 
-
-  private List<Map<String, Object>> buildDummySampleData()
+  /**
+   * Utility method used to build a BLSampleDTO object which hold the relevant data
+   * required for the response. The object is populated with data retrieved from the BLSample3VO entity
+   * obtained from the database.
+   *
+   * @param blSample - A BLSample3VO entity retrieved from the database
+   *
+   * @return BLSampleDTO - A response objects holding just the relevant data
+   */
+  private BLSampleDTO buildBlSampleResponse( final BLSample3VO blSample )
   {
-    List<Map<String, Object>> dummySampleData = new ArrayList<>();
+    BLSampleDTO blSampleDTO = new BLSampleDTO();
 
-    for( int i = 0; i < 10; i++ )
-    {
-      Map<String, Object> dummySample = new HashMap<>();
-      Random rand = new Random();
+    blSampleDTO.setBlSampleId( blSample.getBlSampleId() );
+    blSampleDTO.setName( blSample.getName() );
+    blSampleDTO.setLoopLength( blSample.getLoopLength() );
+    blSampleDTO.setLoopType( blSample.getLoopType() );
+    blSampleDTO.setComments( blSample.getComments() );
+    blSampleDTO.setCrystalId( blSample.getCrystalVOId() );
+    blSampleDTO.setRowNumber( 1 );
 
-      dummySample.put( "blsampleid", "1" );
-      dummySample.put( "name", "Sample name " + i );
-      dummySample.put( "looplength", rand.nextInt(i + 40) + 0.5 );
-      dummySample.put( "looptype", rand.nextInt(i + 40) + 0.5 );
-      dummySample.put( "comments", "Dummy comment " + i );
-      dummySample.put( "crystalid", i );
-      dummySample.put( "RNUM", i );
-
-      dummySampleData.add( dummySample );
-    }
-
-    return dummySampleData;
+    return blSampleDTO;
   }
-
-
-
 
 
   /*
