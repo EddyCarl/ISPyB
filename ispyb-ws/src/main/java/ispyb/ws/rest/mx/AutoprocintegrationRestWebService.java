@@ -1,6 +1,7 @@
 package ispyb.ws.rest.mx;
 
 import dls.dto.AutoProcIntegrationDTO;
+import dls.dto.AutoProcIntegrationScalingDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -9,11 +10,14 @@ import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
 import ispyb.common.util.HashMapToZip;
 import ispyb.server.common.util.ejb.Ejb3ServiceLocator;
+import ispyb.server.mx.services.autoproc.AutoProcScalingHasInt3Service;
+import ispyb.server.mx.services.screening.ScreeningOutput3Service;
 import ispyb.server.mx.services.utils.reader.AutoProcProgramaAttachmentFileReader;
 import ispyb.server.mx.services.ws.rest.autoprocessingintegration.AutoProcessingIntegrationService;
 import ispyb.server.mx.vos.autoproc.AutoProcIntegration3VO;
 import ispyb.server.mx.vos.autoproc.AutoProcProgram3VO;
 import ispyb.server.mx.vos.autoproc.AutoProcProgramAttachment3VO;
+import ispyb.server.mx.vos.autoproc.AutoProcScalingHasInt3VO;
 import ispyb.server.mx.vos.collections.DataCollection3VO;
 import org.apache.log4j.Logger;
 import org.jboss.resteasy.annotations.GZIP;
@@ -112,6 +116,64 @@ public class AutoprocintegrationRestWebService extends MXRestWebService
 
 
   /**
+   * Used to retrieve a particular auto-proc-integration based on the input ID.
+   *
+   * @return  Response  - Returns a relevant HTTP response
+   */
+  @GET
+  @Path( "/auto-proc-integrations/{id}/" )
+  @ApiOperation
+    (
+      value = "Retrieves auto proc integration results based on the input ID",
+      notes = "Returns an auto proc integration based on the input ID",
+      tags = { SwaggerTagConstants.AUTO_PROC_TAG }, response = AutoProcIntegration3VO.class,
+      responseContainer = "List", authorizations = @Authorization( "apiKeyAuth" )
+    )
+  @Produces({ "application/json" })
+  @ApiResponses
+    ( {
+      @ApiResponse( code = 200, message = "Ok" ),
+      @ApiResponse( code = 400, message = "Some error" ),
+      @ApiResponse( code = 404, message = "No auto proc scaling records found for the input autoProcIntId" )
+    } )
+  public Response retrieveAutoProcIndexScalingSuccess
+  (
+
+    @ApiParam
+      (
+        name = "id", required = true, example = "12", value = "The ID of the auto-proc-integration to retrieve"
+      ) @PathParam( "id" ) int autoProcIntegrationId
+
+  ) throws Exception
+  {
+    String methodName = "retrieveAutoProcIntegrationScalingSuccess";
+    long id = this.logInit(methodName, logger, autoProcIntegrationId);
+
+    // Retrieve autoProcScalingHasInt entities using the input autoProcIntegrationId
+    List<AutoProcScalingHasInt3VO> autoProcScalingHasIntList =
+                this.getAutoProcScalingHasInt3Service().findFiltered( autoProcIntegrationId );
+
+    if( autoProcScalingHasIntList == null )
+    {
+      Map<String, Object> error = new HashMap<>();
+      error.put( "error", "The input autoProcIntegrationId[" + autoProcIntegrationId + "] " +
+        "could not be found in the database" );
+      return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
+    }
+
+    if( autoProcScalingHasIntList.isEmpty() )
+    {
+      Map<String, Object> error = new HashMap<>();
+      error.put( "error", "The input autoProcIntegrationId[" + autoProcIntegrationId + "] " +
+        "could not be found in the database" );
+      return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
+    }
+
+    return Response.ok( buildAutoProcIntegrationScalingResponse( autoProcScalingHasIntList ) ).build();
+  }
+
+
+  /**
    * Utility method used to build a list of AutoProcIntegrationDTO objects which hold the relevant data
    * required for the response. Each object is populated with data retrieved from the AutoProcIntegration3VO entities
    * obtained from the database.
@@ -151,74 +213,46 @@ public class AutoprocintegrationRestWebService extends MXRestWebService
 
 
   /**
-   * Used to retrieve a particular auto-proc-integration based on the input ID.
+   * Utility method used to build a list of AutoProcIntegrationScalingDTO objects which hold the relevant data
+   * required for the response. Each object is populated with data retrieved from the AutoProcScalingHasInt3VO entities
+   * obtained from the database.
    *
-   * @return  Response  - Returns a relevant HTTP response
+   * @param autoProcScalingHasIntList - A list of the AutoProcScalingHasInt3VO entities retrieved from the database
+   *
+   * @return List<AutoProcIntegrationScalingDTO> - A list of the response objects holding just the relevant data
    */
-  @GET
-  @Path( "/auto-proc-integrations/{id}/" )
-  @ApiOperation
-    (
-      value = "Retrieves auto proc integration results based on the input ID",
-      notes = "Returns an auto proc integration based on the input ID",
-      tags = { SwaggerTagConstants.AUTO_PROC_TAG }, response = AutoProcIntegration3VO.class,
-      responseContainer = "List", authorizations = @Authorization( "apiKeyAuth" )
-    )
-  @Produces({ "application/json" })
-  @ApiResponses
-    ( {
-      @ApiResponse( code = 200, message = "Ok" ),
-      @ApiResponse( code = 400, message = "Some error" ),
-      @ApiResponse( code = 404, message = "No auto proc scaling records found for the input autoProcIntId" )
-    } )
-  public Response retrieveAutoProcIndexScalingSuccess
-  (
-
-    @ApiParam
-      (
-        name = "id", required = true, example = "12", value = "The ID of the auto-proc-integration to retrieve"
-      ) @PathParam( "id" ) int autoProcIntId
-
-  ) throws Exception
+  private List<AutoProcIntegrationScalingDTO> buildAutoProcIntegrationScalingResponse(
+                                            final List<AutoProcScalingHasInt3VO> autoProcScalingHasIntList )
   {
-    String methodName = "retrieveAutoProcIndexScalingSuccess";
-    long id = this.logInit(methodName, logger, autoProcIntId);
+    List<AutoProcIntegrationScalingDTO> autoProcIntScalingDTOList = new ArrayList<>();
 
-    if(autoProcIntId != 1)
+    int rowNumber = 1;
+    for( AutoProcScalingHasInt3VO autoProcScalingHasInt : autoProcScalingHasIntList )
     {
-      Map<String, Object> error = new HashMap<>();
-      String errorMsg = "The input autoProcInt ID[ " + autoProcIntId+ " ] has no auto proc scaling " +
-                        "results associated with it";
+      AutoProcIntegrationScalingDTO autoProcIntegrationScalingDTO = new AutoProcIntegrationScalingDTO();
 
-      error.put( "error", errorMsg );
-      return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
+      autoProcIntegrationScalingDTO.setAutoProcIntegrationId( autoProcScalingHasInt.getAutoProcIntegrationVOId() );
+      autoProcIntegrationScalingDTO.setAutoProcScalingId( autoProcScalingHasInt.getAutoProcScalingVOId() );
+      autoProcIntegrationScalingDTO.setRowNumber( rowNumber++ );
+
+      autoProcIntScalingDTOList.add( autoProcIntegrationScalingDTO );
     }
 
-    return Response.ok( buildDummyAutoProcIndexScalingSuccessData() ).build();
+    return autoProcIntScalingDTOList;
   }
 
 
-  private List<Map<String, Object>> buildDummyAutoProcIndexScalingSuccessData()
-  {
-    List<Map<String, Object>> dummyAutoProcIndScalingSuccData = new ArrayList<>();
-
-    for( int i = 0; i < 5; i++ )
-    {
-      Map<String, Object> dummyAutoProcIndScalingSucc = new HashMap<>();
-
-      int cellValues = ( i + 5 * 10 );
-      int cellSecondaryValues = ( i + 10 * 5 );
-
-      dummyAutoProcIndScalingSucc.put( "autoProcIntegrationId", "1" );
-      dummyAutoProcIndScalingSucc.put( "autoProcScalingId", i );
-      dummyAutoProcIndScalingSucc.put( "RNUM", i );
-
-      dummyAutoProcIndScalingSuccData.add( dummyAutoProcIndScalingSucc );
-    }
-
-    return dummyAutoProcIndScalingSuccData;
+  /**
+   * Utility method used to get a AutoProcScalingHasInt3Service instance in order to obtain AutoProcScalingHasInt3VO
+   * entities from the database using the methods defined in the service.
+   *
+   * @return AutoProcScalingHasInt3Service - The service containing helper methods to obtain data from the database
+   *
+   * @throws NamingException
+   */
+  protected AutoProcScalingHasInt3Service getAutoProcScalingHasInt3Service() throws NamingException {
+    return (AutoProcScalingHasInt3Service) Ejb3ServiceLocator.getInstance().getLocalService(AutoProcScalingHasInt3Service.class);
   }
-
 
 
   /*
