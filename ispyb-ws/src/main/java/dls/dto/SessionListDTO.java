@@ -1,9 +1,9 @@
-package dls.model;
+package dls.dto;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class SessionListResponse
+public class SessionListDTO
 {
   private int sessionId;
 

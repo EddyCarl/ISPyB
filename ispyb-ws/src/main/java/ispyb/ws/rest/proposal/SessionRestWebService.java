@@ -1,6 +1,6 @@
 package ispyb.ws.rest.proposal;
 
-import dls.model.SessionListResponse;
+import dls.dto.SessionListDTO;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
@@ -89,7 +89,7 @@ public class SessionRestWebService extends RestWebService
     }
 
     // Create the response using the snapshot paths from the obtained dataCollection entity
-    return Response.ok( buildSessionListResponses( sessions ) ).build();
+    return Response.ok( buildSessionListDTOs( sessions ) ).build();
   }
 
 
@@ -183,35 +183,35 @@ public class SessionRestWebService extends RestWebService
 
 
   /**
-   * Utility method used to build a list of SessionListResponse objects which will hold the relevant
+   * Utility method used to build a list of SessionListDTO objects which will hold the relevant
    * data that is taken from the Session3VO entities retrieved from the database.
    *
    * @param sessions - The obtained list of Session3VO entities from the database
    *
-   * @return List<SessionListResponse> - A list of the response objects to hold the data
+   * @return List<SessionListDTO> - A list of the response objects to hold the data
    */
-  private List<SessionListResponse> buildSessionListResponses( List<Session3VO> sessions )
+  private List<SessionListDTO> buildSessionListDTOs( List<Session3VO> sessions )
   {
-    List<SessionListResponse> sessionListResponses = new ArrayList<>();
+    List<SessionListDTO> SessionListDTOs = new ArrayList<>();
 
     int rowNumber = 1;
     for( Session3VO session3VO : sessions )
     {
-      SessionListResponse sessionListResponse = new SessionListResponse();
+      SessionListDTO SessionListDTO = new SessionListDTO();
 
-      sessionListResponse.setSessionId( session3VO.getSessionId() );
-      sessionListResponse.setProposalId( session3VO.getProposalVOId() );
-      sessionListResponse.setStartDate( session3VO.getStartDate() );
-      sessionListResponse.setBeamlineName( session3VO.getBeamlineName() );
-      sessionListResponse.setBeamLineOperator( session3VO.getBeamlineOperator() );
-      sessionListResponse.setProjectCode( session3VO.getProjectCode() );
-      sessionListResponse.setVisitNumber( session3VO.getVisit_number() );
-      sessionListResponse.setRowNumber( rowNumber++ );
+      SessionListDTO.setSessionId( session3VO.getSessionId() );
+      SessionListDTO.setProposalId( session3VO.getProposalVOId() );
+      SessionListDTO.setStartDate( session3VO.getStartDate() );
+      SessionListDTO.setBeamlineName( session3VO.getBeamlineName() );
+      SessionListDTO.setBeamLineOperator( session3VO.getBeamlineOperator() );
+      SessionListDTO.setProjectCode( session3VO.getProjectCode() );
+      SessionListDTO.setVisitNumber( session3VO.getVisit_number() );
+      SessionListDTO.setRowNumber( rowNumber++ );
 
-      sessionListResponses.add( sessionListResponse );
+      SessionListDTOs.add( SessionListDTO );
     }
 
-    return sessionListResponses;
+    return SessionListDTOs;
   }
 
 
