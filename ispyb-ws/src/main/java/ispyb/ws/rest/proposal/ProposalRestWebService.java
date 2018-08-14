@@ -1,35 +1,12 @@
 package ispyb.ws.rest.proposal;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.security.RolesAllowed;
-import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.Response;
-
-import dls.model.ProposalResponse;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
+import dls.dto.ProposalResponseDTO;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
-import org.apache.log4j.Logger;
-
-import com.google.gson.Gson;
-
-import io.swagger.annotations.Api;
 import ispyb.server.biosaxs.vos.assembly.Macromolecule3VO;
 import ispyb.server.biosaxs.vos.dataAcquisition.Buffer3VO;
 import ispyb.server.biosaxs.vos.dataAcquisition.StockSolution3VO;
@@ -43,7 +20,19 @@ import ispyb.server.mx.vos.sample.Crystal3VO;
 import ispyb.server.mx.vos.sample.Protein3VO;
 import ispyb.server.smis.UpdateFromSMIS;
 import ispyb.ws.rest.mx.MXRestWebService;
+import org.apache.log4j.Logger;
 import utils.SwaggerTagConstants;
+
+import javax.annotation.security.RolesAllowed;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Response;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 @Api( tags = SwaggerTagConstants.LEGACY_TAG )
@@ -171,21 +160,21 @@ public class ProposalRestWebService extends MXRestWebService
     }
 
     // Create the response using the entity obtained from the database
-    return Response.ok( buildProposalResponse( proposal3VO ) ).build();
+    return Response.ok( buildProposalResponseDTO( proposal3VO ) ).build();
   }
 
 
   /**
-   * Utility method used to build a ProposalResponse object which will hold the relevant
+   * Utility method used to build a ProposalResponseDTO object which will hold the relevant
    * data that is taken from the Proposal3VO entity retrieved from the database.
    *
    * @param proposal - The obtained Proposal3VO entity from the database
    *
-   * @return ProposalResponse - A response object holding the relevant data
+   * @return ProposalResponseDTO - A response object holding the relevant data
    */
-  private ProposalResponse buildProposalResponse( Proposal3VO proposal )
+  private ProposalResponseDTO buildProposalResponseDTO( Proposal3VO proposal )
   {
-    ProposalResponse proposalResponse = new ProposalResponse();
+    ProposalResponseDTO proposalResponse = new ProposalResponseDTO();
 
     proposalResponse.setProposalId( proposal.getProposalId() );
     proposalResponse.setProposalNumber( proposal.getNumber() );

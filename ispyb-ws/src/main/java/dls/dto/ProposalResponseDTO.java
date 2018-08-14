@@ -1,6 +1,6 @@
-package dls.model;
+package dls.dto;
 
-public class ProposalResponse
+public class ProposalResponseDTO
 {
   private int proposalId;
 
