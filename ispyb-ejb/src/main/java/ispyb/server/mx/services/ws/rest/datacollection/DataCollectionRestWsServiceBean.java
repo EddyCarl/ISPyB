@@ -1,19 +1,19 @@
 /*******************************************************************************
  * This file is part of ISPyB.
- * 
+ *
  * ISPyB is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * ISPyB is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with ISPyB.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * Contributors : S. Delageniere, R. Leal, L. Launer, K. Levik, S. Veyrier, P. Brenchereau, M. Bodin, A. De Maria Antolinos
  ******************************************************************************************************************************/
 
@@ -43,7 +43,7 @@ public class DataCollectionRestWsServiceBean extends WsServiceBean implements Da
 	private String getViewTableQuery(){
 		return this.getQueryFromResourceFile("/queries/DataCollectionRestWsServiceBean/getViewTableQuery.sql");
 	}
-	
+
 	@Override
 	public Collection<? extends Map<String, Object>> getViewDataCollectionsByWorkflowId(int proposalId, Integer workflowId) {
 		String mySQLQuery = this.getViewTableQuery() + " where proposalId = :proposalId and workflowId = :workflowId  group by v_datacollection.dataCollectionId";
@@ -53,7 +53,7 @@ public class DataCollectionRestWsServiceBean extends WsServiceBean implements Da
 		query.setParameter("workflowId", workflowId);
 		return executeSQLQuery(query);
 	}
-	
+
 
 	@Override
 	public Collection<? extends Map<String, Object>> getDataCollectionByDataCollectionGroupId(int proposalId, Integer dataCollectionGroupId) {
@@ -64,5 +64,13 @@ public class DataCollectionRestWsServiceBean extends WsServiceBean implements Da
 		query.setParameter("dataCollectionGroupId", dataCollectionGroupId);
 		return executeSQLQuery(query);
 	}
-	
+
+  @Override
+  public Collection<? extends Map<String, Object>> getDataCollectionBySessionId(int sessionId) {
+    String mySQLQuery = this.getViewTableQuery() + " where sessionId = :sessionId";
+    Session session = (Session) this.entityManager.getDelegate();
+    SQLQuery query = session.createSQLQuery(mySQLQuery);
+    query.setParameter("sessionId", sessionId);
+    return executeSQLQuery(query);
+  }
 }

@@ -4,6 +4,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -242,12 +243,31 @@ public class DataCollectionRestWebService extends MXRestWebService {
       return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
     }
 
+    if( this.getWebServiceDataCollection3Service().getDataCollectionBySessionId( sessionID ).isEmpty() )
+    {
+      System.out.println("Couldn't retrieve any datacollection results by session ID");
+      return Response.status(Response.Status.NOT_FOUND).entity( "DUMMY ERROR" ).build();
+    }
+
+    List<Map<String, Object>> dataCollections = new ArrayList<Map<String, Object>>();
+    dataCollections.addAll( this.getWebServiceDataCollection3Service().getDataCollectionBySessionId( sessionID ) );
+
+    for( Map<String, Object> dataCollection : dataCollections )
+    {
+      System.out.println( "DataCollection size: " + dataCollection.size() );
+
+      System.out.println( "datacollection keyset: " + dataCollection.keySet() );
+
+      System.out.println( "datacollection values: " + dataCollection.values() );
+    }
 
     List<DataCollectionGroup3VO> dataCollectionGroup3VOS = session3VO.getDataCollectionGroupsList();
 
     if( dataCollectionGroup3VOS == null )
     {
       System.out.println( "Couldn't find dataCollectionGroup3VOS for the input sessionId: " + sessionID );
+      return Response.status(Response.Status.NOT_FOUND).entity( "DUMMY ERROR" ).build();
+
     }
 
     System.out.println( "Getting a list of DataCollectionGroup3VOs - Check size: " + dataCollectionGroup3VOS.size() );
@@ -261,6 +281,8 @@ public class DataCollectionRestWebService extends MXRestWebService {
       if( dataCollection3VOS == null )
       {
         System.out.println( "Couldn't find dataCollection3VOS for the input sessionId: " + sessionID );
+        return Response.status(Response.Status.NOT_FOUND).entity( "DUMMY ERROR" ).build();
+
       }
 
       System.out.println( "Checking the size of the datacollection list: " + dataCollection3VOS.size() );
