@@ -1,6 +1,6 @@
-package dls.model;
+package dls.dto;
 
-public class CrystalSnapshotPaths
+public class CrystalSnapshotPathsDTO
 {
   private String crystalSnapshotFullPathOne;
 

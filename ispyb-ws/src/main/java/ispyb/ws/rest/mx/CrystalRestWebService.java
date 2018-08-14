@@ -1,6 +1,6 @@
 package ispyb.ws.rest.mx;
 
-import dls.model.CrystalSnapshotPaths;
+import dls.dto.CrystalSnapshotPathsDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -48,7 +48,7 @@ public class CrystalRestWebService extends MXRestWebService
       value = "Retrieve the crystal snapshot image paths.",
       notes = "Retrieve the crystal snapshot image paths for a particular data-collection specified by the input ID.",
       tags = { SwaggerTagConstants.CRYSTAL_SNAPSHOT_TAG },
-      response = CrystalSnapshotPaths.class, authorizations = @Authorization( "apiKeyAuth" )
+      response = CrystalSnapshotPathsDTO.class, authorizations = @Authorization( "apiKeyAuth" )
     )
   @Produces({ "application/json" })
   @ApiResponses
@@ -57,7 +57,7 @@ public class CrystalRestWebService extends MXRestWebService
       @ApiResponse( code = 400, message = "Some error" ),
       @ApiResponse( code = 404, message = "No Crystal Snapshot Path records found for the input dataCollectionId" )
     } )
-  public Response retrieveCrystalSnapshotPaths
+  public Response retrieveCrystalSnapshotPathsDTO
   (
 
     @ApiParam
@@ -67,7 +67,7 @@ public class CrystalRestWebService extends MXRestWebService
 
   ) throws Exception
   {
-    String methodName = "retrieveCrystalSnapshotPaths";
+    String methodName = "retrieveCrystalSnapshotPathsDTO";
     long id = this.logInit(methodName, logger, dataCollectionId );
 
     // * CE * Need to check the auth token here before getting anything...
@@ -165,16 +165,16 @@ public class CrystalRestWebService extends MXRestWebService
 
 
   /**
-   * Utility method used to build a CrystalSnapshotPaths object which will hold the relevant
+   * Utility method used to build a CrystalSnapshotPathsDTO object which will hold the relevant
    * data that is taken from the DataCollection entity obtained from the database.
    *
    * @param dataCollection - The obtained dataCollection entity from the database
    *
-   * @return CrystalSnapshotPaths crystalSnapshotPaths - The response object built to hold the data
+   * @return CrystalSnapshotPathsDTO crystalSnapshotPaths - The response object built to hold the data
    */
-  private CrystalSnapshotPaths buildCrystalSnapshotPathResponse( final DataCollection3VO dataCollection )
+  private CrystalSnapshotPathsDTO buildCrystalSnapshotPathResponse( final DataCollection3VO dataCollection )
   {
-    CrystalSnapshotPaths crystalSnapshotPaths = new CrystalSnapshotPaths();
+    CrystalSnapshotPathsDTO crystalSnapshotPaths = new CrystalSnapshotPathsDTO();
     crystalSnapshotPaths.setCrystalSnapshotFullPathOne( dataCollection.getXtalSnapshotFullPath1() );
     crystalSnapshotPaths.setCrystalSnapshotFullPathTwo( dataCollection.getXtalSnapshotFullPath2() );
     crystalSnapshotPaths.setCrystalSnapshotFullPathThree( dataCollection.getXtalSnapshotFullPath3() );
