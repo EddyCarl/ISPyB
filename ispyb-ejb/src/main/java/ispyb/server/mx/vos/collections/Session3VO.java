@@ -1,19 +1,19 @@
 /*************************************************************************************************
  * This file is part of ISPyB.
- * 
+ *
  * ISPyB is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * ISPyB is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with ISPyB.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * Contributors : S. Delageniere, R. Leal, L. Launer, K. Levik, S. Veyrier, P. Brenchereau, M. Bodin, A. De Maria Antolinos
  ****************************************************************************************************/
 package ispyb.server.mx.vos.collections;
@@ -32,6 +32,7 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityResult;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -45,7 +46,7 @@ import org.hibernate.annotations.OrderBy;
 
 /**
  * Session3 value object mapping table Session
- * 
+ *
  */
 @Entity
 @Table(name = "BLSession")
@@ -124,14 +125,14 @@ public class Session3VO extends ISPyBValueObject implements Cloneable {
 
 	@Column(name = "bltimeStamp")
 	protected Date timeStamp;
-	
+
 	@Column(name = "lastUpdate")
 	protected Date lastUpdate;
-	
+
 	@Column(name = "protectedData")
 	protected String protectedData;
 
-	@OneToMany
+	@OneToMany(fetch = FetchType.EAGER)
 	@JoinColumn(name = "sessionId")
 	private Set<DataCollectionGroup3VO> dataCollectionGroupVOs;
 
@@ -144,7 +145,7 @@ public class Session3VO extends ISPyBValueObject implements Cloneable {
 	@JoinColumn(name = "sessionId")
 	@OrderBy(clause = "startTime DESC")
 	private Set<EnergyScan3VO> energyScanVOs;
-	
+
 	@Column(name = "externalId")
 	protected Integer externalId;
 
@@ -503,7 +504,7 @@ public class Session3VO extends ISPyBValueObject implements Cloneable {
 	/**
 	 * Checks the values of this value object for correctness and completeness. Should be done before persisting the
 	 * data in the DB.
-	 * 
+	 *
 	 * @param create
 	 *            should be true if the value object is just being created in the DB, this avoids some checks like
 	 *            testing the primary key
@@ -592,15 +593,15 @@ public class Session3VO extends ISPyBValueObject implements Cloneable {
 
 		return s;
 	}
-	
-	
+
+
 	public  String getBeamLineOperatorEmail(){
 		String beamLineOperatorEmail = "";
 		if (Constants.SITE_IS_ESRF() || Constants.SITE_IS_MAXIV()) { // connection to ldap only for the esrf
-			
+
 			if (this.getBeamlineOperator() != null && !this.getBeamlineOperator().equals("")) {
-				
-				String lastName = this.getBeamlineOperator();				
+
+				String lastName = this.getBeamlineOperator();
 				String firstNameLetter = "*";
 				if (this.getBeamlineOperator()
 						.substring(this.getBeamlineOperator().length() - 2, this.getBeamlineOperator().length() - 1).equals(" ")) {
@@ -611,7 +612,7 @@ public class Session3VO extends ISPyBValueObject implements Cloneable {
 					if (lastName.endsWith(" "))
 						lastName = lastName.substring(0, lastName.length() - 1);
 				}
-				
+
 				lastName = lastName.replace(' ', '*');
 				if(lastName.toLowerCase().startsWith("mc")){
 					lastName = "mc*"+lastName.substring(2);
