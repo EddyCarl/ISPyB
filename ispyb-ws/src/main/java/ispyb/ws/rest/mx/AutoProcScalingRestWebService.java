@@ -1,5 +1,6 @@
 package ispyb.ws.rest.mx;
 
+import dls.dto.AutoProcDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -26,54 +27,54 @@ import java.util.Random;
 @Path("/")
 public class AutoProcScalingRestWebService extends MXRestWebService
 {
-  private final static Logger logger = Logger.getLogger(AutoProcScalingRestWebService.class);
+  private final static Logger logger = Logger.getLogger( AutoProcScalingRestWebService.class );
 
 
   /**
    * Used to retrieve a set of MX MR Run results based on an input auto-proc-scaling ID.
    *
-   * @return  Response  - Returns a relevant HTTP response
+   * @return Response  - Returns a relevant HTTP response
    */
   @GET
-  @Path( "/auto-proc-scalings/{id}/mx-mr-runs" )
+  @Path("/auto-proc-scalings/{id}/mx-mr-runs")
   @ApiOperation
     (
       value = "Retrieves MX MR Run results",
       notes = "Retrieves MX MR Run results based on the input Auto Proc Scaling ID",
       tags = { SwaggerTagConstants.AUTO_PROC_TAG },
-      responseContainer = "List", authorizations = @Authorization( "apiKeyAuth" )
+      responseContainer = "List", authorizations = @Authorization("apiKeyAuth")
     )
   @Produces({ "application/json" })
   @ApiResponses
-    ( {
-      @ApiResponse( code = 200, message = "Ok" ),
-      @ApiResponse( code = 400, message = "Some error" ),
-      @ApiResponse( code = 404, message = "No MX MR Runs found for the input autoProcScalingId" )
-    } )
+    ({
+      @ApiResponse(code = 200, message = "Ok"),
+      @ApiResponse(code = 400, message = "Some error"),
+      @ApiResponse(code = 404, message = "No MX MR Runs found for the input autoProcScalingId")
+    })
   public Response retrieveMxMrRuns
   (
 
     @ApiParam
       (
         name = "id", required = true, example = "12", value = "The ID of the auto-proc-scaling to retrieve"
-      ) @PathParam( "id" ) int autoProcScalingId
+      ) @PathParam("id") int autoProcScalingId
 
   ) throws Exception
   {
     String methodName = "retrieveMxMrRuns";
-    long id = this.logInit(methodName, logger, autoProcScalingId);
+    long id = this.logInit( methodName, logger, autoProcScalingId );
 
-    if(autoProcScalingId != 1)
+
+    if( autoProcScalingId != 1 )
     {
       Map<String, Object> error = new HashMap<>();
-      String errorMsg = "The input autoProcScaling ID[ " + autoProcScalingId+ " ] has no MX MR Runs associated with it";
+      String errorMsg = "The input autoProcScaling ID[ " + autoProcScalingId + " ] has no MX MR Runs associated with it";
       error.put( "error", errorMsg );
-      return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
+      return Response.status( Response.Status.NOT_FOUND ).entity( error ).build();
     }
 
     return Response.ok( buildDummyMxMrRunData() ).build();
   }
-
 
 
   private List<Map<String, Object>> buildDummyMxMrRunData()
@@ -93,7 +94,7 @@ public class AutoProcScalingRestWebService extends MXRestWebService
       dummyMxMrRun.put( "pipeline", "pipeline" );
       dummyMxMrRun.put( "rvaluestart", startValues );
       dummyMxMrRun.put( "rvalueend", endValues );
-      dummyMxMrRun.put( "rfreevaluestart", startValues  );
+      dummyMxMrRun.put( "rfreevaluestart", startValues );
       dummyMxMrRun.put( "rfreevalueend", endValues );
       dummyMxMrRun.put( "logfile", "/dls/dummy/path/tologfile" );
       dummyMxMrRun.put( "commandline", "commandline" );
@@ -106,49 +107,46 @@ public class AutoProcScalingRestWebService extends MXRestWebService
   }
 
 
-
-
-
   /**
    * Used to retrieve a set of auto-proc-scaling statistics where the auto-proc-scaling ID is specified.
    *
-   * @return  Response  - Returns a relevant HTTP response
+   * @return Response  - Returns a relevant HTTP response
    */
   @GET
-  @Path( "/auto-proc-scalings/{id}/statistics" )
+  @Path("/auto-proc-scalings/{id}/statistics")
   @ApiOperation
     (
       value = "Retrieves auto-proc-scaling statistics",
       notes = "Retrieves auto-proc-scaling statistics based on the input Auto Proc Scaling ID",
       tags = { SwaggerTagConstants.AUTO_PROC_TAG }, response = AutoProcScalingStatistics3VO.class,
-      responseContainer = "List", authorizations = @Authorization( "apiKeyAuth" )
+      responseContainer = "List", authorizations = @Authorization("apiKeyAuth")
     )
   @Produces({ "application/json" })
   @ApiResponses
-    ( {
-      @ApiResponse( code = 200, message = "Ok" ),
-      @ApiResponse( code = 400, message = "Some error" ),
-      @ApiResponse( code = 404, message = "No auto-proc-scaling statistics found for the input autoProcScalingId" )
-    } )
+    ({
+      @ApiResponse(code = 200, message = "Ok"),
+      @ApiResponse(code = 400, message = "Some error"),
+      @ApiResponse(code = 404, message = "No auto-proc-scaling statistics found for the input autoProcScalingId")
+    })
   public Response retrieveAutoProcScalingStatistics
   (
 
     @ApiParam
       (
         name = "id", required = true, example = "12", value = "The ID of the auto-proc-scaling to retrieve"
-      ) @PathParam( "id" ) int autoProcScalingId
+      ) @PathParam("id") int autoProcScalingId
 
   ) throws Exception
   {
     String methodName = "retrieveAutoProcScalingStatistics";
-    long id = this.logInit(methodName, logger, autoProcScalingId);
+    long id = this.logInit( methodName, logger, autoProcScalingId );
 
-    if(autoProcScalingId != 1)
+    if( autoProcScalingId != 1 )
     {
       Map<String, Object> error = new HashMap<>();
-      String errorMsg = "The input autoProcScaling ID[ " + autoProcScalingId+ " ] has no statistics associated with it";
+      String errorMsg = "The input autoProcScaling ID[ " + autoProcScalingId + " ] has no statistics associated with it";
       error.put( "error", errorMsg );
-      return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
+      return Response.status( Response.Status.NOT_FOUND ).entity( error ).build();
     }
 
     return Response.ok( buildDummyAutoProcStatisticsData() ).build();
@@ -172,14 +170,14 @@ public class AutoProcScalingRestWebService extends MXRestWebService
       dummyAutoProcStatistic.put( "resolutionLimitLow", resolutionLimitBase + i );
       dummyAutoProcStatistic.put( "resolutionLimitHigh", resolutionLimitBase + ( i * 5 ) );
       dummyAutoProcStatistic.put( "rMerge", "3.0" );
-      dummyAutoProcStatistic.put( "meanIOverSigI", rand.nextInt(20) );
-      dummyAutoProcStatistic.put( "completeness", rand.nextInt(20) );
-      dummyAutoProcStatistic.put( "nTotalUniqueObservations", rand.nextInt(20));
-      dummyAutoProcStatistic.put( "multiplicity", rand.nextInt(20) );
-      dummyAutoProcStatistic.put( "anomalousCompleteness", rand.nextInt(20) );
-      dummyAutoProcStatistic.put( "anomalousMultiplicity", rand.nextInt(20) );
-      dummyAutoProcStatistic.put( "ccHalf", rand.nextInt(20) );
-      dummyAutoProcStatistic.put( "ccAnomalous", rand.nextInt(20) );
+      dummyAutoProcStatistic.put( "meanIOverSigI", rand.nextInt( 20 ) );
+      dummyAutoProcStatistic.put( "completeness", rand.nextInt( 20 ) );
+      dummyAutoProcStatistic.put( "nTotalUniqueObservations", rand.nextInt( 20 ) );
+      dummyAutoProcStatistic.put( "multiplicity", rand.nextInt( 20 ) );
+      dummyAutoProcStatistic.put( "anomalousCompleteness", rand.nextInt( 20 ) );
+      dummyAutoProcStatistic.put( "anomalousMultiplicity", rand.nextInt( 20 ) );
+      dummyAutoProcStatistic.put( "ccHalf", rand.nextInt( 20 ) );
+      dummyAutoProcStatistic.put( "ccAnomalous", rand.nextInt( 20 ) );
       dummyAutoProcStatistic.put( "RNUM", i );
 
       dummyAutoProcStatisticsData.add( dummyAutoProcStatistic );
@@ -189,76 +187,78 @@ public class AutoProcScalingRestWebService extends MXRestWebService
   }
 
 
-
   /**
    * Used to retrieve the data for a specific Auto Proc instance based on the input auto-proc ID.
    *
-   * @return  Response  - Returns a relevant HTTP response
+   * @return Response  - Returns a relevant HTTP response
    */
   @GET
-  @Path( "/auto-proc/{id}" )
+  @Path("/auto-proc/{id}")
   @ApiOperation
     (
       value = "Retrieves an auto-proc instance",
       notes = "Retrieves an auto-proc instance based on the input Auto Proc ID",
       tags = { SwaggerTagConstants.AUTO_PROC_TAG }, response = AutoProc3VO.class,
-      responseContainer = "List", authorizations = @Authorization( "apiKeyAuth" )
+      responseContainer = "List", authorizations = @Authorization("apiKeyAuth")
     )
   @Produces({ "application/json" })
   @ApiResponses
-    ( {
-      @ApiResponse( code = 200, message = "Ok" ),
-      @ApiResponse( code = 400, message = "Some error" ),
-      @ApiResponse( code = 404, message = "An Auto Proc instance could not be found for the input ID" )
-    } )
+    ({
+      @ApiResponse(code = 200, message = "Ok"),
+      @ApiResponse(code = 400, message = "Some error"),
+      @ApiResponse(code = 404, message = "An Auto Proc instance could not be found for the input ID")
+    })
   public Response retrieveAutoProc
   (
 
     @ApiParam
       (
         name = "id", required = true, example = "12", value = "The ID of the auto-proc instance to retrieve"
-      ) @PathParam( "id" ) int autoProcId
+      ) @PathParam("id") int autoProcId
 
   ) throws Exception
   {
     String methodName = "retrieveAutoProc";
-    long id = this.logInit(methodName, logger, autoProcId);
+    long id = this.logInit( methodName, logger, autoProcId );
 
-    if(autoProcId != 1)
+    // Retrieve the autoProc entity using the input autoProcId
+    AutoProc3VO autoProc = this.getAutoProc3Service().findByPk( autoProcId );
+
+    if( autoProc == null )
     {
       Map<String, Object> error = new HashMap<>();
-      error.put( "error", "The input autoProc ID[" + autoProcId + "] does not exist." );
-      return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
+      error.put( "error", "The input autoProcId[" + autoProcId + "] could not be found in the database" );
+      return Response.status( Response.Status.NOT_FOUND ).entity( error ).build();
     }
 
-    return Response.ok( buildDummyAutoProcData() ).build();
+    return Response.ok( buildAutoProcResponse( autoProc ) ).build();
   }
 
 
-
-  private List<Map<String, Object>> buildDummyAutoProcData()
+  /**
+   * Utility method used to build an AutoProcDTO object which holds the relevant data
+   * required for the response. The object is populated with data retrieved from the AutoProc3VO entity
+   * obtained from the database.
+   *
+   * @param autoProc - An AutoProc3VO entity retrieved from the database
+   *
+   * @return AutoProcDTO - A response object holding just the relevant data
+   */
+  private AutoProcDTO buildAutoProcResponse( final AutoProc3VO autoProc )
   {
-    List<Map<String, Object>> dummyAutoProcData = new ArrayList<>();
+    AutoProcDTO autoProcDTO = new AutoProcDTO();
 
-    for( int i = 0; i < 5; i++ )
-    {
-      Map<String, Object> dummyAutoProc = new HashMap<>();
-      Random rand = new Random();
+    autoProcDTO.setAutoProcId( autoProc.getAutoProcId() );
+    autoProcDTO.setSpaceGroup( autoProc.getSpaceGroup() );
+    autoProcDTO.setRefinedCellA( autoProc.getRefinedCellA() );
+    autoProcDTO.setRefinedCellB( autoProc.getRefinedCellB() );
+    autoProcDTO.setRefinedCellC( autoProc.getRefinedCellC() );
+    autoProcDTO.setRefinedCellAlpha( autoProc.getRefinedCellAlpha() );
+    autoProcDTO.setRefinedCellBeta( autoProc.getRefinedCellBeta() );
+    autoProcDTO.setRefinedCellGamma( autoProc.getRefinedCellGamma() );
+    autoProcDTO.setRowNumber( 1 );
 
-      dummyAutoProc.put( "autoProcId", "1" );
-      dummyAutoProc.put( "spaceGroup", i );
-      dummyAutoProc.put( "refinedCell_a", rand.nextInt(i + 40) + 0.5 );
-      dummyAutoProc.put( "refinedCell_b", rand.nextInt(i + 40) + 0.5 );
-      dummyAutoProc.put( "refinedCell_c", rand.nextInt(i + 40) + 0.5 );
-      dummyAutoProc.put( "refinedCell_alpha", rand.nextInt(i + 40) + 0.5 );
-      dummyAutoProc.put( "refinedCell_beta", rand.nextInt(i + 40) + 0.5 );
-      dummyAutoProc.put( "refinedCell_gamma", rand.nextInt(i + 40) + 0.5 );
-      dummyAutoProc.put( "RNUM", i );
-
-      dummyAutoProcData.add( dummyAutoProc );
-    }
-
-    return dummyAutoProcData;
+    return autoProcDTO;
   }
 
 }
