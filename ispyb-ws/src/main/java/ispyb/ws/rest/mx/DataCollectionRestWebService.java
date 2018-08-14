@@ -34,6 +34,7 @@ import ispyb.server.common.util.ejb.Ejb3ServiceLocator;
 import ispyb.server.mx.services.screening.Screening3Service;
 import ispyb.server.mx.services.screening.ScreeningOutput3Service;
 import ispyb.server.mx.services.screening.ScreeningStrategy3Service;
+import ispyb.server.mx.vos.collections.DataCollectionGroup3VO;
 import ispyb.server.mx.vos.collections.EnergyScan3VO;
 import ispyb.server.mx.vos.screening.Screening3VO;
 import ispyb.server.mx.vos.screening.ScreeningOutput3VO;
@@ -229,16 +230,53 @@ public class DataCollectionRestWebService extends MXRestWebService {
     String methodName = "retrieveDataCollectionsDetails";
     long id = this.logInit(methodName, logger, sessionID);
 
-    if( sessionID == 1 || sessionID == 2)
+
+    System.out.println( "Finding session3VO using sessionId: " + sessionID );
+    Session3VO session3VO = this.getSession3Service().findByPk( sessionID, true, false, false );
+
+    if( session3VO == null )
     {
-      return Response.ok( buildDummyDataCollections(sessionID) ).build();
-    }
-    else
-    {
+      System.out.println( "Couldn't find a session3VO for the input sessionId: " + sessionID );
       Map<String, Object> error = new HashMap<>();
-      error.put( "error", "No data collection entries exist for the input sessionId[" + sessionID + "]" );
+      error.put( "error", "The input sessionID[" + sessionID + "] could not be found in the database" );
       return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
     }
+
+
+    List<DataCollectionGroup3VO> dataCollectionGroup3VOS = session3VO.getDataCollectionGroupsList();
+
+    if( dataCollectionGroup3VOS == null )
+    {
+      System.out.println( "Couldn't find dataCollectionGroup3VOS for the input sessionId: " + sessionID );
+    }
+
+    System.out.println( "Getting a list of DataCollectionGroup3VOs - Check size: " + dataCollectionGroup3VOS.size() );
+
+    System.out.println( "Looping through the DataCollectionGroup VOs " );
+    for( DataCollectionGroup3VO dataCollectionGroup3VO : dataCollectionGroup3VOS )
+    {
+      System.out.println( "Pulling the data collection list from the datacollectiongroup" );
+      List<DataCollection3VO> dataCollection3VOS = dataCollectionGroup3VO.getDataCollectionsList();
+
+      if( dataCollection3VOS == null )
+      {
+        System.out.println( "Couldn't find dataCollection3VOS for the input sessionId: " + sessionID );
+      }
+
+      System.out.println( "Checking the size of the datacollection list: " + dataCollection3VOS.size() );
+
+
+      System.out.println( "Looping through the data collection list: " );
+
+      for( DataCollection3VO dataCollection3VO : dataCollection3VOS )
+      {
+        System.out.println( "DataCollectionId: " + dataCollection3VO.getDataCollectionId() );
+        System.out.println( "DataCollection.numImages: " + dataCollection3VO.getNumberOfImages());
+      }
+
+    }
+
+    return Response.status(Response.Status.NOT_FOUND).entity( "This is a dummy response" ).build();
   }
 
 
@@ -264,7 +302,7 @@ public class DataCollectionRestWebService extends MXRestWebService {
     ( {
       @ApiResponse( code = 200, message = "Ok" ),
       @ApiResponse( code = 400, message = "Some error" ),
-      @ApiResponse( code = 404, message = "No screening output records found for the input dataCollectionId" ),
+      @ApiResponse( code = 404, message = "No screening outpu t records found for the input dataCollectionId" ),
       @ApiResponse( code = 404, message = "No screening output lattice records found for the input screeningOutputId" )
     } )
   public Response retrieveScreeningOutputLattice
