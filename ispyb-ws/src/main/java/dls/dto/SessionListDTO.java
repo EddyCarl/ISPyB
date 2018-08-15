@@ -54,13 +54,11 @@ public class SessionListDTO
 
   public void setStartDate( Date startDate )
   {
-    if( startDate == null )
+    if( startDate != null )
     {
-      this.startDate = null;
+      SimpleDateFormat simpleDateFormat = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
+      this.startDate = simpleDateFormat.format( startDate );
     }
-
-    SimpleDateFormat simpleDateFormat = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
-    this.startDate = simpleDateFormat.format( startDate );
   }
 
 
