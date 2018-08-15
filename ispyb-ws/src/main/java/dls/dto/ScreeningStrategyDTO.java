@@ -6,27 +6,27 @@ public class ScreeningStrategyDTO
 
   private int screeningStrategyId;
 
-  private double phiStart;
+  private Double phiStart;
 
-  private double phiEnd;
+  private Double phiEnd;
 
-  private double rotation;
+  private Double rotation;
 
-  private double exposureTime;
+  private Double exposureTime;
 
-  private double resolution;
+  private Double resolution;
 
-  private double completeness;
+  private Double completeness;
 
-  private double multiplicity;
+  private Double multiplicity;
 
   private Byte anomalous;
 
   private String program;
 
-  private double rankingResolution;
+  private Double rankingResolution;
 
-  private double transmission;
+  private Double transmission;
 
   private int rowNumber;
 
@@ -55,85 +55,85 @@ public class ScreeningStrategyDTO
   }
 
 
-  public double getPhiStart()
+  public Double getPhiStart()
   {
     return phiStart;
   }
 
 
-  public void setPhiStart( double phiStart )
+  public void setPhiStart( Double phiStart )
   {
     this.phiStart = phiStart;
   }
 
 
-  public double getPhiEnd()
+  public Double getPhiEnd()
   {
     return phiEnd;
   }
 
 
-  public void setPhiEnd( double phiEnd )
+  public void setPhiEnd( Double phiEnd )
   {
     this.phiEnd = phiEnd;
   }
 
 
-  public double getRotation()
+  public Double getRotation()
   {
     return rotation;
   }
 
 
-  public void setRotation( double rotation )
+  public void setRotation( Double rotation )
   {
     this.rotation = rotation;
   }
 
 
-  public double getExposureTime()
+  public Double getExposureTime()
   {
     return exposureTime;
   }
 
 
-  public void setExposureTime( double exposureTime )
+  public void setExposureTime( Double exposureTime )
   {
     this.exposureTime = exposureTime;
   }
 
 
-  public double getResolution()
+  public Double getResolution()
   {
     return resolution;
   }
 
 
-  public void setResolution( double resolution )
+  public void setResolution( Double resolution )
   {
     this.resolution = resolution;
   }
 
 
-  public double getCompleteness()
+  public Double getCompleteness()
   {
     return completeness;
   }
 
 
-  public void setCompleteness( double completeness )
+  public void setCompleteness( Double completeness )
   {
     this.completeness = completeness;
   }
 
 
-  public double getMultiplicity()
+  public Double getMultiplicity()
   {
     return multiplicity;
   }
 
 
-  public void setMultiplicity( double multiplicity )
+  public void setMultiplicity( Double multiplicity )
   {
     this.multiplicity = multiplicity;
   }
@@ -163,25 +163,25 @@ public class ScreeningStrategyDTO
   }
 
 
-  public double getRankingResolution()
+  public Double getRankingResolution()
   {
     return rankingResolution;
   }
 
 
-  public void setRankingResolution( double rankingResolution )
+  public void setRankingResolution( Double rankingResolution )
   {
     this.rankingResolution = rankingResolution;
   }
 
 
-  public double getTransmission()
+  public Double getTransmission()
   {
     return transmission;
   }
 
 
-  public void setTransmission( double transmission )
+  public void setTransmission( Double transmission )
   {
     this.transmission = transmission;
   }
