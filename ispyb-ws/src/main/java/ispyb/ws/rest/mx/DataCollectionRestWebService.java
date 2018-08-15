@@ -517,13 +517,17 @@ public class DataCollectionRestWebService extends MXRestWebService {
 
     System.out.println( "The retrieved screenings was non-null. Size: " + screenings.size() );
 
+    int rowNumber = 1;
     for( Screening3VO screening3VO : screenings )
     {
       System.out.println(" === New screening details === ");
-      System.out.println( screening3VO.getScreeningId() );
-      System.out.println( screening3VO.getComments() );
-      System.out.println( screening3VO.getShortComments() );
+      System.out.println( "     ScreeningId: " + screening3VO.getScreeningId() );
+      System.out.println( "     DataCollectionId: " + dataCollectionId );
+      System.out.println( "     Comments: " + screening3VO.getComments() );
+      System.out.println( "     ShortComments: " + screening3VO.getShortComments() );
+      System.out.println( "     rowNumber: " + rowNumber++ );
     }
+
 
     return Response.status(Response.Status.NOT_FOUND).entity( "SCREENING DUMMMY" ).build();
 
