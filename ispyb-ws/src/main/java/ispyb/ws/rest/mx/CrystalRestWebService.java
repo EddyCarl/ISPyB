@@ -1,6 +1,7 @@
 package ispyb.ws.rest.mx;
 
 import dls.dto.CrystalSnapshotPathsDTO;
+import dls.dto.DiffractionImageDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -24,11 +25,9 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 @Api( tags = SwaggerTagConstants.LEGACY_TAG )
 @Path("/")
@@ -88,22 +87,17 @@ public class CrystalRestWebService extends MXRestWebService
   }
 
 
-
-
-
-
-
   /**
-   * Used to retrieve the crystal snapshot images for a given data collection ID.
+   * Used to retrieve the diffraction images for a given data collection ID.
    *
    * @return  Response  - Returns a relevant HTTP response
    */
   @GET
-  @Path( "/data-collections/{id}/crystal-snapshot-images" )
+  @Path( "/data-collections/{id}/diffraction-images" )
   @ApiOperation
     (
-      value = "Retrieve the crystal snapshot images.",
-      notes = "Retrieve the crystal snapshot images for a particular data-collection specified by the input ID.",
+      value = "Retrieve the diffraction images.",
+      notes = "Retrieve the diffraction images for a particular data-collection specified by the input ID.",
       tags = { SwaggerTagConstants.CRYSTAL_SNAPSHOT_TAG }, response = Crystal3VO.class,
       responseContainer = "List", authorizations = @Authorization( "apiKeyAuth" )
     )
@@ -112,9 +106,9 @@ public class CrystalRestWebService extends MXRestWebService
     ( {
       @ApiResponse( code = 200, message = "Ok" ),
       @ApiResponse( code = 400, message = "Some error" ),
-      @ApiResponse( code = 404, message = "No Crystal Snapshot Images found for the input dataCollectionId" )
+      @ApiResponse( code = 404, message = "No Diffraction Images found for the input dataCollectionId" )
     } )
-  public Response retrieveCrystalSnapshotImages
+  public Response retrieveDiffractionImages
   (
 
     @ApiParam
@@ -124,44 +118,21 @@ public class CrystalRestWebService extends MXRestWebService
 
   ) throws Exception
   {
-    String methodName = "retrieveCrystalSnapshotImages";
+    String methodName = "retrieveDiffractionImages";
     long id = this.logInit(methodName, logger, dataCollectionId );
 
-    if(dataCollectionId != 1)
+    // Get a dataCollection entity by ID if available
+    DataCollection3VO dataCollection = this.getDataCollection3Service().findByPk(dataCollectionId, false, false);
+
+    if( dataCollection == null )
     {
       Map<String, Object> error = new HashMap<>();
-      error.put( "error", "The input dataCollection ID[" + dataCollectionId + "] has no crystal snapshot images associated" );
+      error.put( "error", "The input dataCollectionId[" + dataCollectionId + "] could not be found in the database." );
       return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
     }
 
-    return Response.ok( buildDummyCrystalSnapshotImageData() ).build();
+    return Response.ok( buildDiffrationImageResponse( dataCollection ) ).build();
   }
-
-
-  private List<Map<String, Object>> buildDummyCrystalSnapshotImageData()
-  {
-    List<Map<String, Object>> dummyCrystalSnapshotImageData = new ArrayList<>();
-
-    for( int i = 0; i < 10; i++ )
-    {
-      Map<String, Object> dummyCrystalSnapshotImage = new HashMap<>();
-      Random rand = new Random();
-
-      dummyCrystalSnapshotImage.put( "imageId", i );
-      dummyCrystalSnapshotImage.put( "imageNumber", i );
-      dummyCrystalSnapshotImage.put( "fileName", "/dls/dummy/crystal/image/" + i + ".jpg" );
-      dummyCrystalSnapshotImage.put( "temperature", rand.nextInt( ( i + 20 ) ) );
-      dummyCrystalSnapshotImage.put( "measuredIntensity", rand.nextInt( ( i + 20 ) ) );
-      dummyCrystalSnapshotImage.put( "synchrotronCurrent", rand.nextInt( ( i + 20 ) ) );
-      dummyCrystalSnapshotImage.put( "comments", "Dummy Comment " + i );
-      dummyCrystalSnapshotImage.put( "RNUM", i );
-
-      dummyCrystalSnapshotImageData.add( dummyCrystalSnapshotImage );
-    }
-
-    return dummyCrystalSnapshotImageData;
-  }
-
 
 
   /**
@@ -181,6 +152,29 @@ public class CrystalRestWebService extends MXRestWebService
     crystalSnapshotPaths.setCrystalSnapshotFullPathFour( dataCollection.getXtalSnapshotFullPath4() );
     crystalSnapshotPaths.setRowNumber( 1 ); // Only returning a single entry (Not sure if this ought to be changed?)
     return crystalSnapshotPaths;
+  }
+
+
+  /**
+   * Utility method used to build a DiffractionImageDTO object which will hold the relevant
+   * data that is taken from the DataCollection entity obtained from the database.
+   *
+   * @param dataCollection - The obtained dataCollection entity from the database
+   *
+   * @return DiffractionImageDTO diffractionImage - The response object built to hold the data
+   */
+  private DiffractionImageDTO buildDiffrationImageResponse( final DataCollection3VO dataCollection )
+  {
+    DiffractionImageDTO diffractionImageDTO = new DiffractionImageDTO();
+
+    diffractionImageDTO.setImageDirectory( dataCollection.getImageDirectory() );
+    diffractionImageDTO.setImagePrefix( dataCollection.getImagePrefix() );
+    diffractionImageDTO.setImageSuffix( dataCollection.getImageSuffix() );
+    diffractionImageDTO.setFileTemplate( dataCollection.getFileTemplate() );
+    diffractionImageDTO.setDataCollectionNumber( dataCollection.getDataCollectionNumber() );
+    diffractionImageDTO.setRowNumber( 1 ); // Only returning a single entry (Not sure if this ought to be changed?)
+
+    return diffractionImageDTO;
   }
 
 
