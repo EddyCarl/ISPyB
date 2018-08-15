@@ -13,6 +13,7 @@ import ispyb.server.mx.vos.collections.Session3VO;
 import ispyb.ws.rest.RestWebService;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -112,7 +113,24 @@ public class SessionRestWebService extends RestWebService
 
       SessionListDTO.setSessionId( session3VO.getSessionId() );
       SessionListDTO.setProposalId( session3VO.getProposalVOId() );
+
+      System.out.println( "Attempt to get the date first" );
+      Date date = session3VO.getStartDate();
+      System.out.println( "Getting the date worked - Check if it's null" );
+
+      if( date == null )
+      {
+        System.out.println( " ---- Null date received ---- ");
+      }
+      else
+      {
+        System.out.println( " ---- Non null date : " + date.toString() );
+      }
+
+      System.out.println( "Setting the date... ");
       SessionListDTO.setStartDate( session3VO.getStartDate() );
+      System.out.println( "Date set");
+
       SessionListDTO.setBeamlineName( session3VO.getBeamlineName() );
       SessionListDTO.setBeamLineOperator( session3VO.getBeamlineOperator() );
       SessionListDTO.setProjectCode( session3VO.getProjectCode() );
