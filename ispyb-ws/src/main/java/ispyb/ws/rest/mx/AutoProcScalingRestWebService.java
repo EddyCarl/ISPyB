@@ -8,12 +8,15 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
+import ispyb.server.common.util.ejb.Ejb3ServiceLocator;
+import ispyb.server.mx.services.autoproc.AutoProcScaling3Service;
 import ispyb.server.mx.vos.autoproc.AutoProc3VO;
 import ispyb.server.mx.vos.autoproc.AutoProcScaling3VO;
 import ispyb.server.mx.vos.autoproc.AutoProcScalingStatistics3VO;
 import org.apache.log4j.Logger;
 import utils.SwaggerTagConstants;
 
+import javax.naming.NamingException;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -144,8 +147,22 @@ public class AutoProcScalingRestWebService extends MXRestWebService
     long id = this.logInit( methodName, logger, autoProcScalingId );
 
 
+    AutoProcScaling3VO autoProcScaling3VO = this.getScreeningStrategy3Service().findByPk( autoProcScalingId );
+    if( autoProcScaling3VO == null )
+    {
+      return Response.noContent( ).entity( "BAD DUMMY STRING" ).build();
+    }
+
+    System.out.println( "Obtained autoprocscalingvo with ID: " + autoProcScaling3VO.getAutoProcScalingId() );
+
+    AutoProc3VO autoProc3VO = autoProcScaling3VO.getAutoProcVO();
+    if( autoProc3VO == null )
+    {
+      return Response.noContent( ).entity( "BAD DUMMY STRING" ).build();
+    }
+
     List<AutoProcScalingStatistics3VO> autoProcScalingStatisticsList =
-      this.getAutoProcScalingStatistics3Service().findByAutoProcId( autoProcScalingId, null );
+      this.getAutoProcScalingStatistics3Service().findByAutoProcId( autoProc3VO.getAutoProcId(), null );
 
     System.out.println("autoProcScalingStatsList.size: " + autoProcScalingStatisticsList.size());
 
@@ -312,6 +329,21 @@ public class AutoProcScalingRestWebService extends MXRestWebService
     autoProcDTO.setRowNumber( 1 );
 
     return autoProcDTO;
+  }
+
+
+
+  /**
+   * Utility method used to get a AutoProcScaling3Service instance in order to obtain AutoProcScaling3VO entities
+   * from the database using the methods defined in the service.
+   *
+   * @return AutoProcScaling3Service - The service containing helper methods to obtain data from the database
+   *
+   * @throws NamingException
+   */
+  protected AutoProcScaling3Service getScreeningStrategy3Service() throws NamingException
+  {
+    return (AutoProcScaling3Service) Ejb3ServiceLocator.getInstance().getLocalService(AutoProcScaling3Service.class);
   }
 
 }
