@@ -98,8 +98,8 @@ public class CrystalRestWebService extends MXRestWebService
     (
       value = "Retrieve the diffraction images.",
       notes = "Retrieve the diffraction images for a particular data-collection specified by the input ID.",
-      tags = { SwaggerTagConstants.CRYSTAL_SNAPSHOT_TAG }, response = Crystal3VO.class,
-      responseContainer = "List", authorizations = @Authorization( "apiKeyAuth" )
+      tags = { SwaggerTagConstants.CRYSTAL_SNAPSHOT_TAG }, response = DiffractionImageDTO.class,
+      authorizations = @Authorization( "apiKeyAuth" )
     )
   @Produces({ "application/json" })
   @ApiResponses

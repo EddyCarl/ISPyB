@@ -57,7 +57,7 @@ public class AutoprocintegrationRestWebService extends MXRestWebService
     (
       value = "Retrieves auto processing results",
       notes = "Returns a list of auto processing results for a particular data collection",
-      tags = { SwaggerTagConstants.AUTO_PROC_TAG }, response = AutoProcIntegration3VO.class,
+      tags = { SwaggerTagConstants.AUTO_PROC_TAG }, response = AutoProcIntegrationDTO.class,
       responseContainer = "List", authorizations = @Authorization( "apiKeyAuth" )
     )
   @Produces({ "application/json" })
@@ -126,7 +126,7 @@ public class AutoprocintegrationRestWebService extends MXRestWebService
     (
       value = "Retrieves auto proc integration results based on the input ID",
       notes = "Returns an auto proc integration based on the input ID",
-      tags = { SwaggerTagConstants.AUTO_PROC_TAG }, response = AutoProcIntegration3VO.class,
+      tags = { SwaggerTagConstants.AUTO_PROC_TAG }, response = AutoProcIntegrationScalingDTO.class,
       responseContainer = "List", authorizations = @Authorization( "apiKeyAuth" )
     )
   @Produces({ "application/json" })

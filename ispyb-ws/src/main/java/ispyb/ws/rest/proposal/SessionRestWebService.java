@@ -54,7 +54,7 @@ public class SessionRestWebService extends RestWebService
     (
       value = "Retrieve a list of sessions",
       notes = "Returns a list of sessions that are available to the user currently logged in.",
-      tags = { SwaggerTagConstants.SESSION_TAG }, response = Session3VO.class, responseContainer = "List",
+      tags = { SwaggerTagConstants.SESSION_TAG }, response = SessionListDTO.class, responseContainer = "List",
       authorizations = @Authorization( "apiKeyAuth" )
     )
   @Produces({ "application/json" })
@@ -91,95 +91,6 @@ public class SessionRestWebService extends RestWebService
     // Create the response using the snapshot paths from the obtained dataCollection entity
     return Response.ok( buildSessionListDTOs( sessions ) ).build();
   }
-
-
-
-  private List<Map<String, Object>> buildDummySessions()
-  {
-    List<Map<String, Object>> dummySessions = new ArrayList<>();
-
-    Map<String, Object> dummySessionA = new HashMap<>();
-    dummySessionA.put( "sessionId", "1" );
-    dummySessionA.put( "proposalId", "2" );
-    dummySessionA.put( "startDate", "2018-03-27 09:00:00" );
-    dummySessionA.put( "beamlineName", "i02-2" );
-    dummySessionA.put( "beamlineOperator", "Joe Bloggs" );
-    dummySessionA.put( "projectCode", "123" );
-    dummySessionA.put( "visit_number", "1" );
-    dummySessionA.put( "RNUM", "1" );
-
-    Map<String, Object> dummySessionB = new HashMap<>();
-    dummySessionB.put( "sessionId", "2" );
-    dummySessionB.put( "proposalId", "3" );
-    dummySessionB.put( "startDate", "2018-03-27 11:00:00" );
-    dummySessionB.put( "beamlineName", "i02-3" );
-    dummySessionB.put( "beamlineOperator", "Bill Bloggs" );
-    dummySessionB.put( "projectCode", "456" );
-    dummySessionB.put( "visit_number", "2" );
-    dummySessionB.put( "RNUM", "2" );
-
-    dummySessions.add( dummySessionA );
-    dummySessions.add( dummySessionB );
-
-    return dummySessions;
-  }
-
-
-  /**
-   * Used to retrieve the information related to a specific session stored in the database, based on the input
-   * session ID in the endpoint (if it is available to the user currently logged into the system.)
-   *
-   * @param   sessionID   - Input sessionID used to retrieve information for
-   *
-   * @return  Response    - Returns a relevant HTTP response
-   */
-  @GET
-  @Path( "/sessions/{id}" )
-  @ApiOperation
-    (
-      value = "Retrieve the information of a session",
-      notes = "Obtain the information relating to a specific session (based on the input ID) " +
-        "if it is available to the user currently logged in.",
-      tags = { SwaggerTagConstants.SESSION_TAG }, response = Session3VO.class,
-      authorizations = @Authorization( "apiKeyAuth" )
-    )
-  @Produces({ "application/json" })
-  @ApiResponses
-    ( {
-      @ApiResponse( code = 200, message = "Ok" ),
-      @ApiResponse( code = 400, message = "Some error" ),
-      @ApiResponse( code = 404, message = "A session could not be found for the input ID" )
-    } )
-  public Response retrieveSessionById
-  (
-
-    @ApiParam
-    (
-      name = "id", required = true, example = "12", value = "The ID of the session to retrieve"
-    ) @PathParam( "id" ) int sessionID
-
-  ) throws Exception
-  {
-    String methodName = "retrieveSessionById";
-    long id = this.logInit(methodName, logger, sessionID);
-    List<Map<String, Object>> dummySessions = buildDummySessions();
-
-    if( sessionID == 1 )
-    {
-      return Response.ok( dummySessions.get( 0 ) ).build();
-    }
-    else if( sessionID == 2 )
-    {
-      return Response.ok( dummySessions.get( 1 ) ).build();
-    }
-    else
-    {
-      Map<String, String> error = new HashMap<>();
-      error.put( "error", "The input sessionId[" + sessionID + "] does not exist." );
-      return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
-    }
-  }
-
 
 
   /**

@@ -41,72 +41,6 @@ public class ProposalRestWebService extends MXRestWebService
 {
   private final static Logger logger = Logger.getLogger(ProposalRestWebService.class);
 
-  /**
-   * Used to retrieve a full list of proposals stored in the database, that are available to the user currently
-   * logged into the system.
-   *
-   * @return  Response  - Returns a relevant HTTP response
-   */
-  @GET
-  @Path( "/proposals" )
-  @ApiOperation
-  (
-    value = "Retrieve a list of proposals",
-    notes = "Returns a list of proposals that are available to the user currently logged in.",
-    tags = { SwaggerTagConstants.PROPOSAL_TAG }, response = Proposal3VO.class, responseContainer = "List",
-    authorizations = @Authorization( "apiKeyAuth" )
-  )
-  @Produces({ "application/json" })
-  @ApiResponses
-  ( {
-      @ApiResponse( code = 200, message = "Ok" ),
-      @ApiResponse( code = 400, message = "Some error" )
-  } )
-  public Response retrieveProposals() throws Exception
-  {
-    String methodName = "retrieveProposals";
-    long id = this.logInit(methodName, logger);
-
-    return Response.ok( buildDummyProposals() ).build();
-  }
-
-
-  private List<Map<String, Object>> buildDummyProposals()
-  {
-    List<Map<String, Object>> dummyProposals = new ArrayList<>();
-
-    Map<String, Object> dummyProposalA = new HashMap<>();
-    dummyProposalA.put( "title", "Test Proposal cm-001" );
-    dummyProposalA.put( "proposalId", "1" );
-    dummyProposalA.put( "proposalCode", "cm" );
-    dummyProposalA.put( "proposalNumber", "1" );
-    dummyProposalA.put( "proposalType", "NULL" );
-    dummyProposalA.put( "RNUM", "1" );
-
-    Map<String, Object> dummyProposalB = new HashMap<>();
-    dummyProposalB.put( "title", "Test Proposal cm-002" );
-    dummyProposalB.put( "proposalId", "2" );
-    dummyProposalB.put( "proposalCode", "cm" );
-    dummyProposalB.put( "proposalNumber", "2" );
-    dummyProposalB.put( "proposalType", "NULL" );
-    dummyProposalB.put( "RNUM", "2" );
-
-    Map<String, Object> dummyProposalC = new HashMap<>();
-    dummyProposalC.put( "title", "Test Proposal mx-001" );
-    dummyProposalC.put( "proposalId", "3" );
-    dummyProposalC.put( "proposalCode", "mx" );
-    dummyProposalC.put( "proposalNumber", "1" );
-    dummyProposalC.put( "proposalType", "NULL" );
-    dummyProposalC.put( "RNUM", "3" );
-
-    dummyProposals.add( dummyProposalA );
-    dummyProposals.add( dummyProposalB );
-    dummyProposals.add( dummyProposalC );
-
-    return dummyProposals;
-  }
-
-
 
   /**
    * Used to retrieve the information related to a specific proposal stored in the database, based on the input
@@ -123,7 +57,7 @@ public class ProposalRestWebService extends MXRestWebService
     value = "Retrieve the information of a proposal",
     notes = "Obtain the information relating to a specific proposal (based on the input ID) " +
             "if it is available to the user currently logged in.",
-    tags = { SwaggerTagConstants.PROPOSAL_TAG }, response = Proposal3VO.class,
+    tags = { SwaggerTagConstants.PROPOSAL_TAG }, response = ProposalResponseDTO.class,
     authorizations = @Authorization( "apiKeyAuth" )
   )
   @Produces({ "application/json" })

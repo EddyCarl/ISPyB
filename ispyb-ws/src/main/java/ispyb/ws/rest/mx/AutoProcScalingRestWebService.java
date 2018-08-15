@@ -123,7 +123,7 @@ public class AutoProcScalingRestWebService extends MXRestWebService
     (
       value = "Retrieves auto-proc-scaling statistics",
       notes = "Retrieves auto-proc-scaling statistics based on the input Auto Proc Scaling ID",
-      tags = { SwaggerTagConstants.AUTO_PROC_TAG }, response = AutoProcScalingStatistics3VO.class,
+      tags = { SwaggerTagConstants.AUTO_PROC_TAG }, response = AutoProcScalingStatisticsDTO.class,
       responseContainer = "List", authorizations = @Authorization("apiKeyAuth")
     )
   @Produces({ "application/json" })
@@ -202,8 +202,8 @@ public class AutoProcScalingRestWebService extends MXRestWebService
     (
       value = "Retrieves an auto-proc instance",
       notes = "Retrieves an auto-proc instance based on the input Auto Proc ID",
-      tags = { SwaggerTagConstants.AUTO_PROC_TAG }, response = AutoProc3VO.class,
-      responseContainer = "List", authorizations = @Authorization("apiKeyAuth")
+      tags = { SwaggerTagConstants.AUTO_PROC_TAG }, response = AutoProcDTO.class,
+      authorizations = @Authorization("apiKeyAuth")
     )
   @Produces({ "application/json" })
   @ApiResponses

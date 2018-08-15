@@ -71,7 +71,7 @@ public class DataCollectionRestWebService extends MXRestWebService {
       notes = "Returns a list of Data Collection entries that are available to the user currently logged in. The " +
         "returned list will only contain entries that have a number of images greater than the input " +
         "\"threshold\" query parameter.",
-      tags = { SwaggerTagConstants.DATA_COLLECTION_TAG }, response = DataCollection3VO.class, responseContainer = "List",
+      tags = { SwaggerTagConstants.DATA_COLLECTION_TAG }, response = DataCollectionDTO.class, responseContainer = "List",
       authorizations = @Authorization( "apiKeyAuth" )
     )
   @Produces({ "application/json" })
@@ -148,8 +148,8 @@ public class DataCollectionRestWebService extends MXRestWebService {
       value = "Retrieves a list of Data Collection entries with expanded details",
       notes = "Returns a list of Data Collection entries that are available to the user currently logged in. The " +
         "returned list will contain data collection entries with more fields of information available",
-      tags = { SwaggerTagConstants.DATA_COLLECTION_TAG }, response = DataCollection3VO.class, responseContainer = "List",
-      authorizations = @Authorization( "apiKeyAuth" )
+      tags = { SwaggerTagConstants.DATA_COLLECTION_TAG }, response = DetailedDataCollectionDTO.class,
+      responseContainer = "List", authorizations = @Authorization( "apiKeyAuth" )
     )
   @Produces({ "application/json" })
   @ApiResponses
@@ -217,7 +217,7 @@ public class DataCollectionRestWebService extends MXRestWebService {
     (
       value = "Retrieves a screening output lattice for a particular data collection",
       notes = "Retrieves a screening output lattice for a particular data collection",
-      tags = { SwaggerTagConstants.SCREENING_TAG }, response = ScreeningOutputLattice3VO.class,
+      tags = { SwaggerTagConstants.SCREENING_TAG }, response = ScreeningLatticeOutputDTO.class,
       responseContainer = "List", authorizations = @Authorization( "apiKeyAuth" )
     )
   @Produces({ "application/json" })
@@ -293,7 +293,7 @@ public class DataCollectionRestWebService extends MXRestWebService {
     (
       value = "Retrieves a screening strategy wedge for a particular data collection",
       notes = "Retrieves a screening strategy wedge for a particular data collection",
-      tags = { SwaggerTagConstants.SCREENING_TAG }, response = ScreeningStrategyWedge3VO.class,
+      tags = { SwaggerTagConstants.SCREENING_TAG }, response = ScreeningStrategyWedgeDTO.class,
       responseContainer = "List", authorizations = @Authorization( "apiKeyAuth" )
     )
   @Produces({ "application/json" })
@@ -368,7 +368,7 @@ public class DataCollectionRestWebService extends MXRestWebService {
     (
       value = "Retrieves a screening strategy for a particular data collection",
       notes = "Retrieves a screening strategy that is associated with the input data collection ID",
-      tags = { SwaggerTagConstants.SCREENING_TAG }, response = ScreeningStrategy3VO.class, responseContainer = "List",
+      tags = { SwaggerTagConstants.SCREENING_TAG }, response = ScreeningStrategyDTO.class, responseContainer = "List",
       authorizations = @Authorization( "apiKeyAuth" )
     )
   @Produces({ "application/json" })
@@ -443,7 +443,7 @@ public class DataCollectionRestWebService extends MXRestWebService {
       value = "Retrieves all comments on screenings for a particular data collection",
       notes = "Retrieves the short and long comments that have been added to all screenings that are associated with " +
               "the input data collection ID",
-      tags = { SwaggerTagConstants.SCREENING_TAG }, response = Screening3VO.class, responseContainer = "List",
+      tags = { SwaggerTagConstants.SCREENING_TAG }, response = ScreeningCommentsDTO.class, responseContainer = "List",
       authorizations = @Authorization( "apiKeyAuth" )
     )
   @Produces({ "application/json" })
