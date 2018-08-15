@@ -272,7 +272,7 @@ public class AutoProcScalingRestWebService extends MXRestWebService
       autoProcScalingStatisticsDTO.setAnomalousCompleteness( autoProcScalingStatistics.getAnomalousCompleteness() );
       autoProcScalingStatisticsDTO.setAnomalousMultiplicity( autoProcScalingStatistics.getAnomalousMultiplicity() );
       autoProcScalingStatisticsDTO.setCcHalf( autoProcScalingStatistics.getCcHalf() );
-      autoProcScalingStatisticsDTO.setCcAno( autoProcScalingStatistics.getCcAno() );
+//      autoProcScalingStatisticsDTO.setCcAno( autoProcScalingStatistics.getCcAno() );
       autoProcScalingStatisticsDTO.setRowNumber( rowNumber++ );
 
       autoProcScalingStatisticsDTOList.add( autoProcScalingStatisticsDTO );
