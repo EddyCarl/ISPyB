@@ -1,19 +1,19 @@
 /*************************************************************************************************
  * This file is part of ISPyB.
- * 
+ *
  * ISPyB is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * ISPyB is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with ISPyB.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * Contributors : S. Delageniere, R. Leal, L. Launer, K. Levik, S. Veyrier, P. Brenchereau, M. Bodin, A. De Maria Antolinos
  ****************************************************************************************************/
 
@@ -32,7 +32,7 @@ public interface Session3Service {
 
 	/**
 	 * Create new Session3.
-	 * 
+	 *
 	 * @param vo
 	 *            the entity to persist
 	 * @return the persisted entity
@@ -41,7 +41,7 @@ public interface Session3Service {
 
 	/**
 	 * Update the Session3 data.
-	 * 
+	 *
 	 * @param vo
 	 *            the entity data to update
 	 * @return the updated entity
@@ -50,7 +50,7 @@ public interface Session3Service {
 
 	/**
 	 * Remove the Session3 from its pk.
-	 * 
+	 *
 	 * @param vo
 	 *            the entity to remove
 	 */
@@ -58,7 +58,7 @@ public interface Session3Service {
 
 	/**
 	 * Remove the Session3.
-	 * 
+	 *
 	 * @param vo
 	 *            the entity to remove.
 	 */
@@ -66,7 +66,7 @@ public interface Session3Service {
 
 	/**
 	 * Finds a Session3 entity by its primary key and set linked value objects if necessary.
-	 * 
+	 *
 	 * @param pk
 	 *            the primary key
 	 * @param withLink1
@@ -78,7 +78,7 @@ public interface Session3Service {
 
 	/**
 	 * Find a session by its primary key -- webservices object
-	 * 
+	 *
 	 * @param pk
 	 * @param withLink1
 	 * @param withLink2
@@ -90,19 +90,35 @@ public interface Session3Service {
 
 	/**
 	 * Find all Session3 and set linked value objects if necessary.
-	 * 
+	 *
 	 * @param withLink1
 	 * @param withLink2
 	 */
 	public List<Session3VO> findAll(final boolean withDataCollectionGroup, final boolean withEnergyScan,
 			final boolean withhXFESpectrum) throws Exception;
 
-	public Integer updateUsedSessionsFlag(final Integer proposalId) throws Exception;
+
+  /**
+   * Find all Session3VO entities and set linked value objects if set to true. The returned list
+   * will be ordered by the startDate in the Session3VO.
+   *
+   * @param fetchDataCollectionGroup  - Determines whether the DataCollectionGroupVO's are retrieved
+   * @param fetchEnergyScan - Determines whether the EnergyScan3VO's are retrieved
+   * @param fetchXFESpectrum - Deteremines whether the XFEFluorescenceSpectrum3VO's are retrieved
+   *
+   * @return A list of Session3VO entities retrieved from the database - Ordered by the startDate attribute
+   *
+   * @throws Exception
+   */
+  public List<Session3VO> findAllOrderedByDate( final boolean withDataCollectionGroup, final boolean withEnergyScan,
+                                                final boolean withXFESpectrum ) throws Exception;
+
+  public Integer updateUsedSessionsFlag(final Integer proposalId) throws Exception;
 
 	public Integer hasDataCollectionGroups(final Integer sessionId) throws Exception;
 
 	/**
-	 * 
+	 *
 	 * @param proposalId
 	 * @param nbMax
 	 * @param beamline
@@ -112,19 +128,19 @@ public interface Session3Service {
 	 * @throws Exception
 	 */
 	public List<Session3VO> findFiltered(final Integer proposalId, final Integer nbMax, final String beamline,
-			final Date date1, final Date date2, final Date endDate, final boolean usedFlag, 
+			final Date date1, final Date date2, final Date endDate, final boolean usedFlag,
 			final String operatorSiteNumber) throws Exception;
 
 	public List<Session3VO> findFiltered(final Integer nbMax, final String beamline,
 			final Date date1, final Date date2, final Date endDate, final boolean usedFlag,
 			final String operatorSiteNumber) throws Exception;
-	
-	
+
+
 	public List<Session3VO> findByShippingId(final Integer shippingId) throws Exception;
 
 	/**
 	 * returns the session for a specified proposal with endDate > today or null
-	 * 
+	 *
 	 * @param code
 	 * @param number
 	 * @param detachLight
@@ -136,7 +152,7 @@ public interface Session3Service {
 
 	/**
 	 * update the proposalId, returns the nb of rows updated
-	 * 
+	 *
 	 * @param newProposalId
 	 * @param oldProposalId
 	 * @return
@@ -150,7 +166,7 @@ public interface Session3Service {
 
 	/**
 	 * returns the session with the given expSessionPk
-	 * 
+	 *
 	 * @param expSessionPk
 	 * @return
 	 */
@@ -158,7 +174,7 @@ public interface Session3Service {
 
 	/**
 	 * returns the list of sessions which have to be protected
-	 * 
+	 *
 	 * @return
 	 * @throws Exception
 	 */
@@ -168,7 +184,7 @@ public interface Session3Service {
 
 	/**
 	 * returns the session linked to the given autoProcScaling
-	 * 
+	 *
 	 * @param autoProcScalingId
 	 * @return
 	 * @throws Exception
@@ -176,12 +192,12 @@ public interface Session3Service {
 	public Session3VO findByAutoProcScalingId(final Integer autoProcScalingId) throws Exception;
 
 	public Session3VO findByAutoProcProgramAttachmentId(final Integer autoProcProgramAttachmentId) throws Exception;
-	
+
 	public void protectSession(Integer sessionId) throws Exception;
 
 	/**
 	 * get the number of datcollections which have more then 4 images
-	 * 
+	 *
 	 * @param sesId
 	 * @return
 	 * @throws Exception
@@ -190,7 +206,7 @@ public interface Session3Service {
 
 	/**
 	 * get the number of datacollections which haveless 4 images
-	 * 
+	 *
 	 * @param sesId
 	 * @return
 	 * @throws Exception
@@ -201,6 +217,6 @@ public interface Session3Service {
 
 	public Session3VO findByAutoProcProgramId(int autoProcProgramId);
 
-	
+
 
 }

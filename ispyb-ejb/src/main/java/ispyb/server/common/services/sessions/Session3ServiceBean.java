@@ -1,19 +1,19 @@
 /*************************************************************************************************
  * This file is part of ISPyB.
- * 
+ *
  * ISPyB is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * ISPyB is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with ISPyB.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * Contributors : S. Delageniere, R. Leal, L. Launer, K. Levik, S. Veyrier, P. Brenchereau, M. Bodin, A. De Maria Antolinos
  ****************************************************************************************************/
 package ispyb.server.common.services.sessions;
@@ -72,7 +72,7 @@ import ispyb.server.mx.vos.collections.SessionWS3VO;
 public class Session3ServiceBean implements Session3Service, Session3ServiceLocal {
 
 	private final static Logger LOG = Logger.getLogger(Session3ServiceBean.class);
-	
+
 	// Generic HQL request to find instances of Session3 by pk
 	private static final String FIND_BY_PK(boolean fetchDataCollectionGroup, boolean fetchEnergyScan, boolean fetchXFESpectrum) {
 		return "from Session3VO vo " + (fetchDataCollectionGroup ? "left join fetch vo.dataCollectionGroupVOs " : "")
@@ -87,7 +87,13 @@ public class Session3ServiceBean implements Session3Service, Session3ServiceLoca
 				+ (fetchXFESpectrum ? "left join fetch vo.xfeSpectrumVOs " : "");
 	}
 
-	private final static String SET_USED_SESSION_STATEMENT = " UPDATE BLSession SET usedFlag = 1 WHERE BLSession.proposalId = :proposalId"
+  private static final String FIND_ALL_ORDERED_BY_DATE( boolean fetchDataCollectionGroup,
+                                                        boolean fetchEnergyScan, boolean fetchXFESpectrum )
+  {
+    return FIND_ALL( fetchDataCollectionGroup, fetchEnergyScan, fetchXFESpectrum ) + " ORDER BY vo.startDate DESC";
+  }
+
+    private final static String SET_USED_SESSION_STATEMENT = " UPDATE BLSession SET usedFlag = 1 WHERE BLSession.proposalId = :proposalId"
 			+ " and (BLSession.usedFlag is null OR BLSession.usedFlag = 0) "
 			+ " and (BLSession.sessionId IN (select c.sessionId from DataCollectionGroup c) "
 			+ " or BLSession.sessionId IN (select e.sessionId from EnergyScan e) "
@@ -111,19 +117,19 @@ public class Session3ServiceBean implements Session3Service, Session3ServiceLoca
 			+ " where s.sessionId = g.sessionId and  " + " g.dataCollectionGroupId = c.dataCollectionGroupId and "
 			+ " c.dataCollectionId = api.dataCollectionId and " + " api.autoProcIntegrationId = apshi.autoProcIntegrationId and "
 			+ " apshi.autoProcScalingId = aps.autoProcScalingId and " + " aps.autoProcScalingId = :autoProcScalingId ";
-	
+
 	private static final String FIND_BY_AUTOPROCPROGRAMATTACHMENT_ID = "select s.* from BLSession s, "
 			+ " DataCollectionGroup g, DataCollection c, AutoProcIntegration api, AutoProcProgram autoprocProgram, AutoProcProgramAttachment autoProcProgramAttachment"
 			+ " where s.sessionId = g.sessionId and  g.dataCollectionGroupId = c.dataCollectionGroupId and autoprocProgram.autoProcProgramId = api.autoProcProgramId"
 			+ " and c.dataCollectionId = api.dataCollectionId and autoprocProgram.autoProcProgramId = autoProcProgramAttachment.autoProcProgramId "
 			+ " and autoProcProgramAttachment.autoProcProgramAttachmentId = :autoProcProgramAttachmentId ";
-	
-	
+
+
 	private static final String FIND_BY_AUTOPROCPROGRAM_ID = "select s.* from BLSession s, "
 			+ " DataCollectionGroup g, DataCollection c, AutoProcIntegration api, AutoProcProgram autoprocProgram "
 			+ " where s.sessionId = g.sessionId and  g.dataCollectionGroupId = c.dataCollectionGroupId and autoprocProgram.autoProcProgramId = api.autoProcProgramId"
 			+ " and c.dataCollectionId = api.dataCollectionId and autoprocProgram.autoProcProgramId = :autoProcProgramId ";
-	
+
 
 	private static String getProposalCodeNumberQuery() {
 		String query = "select * " + " FROM BLSession ses, Proposal pro "
@@ -154,16 +160,16 @@ public class Session3ServiceBean implements Session3Service, Session3ServiceLoca
 	private final static String NB_OF_TESTS = "SELECT count(*) FROM DataCollection, DataCollectionGroup "
 			+ " WHERE DataCollection.dataCollectionGroupId = DataCollectionGroup.dataCollectionGroupId"
 			+ " and DataCollection.numberOfImages <=4 and DataCollectionGroup.sessionId  = :sessionId ";
-	
-	private final String[] beamlinesToProtect = { "ID29", "ID23-1", "ID23-2", "ID30A-1", "ID30A-2","ID30A-3", "ID30B" };
-	
-	private final String[] account_not_to_protect = { "OPID", "OPD", "MXIHR" };
-	
 
-	
+	private final String[] beamlinesToProtect = { "ID29", "ID23-1", "ID23-2", "ID30A-1", "ID30A-2","ID30A-3", "ID30B" };
+
+	private final String[] account_not_to_protect = { "OPID", "OPD", "MXIHR" };
+
+
+
 	@PersistenceContext(unitName = "ispyb_db")
 	private EntityManager entityManager;
-	
+
 	@EJB
 	private AuthorisationServiceLocal autService;
 
@@ -175,7 +181,7 @@ public class Session3ServiceBean implements Session3Service, Session3ServiceLoca
 
 	/**
 	 * Create new Session3.
-	 * 
+	 *
 	 * @param vo
 	 *            the entity to persist.
 	 * @return the persisted entity.
@@ -188,7 +194,7 @@ public class Session3ServiceBean implements Session3Service, Session3ServiceLoca
 
 	/**
 	 * Update the Session3 data.
-	 * 
+	 *
 	 * @param vo
 	 *            the entity data to update.
 	 * @return the updated entity.
@@ -201,7 +207,7 @@ public class Session3ServiceBean implements Session3Service, Session3ServiceLoca
 
 	/**
 	 * Remove the Session3 from its pk
-	 * 
+	 *
 	 * @param vo
 	 *            the entity to remove.
 	 */
@@ -213,7 +219,7 @@ public class Session3ServiceBean implements Session3Service, Session3ServiceLoca
 
 	/**
 	 * Remove the Session3
-	 * 
+	 *
 	 * @param vo
 	 *            the entity to remove.
 	 */
@@ -224,7 +230,7 @@ public class Session3ServiceBean implements Session3Service, Session3ServiceLoca
 
 	/**
 	 * Finds a Scientist entity by its primary key and set linked value objects if necessary
-	 * 
+	 *
 	 * @param pk
 	 *            the primary key
 	 * @param withLink1
@@ -251,15 +257,36 @@ public class Session3ServiceBean implements Session3Service, Session3ServiceLoca
 
 	/**
 	 * Find all Session3s and set linked value objects if necessary
-	 * 
+	 *
 	 * @param withLink1
 	 * @param withLink2
 	 */
 	@SuppressWarnings("unchecked")
-	public List<Session3VO> findAll(boolean fetchDataCollectionGroup, boolean fetchEnergyScan, boolean fetchXFESpectrum)
-			throws Exception {
-		return entityManager.createQuery(FIND_ALL(fetchDataCollectionGroup, fetchEnergyScan, fetchXFESpectrum)).getResultList();
-	}
+  public List<Session3VO> findAll(boolean fetchDataCollectionGroup, boolean fetchEnergyScan, boolean fetchXFESpectrum)
+    throws Exception {
+    return entityManager.createQuery(FIND_ALL(fetchDataCollectionGroup, fetchEnergyScan, fetchXFESpectrum)).getResultList();
+  }
+
+
+  /**
+   * Find all Session3VO entities and set linked value objects if set to true. The returned list
+   * will be ordered by the startDate in the Session3VO.
+   *
+   * @param fetchDataCollectionGroup  - Determines whether the DataCollectionGroupVO's are retrieved
+   * @param fetchEnergyScan - Determines whether the EnergyScan3VO's are retrieved
+   * @param fetchXFESpectrum - Deteremines whether the XFEFluorescenceSpectrum3VO's are retrieved
+   *
+   * @return A list of Session3VO entities retrieved from the database - Ordered by the startDate attribute
+   *
+   * @throws Exception
+   */
+  @SuppressWarnings("unchecked")
+  public List<Session3VO> findAllOrderedByDate( boolean fetchDataCollectionGroup,
+                                                boolean fetchEnergyScan, boolean fetchXFESpectrum) throws Exception
+  {
+    return entityManager.createQuery( FIND_ALL_ORDERED_BY_DATE( fetchDataCollectionGroup,
+                                                                fetchEnergyScan, fetchXFESpectrum ) ).getResultList();
+  }
 
 	public Integer updateUsedSessionsFlag(Integer proposalId) throws Exception {
 
@@ -295,7 +322,7 @@ public class Session3ServiceBean implements Session3Service, Session3ServiceLoca
 		return findFiltered(proposalId, nbMax, beamline,  date1, date2,  dateEnd,
 				usedFlag, null,  operatorSiteNumber);
 	}
-	
+
 
 
 	@SuppressWarnings("unchecked")
@@ -313,7 +340,7 @@ public class Session3ServiceBean implements Session3Service, Session3ServiceLoca
 						startDateEnd, null/* endDate */, false/* usedFlag */, nbShifts, null);
 		return foundEntities;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public List<Session3VO> findSessionByDateProposalAndBeamline(int proposalId, String beamlineName, Date date) {
 		List<Session3VO> sessions = new ArrayList<Session3VO>();
@@ -321,7 +348,7 @@ public class Session3ServiceBean implements Session3Service, Session3ServiceLoca
 		sessions.addAll(this.findFiltered(proposalId, null, beamlineName, null, date, date, true, null));
 		return sessions;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public List<Session3VO> findFiltered(Integer nbMax, String beamline, Date date1, Date date2, Date dateEnd,
 			boolean usedFlag, String operatorSiteNumber) {
@@ -360,7 +387,7 @@ public class Session3ServiceBean implements Session3Service, Session3ServiceLoca
 
 	/**
 	 * returns the session for a specified proposal with endDate > today and startDate <= today
-	 * 
+	 *
 	 * @param code
 	 * @param number
 	 * @return
@@ -382,10 +409,10 @@ public class Session3ServiceBean implements Session3Service, Session3ServiceLoca
 			return null;
 		return listVOs;
 	}
-	
+
 	/**
 	 * returns the session for a specified proposal with endDate > today or null
-	 * 
+	 *
 	 * @param code
 	 * @param number
 	 * @param detachLight
@@ -402,7 +429,7 @@ public class Session3ServiceBean implements Session3Service, Session3ServiceLoca
 
 	/**
 	 * returns the list of sessions which have to be protected
-	 * 
+	 *
 	 * @return
 	 * @throws Exception
 	 */
@@ -422,26 +449,26 @@ public class Session3ServiceBean implements Session3Service, Session3ServiceLoca
 		LOG.info("findForWSToBeProtected : " + listSessionIds);
 		return ret;
 	}
-	
+
 
 	/**
 	 * returns the list of sessions which have to be protected
-	 * 
+	 *
 	 * @return
 	 * @throws Exception
 	 */
 	public SessionWS3VO[] findForWSNotProtectedToBeProtected(final Date date1, final Date date2) throws Exception {
-		LOG.info("findForWSNotProtectedToBeProtected");		
+		LOG.info("findForWSNotProtectedToBeProtected");
 		List<Session3VO> foundEntities = findSessionNotProtectedToBeProtected(date1, date2);
 		if (foundEntities == null)
 			return null;
 		SessionWS3VO[] ret = getWSSessionVOs(foundEntities);
 		return ret;
 	}
-	
+
 	/**
 	 * get the number of datcollections which have more then 4 images
-	 * 
+	 *
 	 * @param sesId
 	 * @return
 	 * @throws Exception
@@ -465,7 +492,7 @@ public class Session3ServiceBean implements Session3Service, Session3ServiceLoca
 
 	/**
 	 * get the number of datacollections which have less/or 4 images
-	 * 
+	 *
 	 * @param dcgId
 	 * @return
 	 * @throws Exception
@@ -486,10 +513,10 @@ public class Session3ServiceBean implements Session3Service, Session3ServiceLoca
 			return 0;
 		}
 	}
-	
+
 	/**
 	 * update the proposalId, returns the nb of rows updated
-	 * 
+	 *
 	 * @param newProposalId
 	 * @param oldProposalId
 	 * @return
@@ -506,7 +533,7 @@ public class Session3ServiceBean implements Session3Service, Session3ServiceLoca
 
 	/**
 	 * returns the session with the given expSessionPk
-	 * 
+	 *
 	 * @param expSessionPk
 	 * @return
 	 */
@@ -514,24 +541,24 @@ public class Session3ServiceBean implements Session3Service, Session3ServiceLoca
 		Session session = (Session) this.entityManager.getDelegate();
 		Criteria crit = session.createCriteria(Session3VO.class);
 		crit.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY); // DISTINCT RESULTS !
-		
+
 		if (expSessionPk != null)
 			crit.add(Restrictions.eq("expSessionPk", expSessionPk));
-		
+
 		crit.addOrder(Order.desc("startDate"));
-		
+
 		List<Session3VO> foundEntities = crit.list();
 			if (foundEntities == null || foundEntities.size() == 0) {
 					return null;
 			} else {
 					return foundEntities.get(0);
 			}
-		
+
 	}
 
 	/**
 	 * returns the session linked to the given autoProcScaling
-	 * 
+	 *
 	 * @param autoProcScalingId
 	 * @return
 	 * @throws Exception
@@ -546,8 +573,8 @@ public class Session3ServiceBean implements Session3Service, Session3ServiceLoca
 		}
 		return null;
 	}
-	
-	
+
+
 	@SuppressWarnings("unchecked")
 	public Session3VO findByAutoProcProgramAttachmentId(final Integer autoProcProgramAttachmentId) throws Exception {
 		String query = FIND_BY_AUTOPROCPROGRAMATTACHMENT_ID;
@@ -558,8 +585,8 @@ public class Session3ServiceBean implements Session3Service, Session3ServiceLoca
 		}
 		return null;
 	}
-	
-	
+
+
 	@Override
 	public Session3VO findByAutoProcProgramId(int autoProcProgramId) {
 		String query = FIND_BY_AUTOPROCPROGRAM_ID;
@@ -571,9 +598,9 @@ public class Session3ServiceBean implements Session3Service, Session3ServiceLoca
 		}
 		return null;
 	}
-	
 
-	
+
+
 	/**
 	 * launch the data confidentiality for the specified session
 	 */
@@ -642,12 +669,12 @@ public class Session3ServiceBean implements Session3Service, Session3ServiceLoca
 							protectedData = protectedData.substring(0, 1024);
 						sessionVO.setProtectedData(protectedData);
 						this.update(sessionVO);
-						
+
 						LOG.info("end of session protection");
-						
+
 						if (client != null && client.getConnectionManager() != null)
 					        client.getConnectionManager().closeExpiredConnections();
-						
+
 					} catch (IOException e) {
 						//
 						LOG.error("WS ERROR IOException: getDataToBeProtected " + sessionVO.getSessionId());
@@ -656,7 +683,7 @@ public class Session3ServiceBean implements Session3Service, Session3ServiceLoca
 						//
 						LOG.error("WS ERROR: getDataToBeProtected " + sessionVO.getSessionId());
 						e.printStackTrace();
-					} 
+					}
 
 				} else {
 					LOG.info("session not protected because too recent");
@@ -664,8 +691,8 @@ public class Session3ServiceBean implements Session3Service, Session3ServiceLoca
 			}
 		}
 	}
-	
-	
+
+
 	//******************************     PRIVATE METHODS  ********************************************************
 
 	private List<Session3VO> findSessionToBeProtected(Integer delay, Integer window) {
@@ -704,7 +731,7 @@ public class Session3ServiceBean implements Session3Service, Session3ServiceLoca
 
 		return crit.list();
 	}
-	
+
 	private List<Session3VO> findSessionNotProtectedToBeProtected(Date date1, Date date2) {
 		Session session = (Session) this.entityManager.getDelegate();
 		Criteria crit = session.createCriteria(Session3VO.class);
@@ -756,10 +783,10 @@ public class Session3ServiceBean implements Session3Service, Session3ServiceLoca
 
 		return listNotProtected;
 	}
-	
+
 	/**
 	 * Get all lights entities
-	 * 
+	 *
 	 * @param localEntities
 	 * @return
 	 * @throws CloneNotSupportedException
@@ -802,7 +829,7 @@ public class Session3ServiceBean implements Session3Service, Session3ServiceLoca
 		wsSession.setProposalId(proposalId);
 		return wsSession;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@WebMethod
 	private List<Session3VO> findFiltered(Integer proposalId, Integer nbMax, String beamline, Date date1, Date date2, Date dateEnd,
@@ -829,7 +856,7 @@ public class Session3ServiceBean implements Session3Service, Session3ServiceLoca
 			crit.add(Restrictions.ge("endDate", dateEnd));
 
 		// usedFlag =1 or endDate >= yesterday
-		
+
 		if (usedFlag) {
 			crit.add(Restrictions.sqlRestriction("(usedFlag = 1 OR endDate >= " + Constants.MYSQL_ORACLE_CURRENT_DATE + " )"));
 		}
@@ -849,16 +876,16 @@ public class Session3ServiceBean implements Session3Service, Session3ServiceLoca
 
 		return crit.list();
 	}
-	
+
 	/**
 	 * Check if user has access rights to change and remove Session3 entities. If not set rollback only and throw
 	 * AccessDeniedException
-	 * 
+	 *
 	 * @throws AccessDeniedException
 	 */
 	private void checkChangeRemoveAccess(Session3VO vo) throws AccessDeniedException {
 		if (vo == null) return;
-		autService.checkUserRightToAccessSession(vo);				
+		autService.checkUserRightToAccessSession(vo);
 	}
 
 

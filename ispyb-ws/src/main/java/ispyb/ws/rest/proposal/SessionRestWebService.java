@@ -73,7 +73,7 @@ public class SessionRestWebService extends RestWebService
     //        The DataCollectionId must belong to a users sessions.
 
     // Retrieve a list of sessions if possible
-    List<Session3VO> sessions = this.getSession3Service().findAll( false, false, false );
+    List<Session3VO> sessions = this.getSession3Service().findAllOrderedByDate( false, false, false );
 
     if( sessions == null )
     {
