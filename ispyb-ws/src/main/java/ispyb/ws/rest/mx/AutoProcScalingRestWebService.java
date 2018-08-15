@@ -146,71 +146,48 @@ public class AutoProcScalingRestWebService extends MXRestWebService
     String methodName = "retrieveAutoProcScalingStatistics";
     long id = this.logInit( methodName, logger, autoProcScalingId );
 
-
+    // Get an autoProcScaling entity by ID if available
     AutoProcScaling3VO autoProcScaling3VO = this.getScreeningStrategy3Service().findByPk( autoProcScalingId );
+
     if( autoProcScaling3VO == null )
     {
-      return Response.noContent( ).entity( "BAD DUMMY STRING" ).build();
+      Map<String, Object> error = new HashMap<>();
+      error.put( "error", "The input autoProcScalingId[" + autoProcScalingId + "] could not be found in the database." );
+      return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
     }
 
-    System.out.println( "Obtained autoprocscalingvo with ID: " + autoProcScaling3VO.getAutoProcScalingId() );
-
+    // Get the autoProc entity from the autoProcScaling entity
     AutoProc3VO autoProc3VO = autoProcScaling3VO.getAutoProcVO();
+
     if( autoProc3VO == null )
     {
-      return Response.noContent( ).entity( "BAD DUMMY STRING" ).build();
+      Map<String, Object> error = new HashMap<>();
+      error.put( "error", "The input autoProcScalingId[" + autoProcScalingId + "] has no associated AutoProc record." );
+      return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
     }
 
+    // Get a list of autoProcScalingStatistics using the autoProcId
     List<AutoProcScalingStatistics3VO> autoProcScalingStatisticsList =
-      this.getAutoProcScalingStatistics3Service().findByAutoProcId( autoProc3VO.getAutoProcId(), null );
+            this.getAutoProcScalingStatistics3Service().findByAutoProcId( autoProc3VO.getAutoProcId(), null );
 
-    System.out.println("autoProcScalingStatsList.size: " + autoProcScalingStatisticsList.size());
+    String errorMsg = "Failed to find any AutoProcScalingStatistic records for the " +
+      "input autoProcScalingId[" + autoProcScalingId + "]";
 
-    for( AutoProcScalingStatistics3VO autoProcScalingStatistics : autoProcScalingStatisticsList )
+    if( autoProcScalingStatisticsList == null )
     {
-      System.out.println( "autoProcScalingStatistics.getId: " + autoProcScalingStatistics.getAutoProcScalingVOId() );
-      System.out.println( "autoProcScalingStatistics.getStatsId: " + autoProcScalingStatistics.getAutoProcScalingStatisticsId() );
-      System.out.println( "autoProcScalingStatistics.getCCHalf: " + autoProcScalingStatistics.getCcHalf() );
-      System.out.println( "autoProcScalingStatistics.getRMerge: " + autoProcScalingStatistics.getRmerge() );
+      Map<String, Object> error = new HashMap<>();
+      error.put( "error", errorMsg );
+      return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
     }
 
-
-    return Response.ok( ).entity( "DUMMY STRING" ).build();
-//    return Response.ok( buildAutoProcScalingStatisticsResponse( autoProcScalingStatisticsList ) ).build();
-  }
-
-
-  private List<Map<String, Object>> buildDummyAutoProcStatisticsData()
-  {
-    List<Map<String, Object>> dummyAutoProcStatisticsData = new ArrayList<>();
-
-    for( int i = 0; i < 5; i++ )
+    if( autoProcScalingStatisticsList.isEmpty() )
     {
-      Map<String, Object> dummyAutoProcStatistic = new HashMap<>();
-
-      double resolutionLimitBase = 1.45;
-      Random rand = new Random();
-
-      dummyAutoProcStatistic.put( "autoProcScalingId", "1" );
-      dummyAutoProcStatistic.put( "autoProcScalingStatisticsId", i );
-      dummyAutoProcStatistic.put( "scalingStatisticsType", "outershell" );
-      dummyAutoProcStatistic.put( "resolutionLimitLow", resolutionLimitBase + i );
-      dummyAutoProcStatistic.put( "resolutionLimitHigh", resolutionLimitBase + ( i * 5 ) );
-      dummyAutoProcStatistic.put( "rMerge", "3.0" );
-      dummyAutoProcStatistic.put( "meanIOverSigI", rand.nextInt( 20 ) );
-      dummyAutoProcStatistic.put( "completeness", rand.nextInt( 20 ) );
-      dummyAutoProcStatistic.put( "nTotalUniqueObservations", rand.nextInt( 20 ) );
-      dummyAutoProcStatistic.put( "multiplicity", rand.nextInt( 20 ) );
-      dummyAutoProcStatistic.put( "anomalousCompleteness", rand.nextInt( 20 ) );
-      dummyAutoProcStatistic.put( "anomalousMultiplicity", rand.nextInt( 20 ) );
-      dummyAutoProcStatistic.put( "ccHalf", rand.nextInt( 20 ) );
-      dummyAutoProcStatistic.put( "ccAnomalous", rand.nextInt( 20 ) );
-      dummyAutoProcStatistic.put( "RNUM", i );
-
-      dummyAutoProcStatisticsData.add( dummyAutoProcStatistic );
+      Map<String, Object> error = new HashMap<>();
+      error.put( "error", errorMsg );
+      return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
     }
 
-    return dummyAutoProcStatisticsData;
+    return Response.ok( buildAutoProcScalingStatisticsResponse( autoProcScalingStatisticsList ) ).build();
   }
 
 
