@@ -6,7 +6,7 @@ public class BLSampleDTO
 
   private String name;
 
-  private double loopLength;
+  private Double loopLength;
 
   private String loopType;
 
@@ -41,13 +41,13 @@ public class BLSampleDTO
   }
 
 
-  public double getLoopLength()
+  public Double getLoopLength()
   {
     return loopLength;
   }
 
 
-  public void setLoopLength( double loopLength )
+  public void setLoopLength( Double loopLength )
   {
     this.loopLength = loopLength;
   }
