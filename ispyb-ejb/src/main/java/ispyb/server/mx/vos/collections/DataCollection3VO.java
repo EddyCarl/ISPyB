@@ -44,6 +44,7 @@ import javax.persistence.SqlResultSetMapping;
 import javax.persistence.Table;
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.OrderBy;
 
 /**
  * DataCollection3 value object mapping table DataCollection
@@ -261,7 +262,8 @@ public class DataCollection3VO extends ISPyBValueObject implements Cloneable {
 
 	@OneToMany(fetch = FetchType.EAGER )
 	@JoinColumn(name = "dataCollectionId")
-	private Set<AutoProcIntegration3VO> autoProcIntegrationVOs;
+  @OrderBy(clause = "autoProcIntegrationId ASC")
+  private Set<AutoProcIntegration3VO> autoProcIntegrationVOs;
 
 	public DataCollection3VO() {
 		super();
