@@ -113,7 +113,7 @@ public class DataCollectionGroup3VO extends ISPyBValueObject implements Cloneabl
 	@JoinColumn(name = "dataCollectionGroupId")
 	protected Set<DataCollection3VO> dataCollectionVOs;
 
-	@OneToMany
+	@OneToMany(fetch = FetchType.EAGER)
 	@JoinColumn(name = "dataCollectionGroupId")
 	private Set<Screening3VO> screeningVOs;
 
