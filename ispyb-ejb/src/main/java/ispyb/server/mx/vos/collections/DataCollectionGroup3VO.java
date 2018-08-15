@@ -43,6 +43,7 @@ import javax.persistence.SqlResultSetMapping;
 import javax.persistence.Table;
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.OrderBy;
 
 /**
  * DataCollectionGroup3 value object mapping table DataCollectionGroup
@@ -115,6 +116,7 @@ public class DataCollectionGroup3VO extends ISPyBValueObject implements Cloneabl
 
 	@OneToMany(fetch = FetchType.EAGER)
 	@JoinColumn(name = "dataCollectionGroupId")
+  @OrderBy(clause = "screeningId")
 	private Set<Screening3VO> screeningVOs;
 
 

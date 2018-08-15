@@ -466,90 +466,44 @@ public class DataCollectionRestWebService extends MXRestWebService {
     String methodName = "retrieveScreeningComments";
     long id = this.logInit(methodName, logger, dataCollectionId );
 
-    System.out.println( " --- Retrieve screening comments --- ");
-    System.out.println( "Input dataCollectionId : " + dataCollectionId );
-
-
     // Get a dataCollection entity by ID if available
     DataCollection3VO dataCollection = this.getDataCollection3Service().findByPk(dataCollectionId, false, false);
 
     if( dataCollection == null )
     {
-      System.out.println( "The retrieved dataCollection was null ");
       Map<String, Object> error = new HashMap<>();
       error.put( "error", "The input dataCollectionId[" + dataCollectionId + "] could not be found in the database." );
       return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
     }
 
-    System.out.println( "The retrieved dataCollection was non-null. Progress to obotain screenings.");
-
-
+    // Retrieve the dataCollectionGroup entity attached to the dataCollection (this is holding the screening entities)
     DataCollectionGroup3VO dataCollectionGroup3VO = dataCollection.getDataCollectionGroupVO();
 
     if( dataCollectionGroup3VO == null )
     {
-      System.out.println( "The retrieved dataCollectionGroup3VO was null ");
       Map<String, Object> error = new HashMap<>();
-      error.put( "error", "The input dataCollectionId[" + dataCollectionId + "] could not be found in the database." );
+      error.put( "error", "The input dataCollectionId[" + dataCollectionId + "] has no associated dataCollectionGroup" );
       return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
     }
 
-    System.out.println( "The retrieved dataCollectionGroup3VO was non-null. Progress to obotain screenings.");
-
-
+    // Retrieve the screening entities
     List<Screening3VO> screenings = dataCollectionGroup3VO.getScreeningsList();
+
+    Map<String, Object> emptyScreeningsError = new HashMap<>();
+    String errorMessage = "Unable to find any screening entities for the input dataCollectionId[" + dataCollectionId + "].";
+    emptyScreeningsError.put( "error", errorMessage );
 
     if( screenings == null )
     {
-      System.out.println( "The retrieved screenings was null ");
-      Map<String, Object> error = new HashMap<>();
-      error.put( "error", "The input dataCollectionId[" + dataCollectionId + "] could not be found in the database." );
-      return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
+      return Response.status(Response.Status.NOT_FOUND).entity( emptyScreeningsError ).build();
     }
-
     if( screenings.isEmpty() )
     {
-      System.out.println( "The retrieved screenings was null ");
-      Map<String, Object> error = new HashMap<>();
-      error.put( "error", "The input dataCollectionId[" + dataCollectionId + "] could not be found in the database." );
-      return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
+      return Response.status(Response.Status.NOT_FOUND).entity( emptyScreeningsError ).build();
     }
 
-    System.out.println( "The retrieved screenings was non-null. Size: " + screenings.size() );
-
-    int rowNumber = 1;
-    for( Screening3VO screening3VO : screenings )
-    {
-      System.out.println(" === New screening details === ");
-      System.out.println( "     ScreeningId: " + screening3VO.getScreeningId() );
-      System.out.println( "     DataCollectionId: " + dataCollectionId );
-      System.out.println( "     Comments: " + screening3VO.getComments() );
-      System.out.println( "     ShortComments: " + screening3VO.getShortComments() );
-      System.out.println( "     rowNumber: " + rowNumber++ );
-    }
-
-
-    return Response.status(Response.Status.NOT_FOUND).entity( "SCREENING DUMMMY" ).build();
-
-
-//    // Get a list of screenings using the dataCollectionId
-//    List<Screening3VO> screenings = this.getScreening3Service().findFiltered( dataCollectionId );
-//
-//    Map<String, Object> emptyScreeningsError = new HashMap<>();
-//    String errorMessage = "Unable to find any screening entities for the input dataCollectionId[" + dataCollectionId + "].";
-//    emptyScreeningsError.put( "error", errorMessage );
-//
-//    if( screenings == null )
-//    {
-//      return Response.status(Response.Status.NOT_FOUND).entity( emptyScreeningsError ).build();
-//    }
-//    if( screenings.isEmpty() )
-//    {
-//      return Response.status(Response.Status.NOT_FOUND).entity( emptyScreeningsError ).build();
-//    }
-//
-//    // Create the response using the data obtained
-//    return Response.ok( buildScreeningCommentsResponse( dataCollectionId, screenings ) ).build();
+    // Create the response using the data obtained
+    return Response.ok( buildScreeningCommentsResponse( dataCollectionId, screenings ) ).build();
   }
 
 
