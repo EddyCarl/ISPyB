@@ -133,11 +133,12 @@ public class Session3VO extends ISPyBValueObject implements Cloneable {
 
 	@OneToMany
 	@JoinColumn(name = "sessionId")
-	private Set<DataCollectionGroup3VO> dataCollectionGroupVOs;
+  @OrderBy(clause = "startTime DESC")
+  private Set<DataCollectionGroup3VO> dataCollectionGroupVOs;
 
 	@OneToMany
 	@JoinColumn(name = "sessionId")
-	@OrderBy(clause = "startTime DESC")
+  @OrderBy(clause = "startTime DESC")
 	private Set<XFEFluorescenceSpectrum3VO> xfeSpectrumVOs;
 
 	@OneToMany
