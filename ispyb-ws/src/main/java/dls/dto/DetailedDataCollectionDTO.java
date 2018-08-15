@@ -65,7 +65,7 @@ public class DetailedDataCollectionDTO
   }
 
 
-  public int getBlSampleId()
+  public Integer getBlSampleId()
   {
     return blSampleId;
   }
