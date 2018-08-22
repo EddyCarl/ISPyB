@@ -45,8 +45,6 @@ public class MxMrRun3VO extends ISPyBValueObject implements Cloneable
   // this prevents later invalid class version exceptions when the value object evolves
   private static final long serialVersionUID = 1234567901234567890L;
 
-  private final String CLASS_NAME = this.getClass().getSimpleName();
-
   @Id
   @GeneratedValue
   @Column( name = "mxMRRunId" )
@@ -431,13 +429,15 @@ public class MxMrRun3VO extends ISPyBValueObject implements Cloneable
     // Ensure autoProcScalingVO instance is non null
     if( this.autoProcScalingVO == null )
     {
-      throw new IllegalArgumentException( StringUtils.getMessageRequiredField( CLASS_NAME, "autoProcScalingVO" ) );
+      throw new IllegalArgumentException(
+                StringUtils.getMessageRequiredField( this.getClass().getSimpleName(), "autoProcScalingVO" ) );
     }
 
     // Ensure the success value is a valid boolean value
     if( !StringUtils.isBoolean( "" + this.success, true ) )
     {
-      throw new IllegalArgumentException( StringUtils.getMessageBooleanField( CLASS_NAME, "success" ) );
+      throw new IllegalArgumentException(
+                StringUtils.getMessageBooleanField( this.getClass().getSimpleName(), "success" ) );
     }
 
     // Ensure all of the string lengths are valid
@@ -491,7 +491,7 @@ public class MxMrRun3VO extends ISPyBValueObject implements Cloneable
    */
   private String getMaxLengthErrorMessage( final String field, final int length )
   {
-    return StringUtils.getMessageErrorMaxLength( CLASS_NAME, field, length );
+    return StringUtils.getMessageErrorMaxLength( this.getClass().getSimpleName(), field, length );
   }
 
 
