@@ -22,6 +22,9 @@ package ispyb.server.mx.services.autoproc;
 
 import ispyb.server.mx.vos.autoproc.MxMrRun3VO;
 import org.apache.log4j.Logger;
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.criterion.Restrictions;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -140,6 +143,24 @@ public class MxMrRun3ServiceBean implements MxMrRun3Service, MxMrRun3ServiceLoca
   public List<MxMrRun3VO> findAll() throws Exception
   {
     return entityManager.createQuery( FIND_ALL() ).getResultList();
+  }
+
+
+  /**
+   *
+   * @param autoProcScalingId
+   * @return
+   * @throws Exception
+   */
+  public List<MxMrRun3VO> findByAutoProcScalingId( Integer autoProcScalingId ) throws Exception
+  {
+    Session session = ( Session ) this.entityManager.getDelegate();
+
+    Criteria criteria = session.createCriteria( MxMrRun3VO.class )
+                               .createCriteria( "autoProcScalingVO" )
+                               .add( Restrictions.eq( "autoProcScalingId", autoProcScalingId ) );
+
+    return criteria.list();
   }
 
 

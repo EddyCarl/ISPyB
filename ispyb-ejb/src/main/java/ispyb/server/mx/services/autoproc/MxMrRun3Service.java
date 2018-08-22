@@ -93,4 +93,13 @@ public interface MxMrRun3Service
    * @throws Exception
    */
   public List<MxMrRun3VO> findAll() throws Exception;
+
+
+  /**
+   *
+   * @param autoProcScalingId
+   * @return
+   * @throws Exception
+   */
+  public List<MxMrRun3VO> findByAutoProcScalingId( final Integer autoProcScalingId ) throws Exception;
 }

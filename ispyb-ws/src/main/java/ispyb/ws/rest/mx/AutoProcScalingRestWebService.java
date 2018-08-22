@@ -71,6 +71,19 @@ public class AutoProcScalingRestWebService extends MXRestWebService
     String methodName = "retrieveMxMrRuns";
     long id = this.logInit( methodName, logger, autoProcScalingId );
 
+    // Get an autoProcScaling entity by ID if available
+    AutoProcScaling3VO autoProcScaling3VO = this.getAutoProcScaling3Service().findByPk( autoProcScalingId );
+
+    if( autoProcScaling3VO == null )
+    {
+      Map<String, Object> error = new HashMap<>();
+      error.put( "error", "The input autoProcScalingId[" + autoProcScalingId + "] could not be found in the database." );
+      return Response.status(Response.Status.NOT_FOUND).entity( error ).build();
+    }
+
+
+
+
 
     List<MxMrRun3VO> mxMrRun3VOList = this.getMxMrRun3Service().findAll();
 
@@ -84,16 +97,7 @@ public class AutoProcScalingRestWebService extends MXRestWebService
 
     if( !mxMrRun3VOList.isEmpty() )
     {
-      for( MxMrRun3VO mxMrRun3VO : mxMrRun3VOList )
-      {
-        System.out.println( "mxMrRun3VO.getMxMRRunId() : " + mxMrRun3VO.getMxMRRunId() );
-        System.out.println( "mxMrRun3VO.getAutoProcScalingVO() : " + mxMrRun3VO.getAutoProcScalingVO() );
-        System.out.println( "mxMrRun3VO.getMessage() : " + mxMrRun3VO.getMessage() );
-        System.out.println( "mxMrRun3VO.getCommandLine() : " + mxMrRun3VO.getCommandLine() );
-        System.out.println( "mxMrRun3VO.getSuccess() : " + mxMrRun3VO.getSuccess() );
-        System.out.println( "mxMrRun3VO.getrFreeValueEnd() : " + mxMrRun3VO.getrFreeValueEnd() );
-        System.out.println( "mxMrRun3VO.getrFreeValueStart() : " + mxMrRun3VO.getrFreeValueStart() );
-      }
+      printListResults( mxMrRun3VOList );
     }
     else
     {
@@ -101,16 +105,59 @@ public class AutoProcScalingRestWebService extends MXRestWebService
       return Response.status( Response.Status.NOT_FOUND ).entity( "MxMrRun3VO List is empty" ).build();
     }
 
-//    if( autoProcScalingId != 1 )
-//    {
-//      Map<String, Object> error = new HashMap<>();
-//      String errorMsg = "The input autoProcScaling ID[ " + autoProcScalingId + " ] has no MX MR Runs associated with it";
-//      error.put( "error", errorMsg );
-//      return Response.status( Response.Status.NOT_FOUND ).entity( error ).build();
-//    }
+
+
+
+
+    System.out.println( " *** Attempt to find using the autoProcScalingId : " + autoProcScalingId );
+
+    List<MxMrRun3VO> mxMrRun3VOListByAPSId = this.getMxMrRun3Service().findByAutoProcScalingId( autoProcScalingId );
+
+
+    if( mxMrRun3VOListByAPSId == null )
+    {
+      System.out.println( "--- MxMrRun3VO List is null ---");
+      return Response.status( Response.Status.NOT_FOUND ).entity( "MxMrRun3VO List is null" ).build();
+    }
+
+    System.out.println( "List size: " + mxMrRun3VOListByAPSId.size() );
+
+    if( !mxMrRun3VOListByAPSId.isEmpty() )
+    {
+      printListResults( mxMrRun3VOListByAPSId );
+    }
+    else
+    {
+      System.out.println( "--- MxMrRun3VO List is empty ---");
+      return Response.status( Response.Status.NOT_FOUND ).entity( "MxMrRun3VO List is empty" ).build();
+    }
+
+
+
+
+
+
 
     return Response.ok( buildDummyMxMrRunData() ).build();
   }
+
+
+
+
+  private void printListResults( List<MxMrRun3VO> runsList )
+  {
+    for( MxMrRun3VO mxMrRun3VO : runsList )
+    {
+      System.out.println( "mxMrRun3VO.getMxMRRunId() : " + mxMrRun3VO.getMxMRRunId() );
+      System.out.println( "mxMrRun3VO.getAutoProcScalingVO() : " + mxMrRun3VO.getAutoProcScalingVO() );
+      System.out.println( "mxMrRun3VO.getMessage() : " + mxMrRun3VO.getMessage() );
+      System.out.println( "mxMrRun3VO.getCommandLine() : " + mxMrRun3VO.getCommandLine() );
+      System.out.println( "mxMrRun3VO.getSuccess() : " + mxMrRun3VO.getSuccess() );
+      System.out.println( "mxMrRun3VO.getrFreeValueEnd() : " + mxMrRun3VO.getrFreeValueEnd() );
+      System.out.println( "mxMrRun3VO.getrFreeValueStart() : " + mxMrRun3VO.getrFreeValueStart() );
+    }
+  }
+
 
 
   private List<Map<String, Object>> buildDummyMxMrRunData()
@@ -178,7 +225,7 @@ public class AutoProcScalingRestWebService extends MXRestWebService
     long id = this.logInit( methodName, logger, autoProcScalingId );
 
     // Get an autoProcScaling entity by ID if available
-    AutoProcScaling3VO autoProcScaling3VO = this.getScreeningStrategy3Service().findByPk( autoProcScalingId );
+    AutoProcScaling3VO autoProcScaling3VO = this.getAutoProcScaling3Service().findByPk( autoProcScalingId );
 
     if( autoProcScaling3VO == null )
     {
@@ -348,7 +395,7 @@ public class AutoProcScalingRestWebService extends MXRestWebService
    *
    * @throws NamingException - Thrown when the service cannot be found
    */
-  protected AutoProcScaling3Service getScreeningStrategy3Service() throws NamingException
+  protected AutoProcScaling3Service getAutoProcScaling3Service() throws NamingException
   {
     return (AutoProcScaling3Service) Ejb3ServiceLocator.getInstance().getLocalService(AutoProcScaling3Service.class);
   }
