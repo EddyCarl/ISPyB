@@ -52,17 +52,37 @@ public class DLSApiAuthenticationChecker
       }
 
 
-      if( headers.getRequestHeader( API_TOKEN_HEADER ) != null )
+      System.out.println(" ---------- Time for the real stuff ------------- ");
+
+
+      List<String> headerValues = headers.getRequestHeader( API_TOKEN_HEADER );
+      if( headerValues != null )
       {
+        System.out.println( "headers.getReqHeader for API TOKEN is NOT null ");
+
 
         // I think we hit an exception when trying to "get(0)" if the API token hasn't actually been input
         // into the header... Investigate further
+
+        System.out.println("    size of headervalue list: " +  headerValues.size() );
+
+        for( String hv : headerValues )
+        {
+          System.out.println( "       " + hv );
+        }
+
+
 
         if( headers.getRequestHeader( API_TOKEN_HEADER ).get( 0 ) != null )
         {
           apiToken = headers.getRequestHeader( API_TOKEN_HEADER ).get( 0 );
         }
       }
+      else
+      {
+        System.out.println("headers.getreqheader for API token is NULL ");
+      }
+
     }
 
     return apiToken;
