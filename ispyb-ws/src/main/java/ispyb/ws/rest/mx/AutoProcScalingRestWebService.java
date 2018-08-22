@@ -10,9 +10,11 @@ import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
 import ispyb.server.common.util.ejb.Ejb3ServiceLocator;
 import ispyb.server.mx.services.autoproc.AutoProcScaling3Service;
+import ispyb.server.mx.services.autoproc.MxMrRun3Service;
 import ispyb.server.mx.vos.autoproc.AutoProc3VO;
 import ispyb.server.mx.vos.autoproc.AutoProcScaling3VO;
 import ispyb.server.mx.vos.autoproc.AutoProcScalingStatistics3VO;
+import ispyb.server.mx.vos.autoproc.MxMrRun3VO;
 import org.apache.log4j.Logger;
 import utils.SwaggerTagConstants;
 
@@ -70,13 +72,42 @@ public class AutoProcScalingRestWebService extends MXRestWebService
     long id = this.logInit( methodName, logger, autoProcScalingId );
 
 
-    if( autoProcScalingId != 1 )
+    List<MxMrRun3VO> mxMrRun3VOList = this.getMxMrRun3Service().findAll();
+
+    if( mxMrRun3VOList == null )
     {
-      Map<String, Object> error = new HashMap<>();
-      String errorMsg = "The input autoProcScaling ID[ " + autoProcScalingId + " ] has no MX MR Runs associated with it";
-      error.put( "error", errorMsg );
-      return Response.status( Response.Status.NOT_FOUND ).entity( error ).build();
+      System.out.println( "--- MxMrRun3VO List is null ---");
+      return Response.status( Response.Status.NOT_FOUND ).entity( "MxMrRun3VO List is null" ).build();
     }
+
+    System.out.println( "List size: " + mxMrRun3VOList.size() );
+
+    if( !mxMrRun3VOList.isEmpty() )
+    {
+      for( MxMrRun3VO mxMrRun3VO : mxMrRun3VOList )
+      {
+        System.out.println( "mxMrRun3VO.getMxMRRunId() : " + mxMrRun3VO.getMxMRRunId() );
+        System.out.println( "mxMrRun3VO.getAutoProcScalingVO() : " + mxMrRun3VO.getAutoProcScalingVO() );
+        System.out.println( "mxMrRun3VO.getMessage() : " + mxMrRun3VO.getMessage() );
+        System.out.println( "mxMrRun3VO.getCommandLine() : " + mxMrRun3VO.getCommandLine() );
+        System.out.println( "mxMrRun3VO.getSuccess() : " + mxMrRun3VO.getSuccess() );
+        System.out.println( "mxMrRun3VO.getrFreeValueEnd() : " + mxMrRun3VO.getrFreeValueEnd() );
+        System.out.println( "mxMrRun3VO.getrFreeValueStart() : " + mxMrRun3VO.getrFreeValueStart() );
+      }
+    }
+    else
+    {
+      System.out.println( "--- MxMrRun3VO List is empty ---");
+      return Response.status( Response.Status.NOT_FOUND ).entity( "MxMrRun3VO List is empty" ).build();
+    }
+
+//    if( autoProcScalingId != 1 )
+//    {
+//      Map<String, Object> error = new HashMap<>();
+//      String errorMsg = "The input autoProcScaling ID[ " + autoProcScalingId + " ] has no MX MR Runs associated with it";
+//      error.put( "error", errorMsg );
+//      return Response.status( Response.Status.NOT_FOUND ).entity( error ).build();
+//    }
 
     return Response.ok( buildDummyMxMrRunData() ).build();
   }
@@ -309,18 +340,30 @@ public class AutoProcScalingRestWebService extends MXRestWebService
   }
 
 
-
   /**
-   * Utility method used to get a AutoProcScaling3Service instance in order to obtain AutoProcScaling3VO entities
+   * Utility method used to get an AutoProcScaling3Service instance in order to obtain AutoProcScaling3VO entities
    * from the database using the methods defined in the service.
    *
    * @return AutoProcScaling3Service - The service containing helper methods to obtain data from the database
    *
-   * @throws NamingException
+   * @throws NamingException - Thrown when the service cannot be found
    */
   protected AutoProcScaling3Service getScreeningStrategy3Service() throws NamingException
   {
     return (AutoProcScaling3Service) Ejb3ServiceLocator.getInstance().getLocalService(AutoProcScaling3Service.class);
   }
 
+
+  /**
+   * Utility method used to get a MxMrRun3Service instance in order to obtain MxMrRun3VO entities
+   * from the database using the methods defined in the service.
+   *
+   * @return MxMrRun3Service - The service containing helper methods to obtain data from the database
+   *
+   * @throws NamingException - Thrown when the service cannot be found
+   */
+  protected MxMrRun3Service getMxMrRun3Service() throws NamingException
+  {
+    return (MxMrRun3Service) Ejb3ServiceLocator.getInstance().getLocalService(MxMrRun3Service.class);
+  }
 }
