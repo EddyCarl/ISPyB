@@ -5,6 +5,10 @@ import ispyb.server.common.vos.login.Login3VO;
 
 import javax.naming.NamingException;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MultivaluedMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class DLSApiAuthenticationChecker
 {
@@ -16,6 +20,38 @@ public class DLSApiAuthenticationChecker
 
     if( headers != null )
     {
+
+      MultivaluedMap<String, String> headerMap = headers.getRequestHeaders();
+
+      if( headerMap == null )
+      {
+        System.out.println( " === The header map is null === ");
+      }
+      if( headerMap.isEmpty() )
+      {
+        System.out.println( " === The header map is empty === ");
+      }
+
+      System.out.println( " === The header map size is: " + headerMap.size() );
+
+
+      for( Map.Entry<String, List<String>> me : headerMap.entrySet() )
+      {
+        String key = me.getKey();
+
+        List<String> values = me.getValue();
+
+
+        System.out.println( "    Key: " + key );
+        System.out.println( "     Values size: " + values.size() );
+
+        for( String value : values )
+        {
+          System.out.println( "             " + value );
+        }
+      }
+
+
       if( headers.getRequestHeader( API_TOKEN_HEADER ) != null )
       {
 
