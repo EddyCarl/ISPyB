@@ -28,12 +28,15 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
 import org.jboss.resteasy.annotations.GZIP;
 
 import io.swagger.annotations.Api;
+import utils.DLSApiAuthenticationChecker;
 import utils.SwaggerTagConstants;
 
 @Api( tags = SwaggerTagConstants.LEGACY_TAG )
@@ -62,15 +65,19 @@ public class SessionRestWebService extends RestWebService
   @ApiResponses
     ( {
       @ApiResponse( code = 200, message = "Ok" ),
-      @ApiResponse( code = 400, message = "Some error" )
+      @ApiResponse( code = 400, message = "Some error" ),
+      @ApiResponse( code = 401, message = "You are not authorised to use this endpoint" )
     } )
-  public Response retrieveSessions() throws Exception
+  public Response retrieveSessions( @Context HttpHeaders headers ) throws Exception
   {
     String methodName = "retrieveSessions";
     long id = this.logInit(methodName, logger );
 
-    // * CE * Need to check the auth token here before getting anything...
-    //        The DataCollectionId must belong to a users sessions.
+    // Check if a valid API token has been sent in the request
+    if( !DLSApiAuthenticationChecker.validAuthenticationToken( headers ) )
+    {
+      return DLSApiAuthenticationChecker.getUnauthorisedResponse();
+    }
 
     // Retrieve a list of sessions if possible
     List<Session3VO> sessions = this.getSession3Service().findAllOrderedByDate( false, false, false );

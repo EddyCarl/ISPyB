@@ -75,13 +75,10 @@ public class XFEFluorescenceSpectrumRestWebService extends RestWebService
     String methodName = "retrieveFluorescenceSpectrumData";
     long id = this.logInit(methodName, logger, sessionId);
 
-    String apiToken = DLSApiAuthenticationChecker.retrieveToken( headers );
-
-    if( !DLSApiAuthenticationChecker.userIsAuthenticated( this.getLogin3Service(), apiToken ) )
+    // Check if a valid API token has been sent in the request
+    if( !DLSApiAuthenticationChecker.validAuthenticationToken( headers ) )
     {
-      Map<String, Object> error = new HashMap<>();
-      error.put( "error", "You are not authorised to use this endpoint" );
-      return Response.status(Response.Status.UNAUTHORIZED).entity( error ).build();
+      return DLSApiAuthenticationChecker.getUnauthorisedResponse();
     }
 
     // Retrieve the session entity using the input sessionId
